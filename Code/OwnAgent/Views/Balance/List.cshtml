@@ -1,0 +1,19 @@
+﻿@using OwnAgent.Models
+@model IEnumerable<OwnAgent.Models.Spend>
+@{
+    ViewBag.Title = "Список";
+    Layout = "~/Views/Shared/_BalanceLayout.cshtml";
+}
+
+<div>
+    <table class="striped">
+        <thead>
+        <tr><th>Дата</th><th>Вектор</th><th>Категория</th><th>Сумма</th></tr>
+        </thead>
+        @foreach (Spend s in Model)
+        {
+            <tr><td>@String.Format("{0:d}", s.Date)</td><td>@s.SpendVector.Name</td><td>@s.SpendCategory.Name</td><td>@s.Sum</td></tr>
+        }
+    </table>
+</div>
+
