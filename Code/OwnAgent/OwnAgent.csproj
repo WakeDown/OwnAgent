@@ -193,6 +193,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Objects\BaseController.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Client.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\materialize\css\materialize.css" />
@@ -269,7 +273,6 @@
     <None Include="Properties\PublishProfiles\PRODUCT-UIIS-1.pubxml" />
     <None Include="Properties\PublishProfiles\SmarterASP.pubxml" />
     <Content Include="Views\Balance\TopClaims.cshtml" />
-    <Content Include="Views\Shared\_MainLayout.cshtml" />
     <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
@@ -291,9 +294,10 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\_BalanceLayout.cshtml" />
     <Content Include="Views\Shared\Loader.cshtml" />
     <Content Include="Views\Balance\Stat.cshtml" />
+    <Content Include="Views\Balance\SpendTop.cshtml" />
+    <Content Include="Views\Balance\SpendLastAdd.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -349,6 +353,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{7CEAE25A-8F29-4F3D-89B9-2B7ED5012483}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{BC0EA413-1D77-408C-A409-2544FA05B0B2}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -4,7 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using Data.Models;
+using Data.Services;
 using Microsoft.AspNet.Identity;
+using Models.Mappers;
+using Models.ViewModels;
 using OwnAgent.Models;
 using OwnAgent.Objects;
 
@@ -16,37 +20,84 @@ namespace OwnAgent.Controllers
         [HttpGet]
         public ActionResult New()
         {
-            string s = ClientId;
-            return View(new Spend());
+            var spend = new SpendNewViewModel() {Date = DateTime.Now};
+            return View(spend);
         }
+        //[HttpPost]
+        //public JsonResult New(SpendNewViewModel model)
+        //{
+        //    var spend = SpendViewModel2Spend.Map(model);
+        //    SpendService.Instance(User.Identity.GetUserId()).CreateSpend(spend);
+        //    //model.Save(ClientId);
+        //    return Json(new {});
+        //    //return RedirectToAction("New");
+        //}
+
         [HttpPost]
-        public JsonResult New(Spend model)
+        public JsonResult SpendIncome(SpendNewViewModel model)
         {
-            model.Save(ClientId);
-            return Json(new {});
+            var spend = SpendViewModel2Spend.Map(model);
+            SpendService.Instance(User.Identity.GetUserId()).CreateIncome(spend);
+            //model.Save(ClientId);
+            return Json(new { });
             //return RedirectToAction("New");
+        }
+
+        [HttpPost]
+        public JsonResult SpendExpense(SpendNewViewModel model)
+        {
+            var spend = SpendViewModel2Spend.Map(model);
+            SpendService.Instance(User.Identity.GetUserId()).CreateExpense(spend);
+            //model.Save(ClientId);
+            return Json(new { });
+            //return RedirectToAction("New");
+        }
+
+        [HttpGet]
+        public ActionResult SpendTop()
+        {
+            //var list = Spend.GetTop(ClientId, 7);
+            var list = SpendService.Instance(User.Identity.GetUserId()).GetTop(4);
+            var models = Spend2SpendViewModel.MapList2TopViewModelList(list);
+            return View(models);
+        }
+
+        [HttpGet]
+        public ActionResult SpendLastAdd()
+        {
+            int totalCount;
+            var list = SpendService.Instance(User.Identity.GetUserId()).GetSpendList(out totalCount, 1, 3);
+            var models = Spend2SpendViewModel.MapList2LastAddViewModelList(list);
+            return View(models);
         }
 
         [HttpGet]
         public ActionResult List()
         {
-            var list =Spend.GetList(ClientId);
-
+            //var list =Spend.GetList(ClientId);
+            int totalCount;
+            var list = SpendService.Instance(User.Identity.GetUserId()).GetSpendList(out totalCount);
             return View(list);
         }
         
         [HttpPost]
         public JsonResult GetTop()
         {
-            var list = Spend.GetTop(ClientId, 7);
-            return Json(list);
+            //var list = Spend.GetTop(ClientId, 7);
+            var list = SpendService.Instance(User.Identity.GetUserId()).GetTop(7);
+            var models = Spend2SpendViewModel.MapList2TopViewModelList(list);
+            return Json(models);
         }
+
+        
 
         [HttpPost]
         public JsonResult GetLastadd()
         {
-            var list = Spend.GetList(ClientId, 3);
-            return Json(list);
+            int totalCount;
+            var list = SpendService.Instance(User.Identity.GetUserId()).GetSpendList(out totalCount, 1, 3);
+            var models = Spend2SpendViewModel.MapList2LastAddViewModelList(list);
+            return Json(models);
         }
 
         //public ActionResult ShortList()

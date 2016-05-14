@@ -54,3 +54,7 @@ nav a {
 .text-right {
     text-align: right;
 }
+
+.btn-block {
+    width: 100%;   
+}

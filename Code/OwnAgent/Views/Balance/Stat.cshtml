@@ -1,17 +1,18 @@
-﻿@using OwnAgent.Models
+﻿@using Data.Models
+@using OwnAgent.Models
 @using OwnAgent.Objects
 @using WebGrease
 
 @{
     ViewBag.Title = "Статистика";
-    Layout = "~/Views/Shared/_BalanceLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
     int year = Convert.ToInt32(Request.QueryString["y"]);
     int month = Convert.ToInt32(Request.QueryString["m"]);
 }
 
 
-<p>
+@*<p>
     <div class="row">
         <div class="col l2">
             <a class='dropdown-button btn' href='#' data-activates='mthYear'>@year</a>
@@ -138,4 +139,4 @@
 
         window.location = '@Url.Action("Stat")?y=' + year + '&m=' + month;
     }
-</script>
+</script>*@

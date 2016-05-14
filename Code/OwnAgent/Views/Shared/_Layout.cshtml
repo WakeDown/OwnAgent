@@ -11,36 +11,41 @@
     @Scripts.Render("~/bundles/js")
 </head>
 <body>
-    <nav class="indigo lighten-3">
-        <div class="nav-wrapper">
-            <div class="container">
-                <div class="row">
-                    @*@Html.ActionLink("Бюджет", "Index", "Home", new { area = "" }, new { @class = "brand-logo" })*@
-                    @*<ul id="nav-mobile" class="left">
-                        <li><a href="@Url.Action("New", "Balance")"><i class="material-icons large">add</i></a></li>
-                    </ul>*@
-                    @RenderSection("nav", required: false)
-                    <ul class="hide-on-small-and-down right">
-                        <li>
-                            @Html.Partial("_LoginPartial")
-                        </li>
-                    </ul>
-                </div>
+    <div class="navbar-fixed">
+        <nav class="indigo lighten-3">
+            <div class="nav-wrapper">
+                @Html.ActionLink("Бюджет", "Stat", "Balance", new { area = "" }, new { @class = "brand-logo" })
+                <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="@Url.Action("New", "Balance")"><i class="material-icons large">add</i></a></li>
+                    <li>
+                        @Html.Partial("_LoginPartial")
+                    </li>
+                </ul>
+                <ul class="side-nav" id="mobile-menu">
+                    <li><a href="@Url.Action("Stat", "Balance")">Статистика</a></li>
+                    <li><a href="@Url.Action("New", "Balance")">Добавить</a></li>
+                </ul>
             </div>
-        </div>
-    </nav>
-    <main>
-        <div class="container">
-            @RenderBody()
-            <hr />
-        </div>
-    </main>
-<footer>
-    <div class="container">
-        <p>&copy; @DateTime.Now.Year</p>
-        <a href="mailto: wakedown.59@gmail.com" class="btn waves-effect waves-light red lighten-3">Оставить отзыв</a>
+        </nav>
     </div>
-</footer>
-@RenderSection("scripts", required: false)
+        <main>
+            <div class="container">
+                @RenderBody()
+                <hr />
+            </div>
+        </main>
+        <footer>
+            <div class="container">
+                <p>&copy; @DateTime.Now.Year</p>
+                <a href="mailto: wakedown.59@gmail.com" class="btn waves-effect waves-light red lighten-3">Оставить отзыв</a>
+            </div>
+        </footer>
+        <script>
+            $(function () {
+                $(".button-collapse").sideNav();
+            });
+        </script>
+        @RenderSection("scripts", required: false)
 </body>
 </html>

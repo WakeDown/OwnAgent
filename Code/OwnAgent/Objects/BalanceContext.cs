@@ -16,10 +16,10 @@ namespace OwnAgent.Objects
             this.Configuration.ProxyCreationEnabled = true;
         }
 
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<Spend> Spends { get; set; }
-        public DbSet<SpendCategory> SpendCategories { get; set; }
-        public DbSet<SpendVector> SpendVectors { get; set; }
+        //public DbSet<Client> Clients { get; set; }
+        //public DbSet<Spend> Spends { get; set; }
+        //public DbSet<SpendCategory> SpendCategories { get; set; }
+        //public DbSet<SpendVector> SpendVectors { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

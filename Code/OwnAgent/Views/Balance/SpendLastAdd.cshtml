@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Models.ViewModels.SpendLastAddViewModel>
+
+@{
+    Layout = null;
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var spend in Model)
+        {
+            <div class="col s6 l4">
+                <div class="card-panel">
+                    <div>
+                        <small>@spend.Date.ToString("dd.MM.yyyy")</small>
+                        <div>@spend.SpendCategoryName</div>
+                    </div>
+                    <div class="text-lg">@spend.Sum</div>
+                </div>
+            </div>
+        }
+    </div>
+}

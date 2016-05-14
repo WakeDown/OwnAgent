@@ -21,10 +21,10 @@ namespace OwnAgent
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
-                      "~/Scripts/materialize/materialize.js"));
+                      "~/Scripts/materialize/materialize.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/materialize/css/materialize.css",
+                      "~/Content/materialize/css/materialize.min.css",
                       "~/Content/site.css"));
             BundleTable.EnableOptimizations = true;
         }
