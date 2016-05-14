@@ -51,7 +51,7 @@ namespace OwnAgent.Models
         public static SelectList GetSelectionList(string clientId)
         {
             var list = GetList(clientId).ToList();
-            return new SelectList(list, "VectorId", "Name", list.First(m => m.Selected).VectorId);
+            return new SelectList(list, "VectorId", "Name", list.Any() ? list.First(m => m.Selected).VectorId : 0);
         }
     }
 }

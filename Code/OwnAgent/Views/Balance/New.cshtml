@@ -1,0 +1,151 @@
+﻿@using OwnAgent.Models
+@model OwnAgent.Models.Spend
+@{
+    ViewBag.Title = "Новая запись";
+    Layout = "~/Views/Shared/_BalanceLayout.cshtml";
+    string clientId = ViewBag.ClientId;
+}
+@section nav
+{
+    <ul id="nav-mobile" class="left">
+    <li>
+        <a href="@Url.Action("List")"><i class="material-icons large">list</i></a>
+    </li>
+        <li>
+            <a id="showTop" href="#" data-activates="shortKeys"><i class="material-icons large">menu</i></a>
+        </li>
+        <li>
+            <a href="function:void()" id="save"><i class="material-icons large">done</i></a>
+        </li>
+</ul>
+
+}
+<ul class="side-nav collection with-header" id="shortKeys">
+    <li class="collection-header"><h5>Быстрый выбор</h5></li>
+    <li id="shortKeysLoader">@Html.Partial("Loader")</li>
+</ul>
+    <p>
+        <div class="row">
+            <div class="input-field col s12">
+                @Html.TextBoxFor(m => m.Sum, "{0:N0}", new { @class = "validate", required = "required", id = "sum", placeholder = "Сумма", type = "number" })
+                <label for="sum">Сумма</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <label for="vector">Вектор</label>
+                @Html.DropDownListFor(m => m.VectorId, SpendVector.GetSelectionList(clientId), new { required = "required", id = "vector", @class = "browser-default" })
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <label for="category">Категория</label>
+                @Html.DropDownListFor(m => m.CategoryId, SpendCategory.GetSelectionList(clientId), new { required = "required", id = "category", @class = "browser-default" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                @Html.TextBoxFor(m => m.Date, "{0:d}", new { @id = "date", @class = "validate", required = "required", placeholder = "Дата" })
+                <label for="date">Дата</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                @Html.TextAreaFor(m => m.Comment, new { id = "comment", @class = "materialize-textarea", placeholder = "Комментарий" })
+                <label for="comment">Комментарий</label>
+            </div>
+        </div>
+    </p>
+    <h5>Недавно добавлено</h5>
+    <p id="lastAdd">
+        <div id="lastAddLoader">@Html.Partial("Loader")</div>
+    </p>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#showTop").sideNav();
+            $("#showTop").click(loadTop);
+            $('#save').click(function () {
+                $(this).enabled=false;
+                $.ajax({
+                    url: '@Url.Action("New", "Balance")',
+                    method: 'POST',
+                    data: { Date: $('#date').val(), Sum: $('#sum').val(), VectorId: $('#vector').val(), CategoryId: $('#category').val(), Comment: $('#comment').val() },
+                    success: function () {
+                        window.location.reload();
+                    },
+                    error: function(data) {
+                        alert(data.error);
+                        $('#save').enabled = true;
+                    }
+                });
+            });
+            $('#date').pickadate({
+                selectMonths: true, // Creates a dropdown to control month
+                selectYears: 15, // Creates a dropdown of 15 years to control year
+                format: 'dd.mm.yyyy',
+                firstDay: 'Mon',
+                closeOnSelect: true
+            });
+            $("#sum").val('').focus();
+            $("[name='shortKey']").click(function () {
+                var catId = $(this).attr('category');
+                var vectId = $(this).attr('vector');
+                var sum = $(this).attr('sum');
+                $("#sum").val(sum);
+                $("#vector option").filter(function () {
+                    return $(this).attr('value') === vectId;
+                }).attr('selected', true);
+                $("#category option").filter(function () {
+                    return $(this).attr('value') === catId;
+                }).attr('selected', true);
+                $('#frmSpend').submit();
+            });
+            
+            loadLastadd();
+        });
+
+        function loadLastadd() {
+
+            $.ajax({
+                url: '@Url.Action("GetLastadd", "Balance")',
+                method: 'POST',
+                success: function (data) {
+                    var html = '<div class="row">';
+                    for (var i = 0; i < data.length; i++) {
+                        var r = data[i];
+                        //alert(r.Date);
+                        r.Date = new Date(parseInt(r.Date.replace("/Date(", "").replace(")/", ""), 10));
+                        var topItem = '<div class="col s4 l2 card-panel"><div class="hoverable"><div><small>' + $.format.prettyDate(r.Date) + '</small><div>' + r.SpendCategory.Name + '</div></div><div class="text-lg">' + r.Sum + '</div></div></div>';
+                        html = html + topItem;
+                    }
+                    html = html + '</div>';
+                    $('#lastAddLoader').hide();
+                    $('#lastAdd').append(html);
+                }
+            });
+        }
+
+        function loadTop() {
+            if ($('#shortKeys a.collection-item').length > 0) return;
+
+            $.ajax({
+                url: '@Url.Action("GetTop", "Balance")',
+                method: 'POST',
+                success: function (data) {
+                    var html='';
+                for (var i=0; i < data.length; i++) {
+                    var r = data[i];
+                    var topItem = '<a class="collection-item" href="function:void()" name="shortKey" category="' + r.SpendCategory.CategoryId + '" vector="' + r.SpendVector.VectorId + '" sum="' + r.Sum + '">' + r.SpendCategory.Name + '<br />' + r.SpendVector.Name + ' - ' + r.Sum + '</a> ';
+                    html = html + topItem;
+                }
+                    $('#shortKeysLoader').hide();
+                    $('#shortKeys').append(html);
+                }
+            });
+        }
+    </script>
+}

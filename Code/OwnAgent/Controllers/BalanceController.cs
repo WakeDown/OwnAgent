@@ -55,8 +55,11 @@ namespace OwnAgent.Controllers
 
         //    return View(list);
         //}
-        public ActionResult Stat()
+        public ActionResult Stat(int? y, int? m)
         {
+            if (!y.HasValue || !m.HasValue)
+               return RedirectToAction("Stat", new {y = DateTime.Now.Year, m = DateTime.Now.Month});
+
             return View();
         }
     }

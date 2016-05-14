@@ -1,0 +1,56 @@
+﻿/*body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+input,
+select,
+textarea {
+    max-width: 280px;
+}*/
+
+.btn-full {
+    width: 100%;
+}
+
+.text-lg {
+    font-size: 1.3em;
+}
+
+.text-xlg {
+    font-size: 2em;
+}
+
+.border {
+    border: 1px solid #333;
+    border-radius: 3px;
+}
+
+.pad-l-sm {
+    padding-left: 3px;
+}
+
+.shortKey {
+    cursor: pointer;
+}
+
+.small {
+    font-size: 0.8rem !important;
+}
+
+nav a {
+    /*color: #90caf9 !important;*/
+}
+
+.text-right {
+    text-align: right;
+}

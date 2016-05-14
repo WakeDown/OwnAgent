@@ -1,0 +1,141 @@
+﻿@using OwnAgent.Models
+@using OwnAgent.Objects
+@using WebGrease
+
+@{
+    ViewBag.Title = "Статистика";
+    Layout = "~/Views/Shared/_BalanceLayout.cshtml";
+
+    int year = Convert.ToInt32(Request.QueryString["y"]);
+    int month = Convert.ToInt32(Request.QueryString["m"]);
+}
+
+
+<p>
+    <div class="row">
+        <div class="col l2">
+            <a class='dropdown-button btn' href='#' data-activates='mthYear'>@year</a>
+            <ul id='mthYear' class='dropdown-content'>
+                @foreach (KeyValuePair<int, int> y in Spend.GetMonthlyReportYears(ViewBag.ClientId))
+                {
+                    <li><a href="#!" m="@month" y="@y.Key">@y.Value</a></li>
+                }
+            </ul>
+
+        </div>
+        <div class="col l2">
+            <a class='dropdown-button btn' href='#' data-activates='mthMonth'>@(new DateTime(year, month, 1).ToString("MMMM"))</a>
+            <ul id='mthMonth' class='dropdown-content'>
+                @foreach (KeyValuePair<int, string> m in Spend.GetMonthlyReportMonthes(ViewBag.ClientId))
+                {
+                    <li><a href="#!" m="@m.Key" y="@year">@m.Value</a></li>
+                }
+            </ul>
+
+        </div>
+    </div>
+</p>
+<div class="row">
+    <div class="col l4 s12">
+        @{
+            var monthlyReport = Spend.GetMonthlyReport(ViewBag.ClientId, year, month);
+        }
+        @if (monthlyReport != null)
+        {
+            <table>
+                <thead>
+                <tr><th>Категория</th><th>Вектор</th><th class="text-right">Сумма</th></tr>
+                </thead>
+                <tbody>
+                @foreach (SpendStatItem item in monthlyReport)
+                {
+                    <tr>
+                        <td>@item.SpendCategoryName</td>
+                        <td>@item.SpendVectorName</td>
+                        <td class="text-right">@(String.Format("{0:N0} р.", item.Sum))</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="col l1">&nbsp;</div>
+    <div class="col l3 s12">
+        @{
+            IEnumerable<SpendStatItem> monthlyVectorReport = Spend.GetVectorMonthlyReport(ViewBag.ClientId, year, month);
+        }
+        <table>
+            <thead>
+            <tr><th>Вектор</th><th class="text-right">Сумма</th></tr>
+            </thead>
+            <tbody>
+            @foreach (SpendStatItem item in monthlyVectorReport)
+            {
+                <tr>
+                    <td>@item.SpendVectorName</td>
+                    <td class="text-right">@(String.Format("{0:N0} р.", item.Sum))</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<h5>
+    Годовой
+</h5>
+<div class="row">
+    <div class="col l4 s12">
+        @{
+            IEnumerable<SpendStatItem> yearlyReport = Spend.GetYearlyReport(ViewBag.ClientId, year);
+        }
+        <table>
+            <thead>
+            <tr><th>Категория</th><th>Вектор</th><th class="text-right">Сумма</th></tr>
+            </thead>
+            <tbody>
+            @foreach (SpendStatItem item in yearlyReport)
+            {
+                <tr>
+                    <td>@item.SpendCategoryName</td>
+                    <td>@item.SpendVectorName</td>
+                    <td class="text-right">@(String.Format("{0:N0} р.", item.Sum))</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="col l1">&nbsp;</div>
+    <div class="col l3 s12">
+        @{
+            IEnumerable<SpendStatItem> yearlyVectorReport = Spend.GetVectorYearlyReport(ViewBag.ClientId, year);
+        }
+        <table>
+            <thead>
+                <tr><th>Вектор</th><th class="text-right">Сумма</th></tr>
+            </thead>
+            <tbody>
+                @foreach (SpendStatItem item in yearlyVectorReport)
+            {
+                    <tr>
+                        <td>@item.SpendVectorName</td>
+                        <td class="text-right">@(String.Format("{0:N0} р.", item.Sum))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $('#mthYear li a').click(selYm);
+        $('#mthMonth li a').click(selYm);
+    });
+    function selYm() {
+        var year = $(this).attr('y');
+        var month = $(this).attr('m');
+
+        window.location = '@Url.Action("Stat")?y=' + year + '&m=' + month;
+    }
+</script>

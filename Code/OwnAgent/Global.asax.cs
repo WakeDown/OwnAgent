@@ -26,8 +26,8 @@ namespace OwnAgent
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //InitDb();
-            //Database.SetInitializer<BalanceContext>(new BalanceInitializer());
-            Database.SetInitializer<BalanceContext>(null);
+            Database.SetInitializer<BalanceContext>(new BalanceInitializer());
+            //Database.SetInitializer<BalanceContext>(null);
         }
 
         protected void Application_BeginRequest()

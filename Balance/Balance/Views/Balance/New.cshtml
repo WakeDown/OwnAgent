@@ -1,0 +1,38 @@
+﻿@using Balance.Models
+@model Balance.Models.Spend
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>New</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm("New", "Balance", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            <div class="form-group col-sm-12">
+                @Html.TextBoxFor(m => m.Date, "{0:dd.MM.yyyy}", new { @class = "form-control col-sm-12", placeholder = "Дата", required = "required" })
+            </div>
+            <div class="form-group col-sm-12">
+                @Html.TextBoxFor(m => m.Sum, new { @class = "form-control col-sm-12", placeholder = "Сумма", required = "required" })
+            </div>
+            <div class="form-group col-sm-12">
+                @Html.DropDownListFor(m => m.Vector, SpendVector.GetSelectionList(), new { @class = "form-control col-sm-12", required = "required" })
+            </div>
+            <div class="form-group col-sm-12">
+                @Html.DropDownListFor(m => m.Category.Name, SpendCategory.GetSelectionList(), new { @class = "form-control col-sm-12", required = "required" })
+            </div>
+            <div class="form-group col-sm-12">
+                <button type="submit" class="btn-lg btn-success">Сохранить</button>
+            </div>
+        }
+    </div>
+</body>
+</html>

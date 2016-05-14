@@ -1,0 +1,34 @@
+﻿@using OwnAgent.Models
+@model IEnumerable<OwnAgent.Models.Spend>
+
+<div>
+    @*<table class="table table-bordered">*@
+    @*<ul class="list-inline">*@
+    
+    <div class="row">
+        @foreach (Spend s in Model)
+        {
+            <div class="col s4 l2 card-panel">
+                <div class="hoverable">
+                    <div>
+                        <small>@String.Format("{0:d}", s.Date)</small>
+                        <div>@s.SpendCategory.Name</div>
+                    </div>
+                    <div class="text-lg">@s.Sum</div>
+                </div>
+            </div>
+            @*<li class="border">
+                <div class="pull-left">
+                    <small>@String.Format("{0:d}", s.Date)</small>
+                    <div>@s.SpendCategory.Name</div>
+                </div>
+                <div class="pull-left text-xlg pad-l-sm">@s.Sum</div>
+            </li>*@
+
+            @*<tr><td><small>@String.Format("{0:d}", s.Date)</small>
+                <div>@s.SpendCategory.Name</div></td><td class="text-xlg">@s.Sum</td></tr>*@
+        }
+    </div>
+    @*</ul>*@
+    @*</table>*@
+</div>

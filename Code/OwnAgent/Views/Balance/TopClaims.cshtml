@@ -1,0 +1,40 @@
+﻿@using OwnAgent.Models
+@model IEnumerable<OwnAgent.Models.Spend>
+
+@if (Model.Any())
+{
+    @*<ul class="list-inline">*@
+    
+    <div class="row">
+        @foreach (var cl in Model)
+        {
+            <div class="col s4 l3" >
+
+                <div class="row center-align green lighten-3 card-panel hoverable shortKey z-depth-3" name="shortKey" category="@cl.SpendCategory.CategoryId" vector="@cl.SpendVector.VectorId" sum="@cl.Sum">
+                    <div class="left">
+                        <small>@cl.SpendVector.Name</small>
+                        <div>@cl.SpendCategory.Name</div>
+                        <div class="text-lg">@cl.Sum</div>
+
+                    </div>
+                    <div class="right">
+                        <a class="btn-floating"><i class="material-icons right center">add</i></a>
+                    </div>
+                </div>
+            </div>
+
+            @*<li class="btn btn-success btn-xs" name="shortKey" category="@cl.SpendCategory.CategoryId" vector="@cl.SpendVector.VectorId" sum="@cl.Sum">
+                    <div class="pull-left">
+                        <small>@cl.SpendVector.Name</small>
+                        <div>@cl.SpendCategory.Name</div>
+                    </div>
+                    <div class="pull-left text-xlg pad-l-sm">@cl.Sum</div>
+                </li>*@
+            @*<button class="btn btn-success btn-xs" name="shortKey" category="@cl.SpendCategory.CategoryId" vector="@cl.SpendVector.VectorId" sum="@cl.Sum">
+                    <div>@cl.SpendCategory.Name @cl.Sum</div>
+                    <div>@cl.SpendVector.Name</div>
+                </button>*@
+        }
+    </div>
+    @*</ul>*@
+}
