@@ -187,14 +187,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Client.cs" />
-    <Compile Include="Models\DbInit.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Spend.cs" />
-    <Compile Include="Models\SpendCategory.cs" />
-    <Compile Include="Models\SpendVector.cs" />
     <Compile Include="Objects\BalanceContext.cs" />
     <Compile Include="Objects\BalanceInitializer.cs" />
     <Compile Include="Objects\SpendStatItem.cs" />
