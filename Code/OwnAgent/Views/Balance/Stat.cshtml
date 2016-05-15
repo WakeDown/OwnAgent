@@ -111,13 +111,13 @@
             data: [
                 {
                     type: "stackedArea", //change it to line, area, column, pie, etc
-                    showInLegend: "true",
+                    //showInLegend: "true",
                     markerType: "circle",
-                    legendText: "доход",
+                    //legendText: "доход",
                     //legendMarkerBorderColor: '#66bb6a',
-                    markerColor: '#66bb6a',
-                    color: '#66bb6a',
-                    legendMarkerColor: '#66bb6a',
+                    markerColor: '#9fa8da',
+                    color: '#9fa8da',
+                    legendMarkerColor: '#9fa8da',
                     dataPoints: dataPoints
                 }
             ]
@@ -126,7 +126,7 @@
         $("#chartContainer").CanvasJSChart(options);
     }
 
-    function loadIncExpChart() {
+    @*function loadIncExpChart() {
         var incDataPoints = [];
         $.ajax({
             url: '@Url.Action("GetIncomeChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]',
@@ -195,7 +195,7 @@
         };
 
         $("#chartContainer").CanvasJSChart(options);
-    }
+    }*@
 
     @*function selYm() {
         var year = $(this).attr('y');

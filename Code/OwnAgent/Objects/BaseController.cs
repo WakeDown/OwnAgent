@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Data.Services;
 using Microsoft.AspNet.Identity;
 
 namespace OwnAgent.Objects
 {
     public class BaseController:Controller
     {
-        public string ClientId { get; set; }
+        public string UserSid { get; set; }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            ClientId = User.Identity.GetUserId();
-            ViewBag.ClientId = ClientId;
-
+            UserSid = User.Identity.GetUserId();
+            ViewBag.UserSid = UserSid;
             base.OnActionExecuting(filterContext);
+
+            //Создание категорий для нового пользователя
+            if (Session["HasCategories"] == null || !Convert.ToBoolean(Session["HasCategories"]))
+            {
+                SpendService.Instance(UserSid).CreateDefaultCategories();
+                Session["HasCategories"] = true;
+            }
         }
     }
 }

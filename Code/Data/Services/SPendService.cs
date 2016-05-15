@@ -19,6 +19,47 @@ namespace Data.Services
             return new SpendService(userSid);
         }
 
+        public void CreateDefaultCategories()
+        {
+            if (!Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid).Any())
+            {
+                var cat = new SpendCategory();
+                cat.Enabled = true;
+                cat.UserSid = UserSid;
+                cat.Name = "Еда/Бытовое";
+                cat.OrderNum = 10;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Услуги";
+                cat.OrderNum = 20;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Ресторан";
+                cat.OrderNum = 30;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Транспорт/Бензин";
+                cat.OrderNum = 40;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Одежда";
+                cat.OrderNum = 50;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Зарплата";
+                cat.OrderNum = 60;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Подработка";
+                cat.OrderNum = 70;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Другое";
+                cat.OrderNum = 80;
+                Uow.SpendCategories.Insert(cat);
+            }
+        }
+
         public IEnumerable<KeyValuePair<int, string>> GetCategorySelectionList()
         {
             var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name));

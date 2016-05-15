@@ -6,7 +6,20 @@
 
 @if (Model != null && Model.Any())
 {
-    <div class="row">
+    foreach (var spend in Model)
+    {
+        <div class="card-panel @spend.SpendVectorBgColorClass" style="position: relative;">
+            <span class="white-text">
+                <span class="badge white-text"><i class="material-icons left">@spend.SpendVectorIconName</i></span>
+                <small>
+                    @spend.SpendCategoryName
+                </small>
+                <br />
+                @spend.Sum
+            </span>
+        </div>
+    }
+    @*<div class="row">
         @foreach (var spend in Model)
         {
             <div class="col s6 l4">
@@ -19,5 +32,5 @@
                 </div>
             </div>
         }
-    </div>
+    </div>*@
 }
