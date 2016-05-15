@@ -133,5 +133,57 @@ namespace OwnAgent.Controllers
 
             return View("SpendCategoryReport", list);
         }
+
+        public ActionResult GetIncomeChartData(string filter, int? year, int? month)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            IEnumerable<SpendChartViewModel> list = new List<SpendChartViewModel>();
+            if (filter == "month") list = SpendService.Instance(User.Identity.GetUserId()).GetIncomeMonthlyChartData(year.Value, month.Value);
+
+            return Json(list);
+        }
+
+        public ActionResult GetExpenseChartData(string filter, int? year, int? month)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            IEnumerable<SpendChartViewModel> list = new List<SpendChartViewModel>();
+            if (filter == "month") list = SpendService.Instance(User.Identity.GetUserId()).GetExpenseMonthlyChartData(year.Value, month.Value);
+
+            return Json(list);
+        }
+
+        public ActionResult GetDifferenceChartData(string filter, int? year, int? month)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            IEnumerable<SpendChartViewModel> list = new List<SpendChartViewModel>();
+            if (filter == "month") list = SpendService.Instance(User.Identity.GetUserId()).GetDifferenceMonthlyChartData(year.Value, month.Value);
+
+            return Json(list);
+        }
+
+        public ActionResult GetCumulativeTotalChartData(string filter, int? year, int? month)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            IEnumerable<SpendChartViewModel> list = new List<SpendChartViewModel>();
+            if (filter == "month") list = SpendService.Instance(User.Identity.GetUserId()).GetMonthlyCumulativeTotalChartData(year.Value, month.Value);
+            if (filter == "quarter") list = SpendService.Instance(User.Identity.GetUserId()).GetQuarterCumulativeTotalChartData(year.Value, month.Value);
+            if (filter == "year") list = SpendService.Instance(User.Identity.GetUserId()).GetYearlyCumulativeTotalChartData(year.Value, month.Value);
+            if (filter == "5year") list = SpendService.Instance(User.Identity.GetUserId()).Get5YearlyCumulativeTotalChartData(year.Value, month.Value);
+            if (filter == "alltime") list = SpendService.Instance(User.Identity.GetUserId()).GetAllTimeCumulativeTotalChartData();
+
+            return Json(list);
+        }
     }
 }

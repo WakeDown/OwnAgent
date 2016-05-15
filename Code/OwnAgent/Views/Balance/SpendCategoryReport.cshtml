@@ -9,8 +9,7 @@
 
 @if (Model != null)
 {
-    <ul class="collection with-header">
-        <li class="collection-header"><h5>По категориям</h5></li>
+    <ul class="collection">
         @foreach (var item in Model)
         {
             <li class="collection-item @item.SpendVectorBgColorClass">

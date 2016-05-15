@@ -51,4 +51,25 @@ namespace Models.ViewModels
         public string SpendVectorIconName { get; set; }
         public double Percent { get; set; }
     }
+
+    public class SpendChartViewModel
+    {
+        private DateTime date;
+        public DateTime Date
+        {
+            get { return date; }
+            set
+            {
+                date = value;
+                Year = date.Year;
+                Month = date.Month;
+                Day = date.Day;
+            }
+        }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Day { get; set; }
+        public double Sum { get; set; }
+        public double CumulativeTotal { get; set; }
+    }
 }

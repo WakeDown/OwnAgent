@@ -16,28 +16,28 @@
 
 
 @*<p>
-    <div class="row">
-        <div class="col l2">
-            <a class='dropdown-button btn' href='#' data-activates='mthYear'>@year</a>
-            <ul id='mthYear' class='dropdown-content'>
-                @foreach (KeyValuePair<int, int> y in Spend.GetMonthlyReportYears(ViewBag.ClientId))
-                {
-                    <li><a href="#!" m="@month" y="@y.Key">@y.Value</a></li>
-                }
-            </ul>
+        <div class="row">
+            <div class="col l2">
+                <a class='dropdown-button btn' href='#' data-activates='mthYear'>@year</a>
+                <ul id='mthYear' class='dropdown-content'>
+                    @foreach (KeyValuePair<int, int> y in Spend.GetMonthlyReportYears(ViewBag.ClientId))
+                    {
+                        <li><a href="#!" m="@month" y="@y.Key">@y.Value</a></li>
+                    }
+                </ul>
 
+            </div>
+            <div class="col l2">
+                <a class='dropdown-button btn' href='#' data-activates='mthMonth'>@(new DateTime(year, month, 1).ToString("MMMM"))</a>
+                <ul id='mthMonth' class='dropdown-content'>
+                    @foreach (KeyValuePair<int, string> m in Spend.GetMonthlyReportMonthes(ViewBag.ClientId))
+                    {
+                        <li><a href="#!" m="@m.Key" y="@year">@m.Value</a></li>
+                    }
+                </ul>
+            </div>
         </div>
-        <div class="col l2">
-            <a class='dropdown-button btn' href='#' data-activates='mthMonth'>@(new DateTime(year, month, 1).ToString("MMMM"))</a>
-            <ul id='mthMonth' class='dropdown-content'>
-                @foreach (KeyValuePair<int, string> m in Spend.GetMonthlyReportMonthes(ViewBag.ClientId))
-                {
-                    <li><a href="#!" m="@m.Key" y="@year">@m.Value</a></li>
-                }
-            </ul>
-        </div>
-    </div>
-</p>*@
+    </p>*@
 <p>
     <ul class="">
         <li class="left">
@@ -59,12 +59,15 @@
 </p>
 <div class="clearfix"></div>
 <div class="row">
-    <div class="col l4 s12" id="categoryContainer">
+    <div class="col l4 m6 s12" id="categoryContainer">
         @Html.Partial("Loader")
+    </div>
+    <div class="col l8 m6 s12" id="chartContainer">
+        
     </div>
 </div>
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         //$('#mthYear li a').click(selYm);
         //$('#mthMonth li a').click(selYm);
         loadCategoryReport();
@@ -74,7 +77,124 @@
         var $cont = $('#categoryContainer');
         $.get('@Url.Action("SpendCategoryReport")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]', function (data) {
             $cont.html(data);
+            loadTotalChart();
         });
+    }
+
+    function loadTotalChart() {
+        var dataPoints = [];
+        $.ajax({
+            url: '@Url.Action("GetCumulativeTotalChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]',
+            method: 'POST',
+            async: false,
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    dataPoints.push({ x: new Date(item.Year, item.Month, item.Day), y: item.CumulativeTotal });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+        
+        var options = {
+            animationEnabled: true,
+            //axisX: {
+            //    title: "Время",
+            //    gridThickness: 2
+            //},
+            //axisY: {
+            //    title: "Downloads"
+            //},
+            xValueType: "dateTime",
+            data: [
+                {
+                    type: "stackedArea", //change it to line, area, column, pie, etc
+                    showInLegend: "true",
+                    markerType: "circle",
+                    legendText: "доход",
+                    //legendMarkerBorderColor: '#66bb6a',
+                    markerColor: '#66bb6a',
+                    color: '#66bb6a',
+                    legendMarkerColor: '#66bb6a',
+                    dataPoints: dataPoints
+                }
+            ]
+        };
+
+        $("#chartContainer").CanvasJSChart(options);
+    }
+
+    function loadIncExpChart() {
+        var incDataPoints = [];
+        $.ajax({
+            url: '@Url.Action("GetIncomeChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]',
+            method: 'POST',
+            async:false,
+            success: function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    incDataPoints.push({ x: new Date(item.Year, item.Month, item.Day), y: item.Sum });
+                }
+            },
+            error:function(data) {
+                console.log(data);
+            }
+        });
+        var expDataPoints = [];
+        $.ajax({
+            url: '@Url.Action("GetExpenseChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]',
+            method: 'POST',
+            async: false,
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    expDataPoints.push({ x: new Date(item.Year, item.Month, item.Day), y: item.Sum });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+        
+        var options = {
+            animationEnabled: true,
+            //axisX: {
+            //    title: "Время",
+            //    gridThickness: 2
+            //},
+            //axisY: {
+            //    title: "Downloads"
+            //},
+            xValueType: "dateTime",
+            data: [
+                {
+                    type: "stackedArea", //change it to line, area, column, pie, etc
+                    showInLegend: "true",
+                    markerType: "circle",
+                    legendText: "доход",
+                    //legendMarkerBorderColor: '#66bb6a',
+                    markerColor: '#66bb6a',
+                    color: '#66bb6a',
+                    legendMarkerColor: '#66bb6a',
+                    dataPoints: incDataPoints
+                }
+                ,
+                {
+                    type: "stackedArea", //change it to line, area, column, pie, etc
+                    showInLegend: "true",
+                    markerType: "circle",
+                    legendText: "расход",
+                    //legendMarkerBorderColor: '#ef9a9a',
+                    color: '#ef9a9a',
+                    legendMarkerColor: '#ef9a9a',
+                    dataPoints: expDataPoints
+                }
+            ]
+        };
+
+        $("#chartContainer").CanvasJSChart(options);
     }
 
     @*function selYm() {
