@@ -19,7 +19,7 @@
 
         <li class="collection-item bold">
             <h5>
-                ИТОГО<span class="secondary-content @(totalSum > 0 ? "green-text" : "red-text")">@(totalSum > 0 ? "+" : "-")@(String.Format("{0:N0} р.", Math.Abs(totalSum)))</span>
+                ИТОГО<span class="secondary-content @(totalSum > 0 ? "green-text" : "red-text")">@(totalSum > 0 ? "+" : totalSum == 0 ? "" : "-")@(String.Format("{0:N0} р.", Math.Abs(totalSum)))</span>
             </h5>
         </li>
     </ul>

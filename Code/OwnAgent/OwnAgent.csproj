@@ -270,6 +270,7 @@
     <Content Include="Scripts\jquery.canvasjs.min.js" />
     <Content Include="Views\Balance\ShortList.cshtml" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\OwnAgent.pubxml" />
     <None Include="Properties\PublishProfiles\PRODUCT-UIIS-1.pubxml" />
     <None Include="Properties\PublishProfiles\SmarterASP.pubxml" />

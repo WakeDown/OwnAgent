@@ -29,34 +29,42 @@ namespace Data.Services
                 cat.Name = "Еда/Бытовое";
                 cat.OrderNum = 10;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Услуги";
                 cat.OrderNum = 20;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Ресторан";
                 cat.OrderNum = 30;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Транспорт/Бензин";
                 cat.OrderNum = 40;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Одежда";
                 cat.OrderNum = 50;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Зарплата";
                 cat.OrderNum = 60;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Подработка";
                 cat.OrderNum = 70;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
 
                 cat.Name = "Другое";
                 cat.OrderNum = 80;
                 Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
             }
         }
 
