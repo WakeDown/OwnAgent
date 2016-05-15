@@ -16,6 +16,8 @@ namespace Models.Mappers
             model.Sum = spend.Sum;
             model.SpendCategoryName = spend.SpendCategory.Name;
             model.SpendVectorName = spend.SpendVector.Name;
+            model.SpendVectorBgColorClass = spend.SpendVector.BgColorClass;
+            model.SpendVectorIconName = spend.SpendVector.IconName;
             model.Date = spend.Date;
             return model;
         }
@@ -39,6 +41,8 @@ namespace Models.Mappers
             model.SpendCategoryId = spend.CategoryId;
             model.SpendVectorId = spend.VectorId;
             model.SpendVectorSysName = spend.SpendVector.SysName;
+            model.SpendVectorBgColorClass = spend.SpendVector.BgColorClass;
+            model.SpendVectorIconName = spend.SpendVector.IconName;
             model.Date = spend.Date;
             return model;
         }

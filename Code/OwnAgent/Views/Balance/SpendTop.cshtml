@@ -8,9 +8,9 @@
 {
     foreach (var spend in Model)
     {
-        <div class="card-panel @(spend.SpendVectorSysName == "INC" ? "green lighten-1" : "red lighten-3")" style="position: relative;">
+        <div class="card-panel @spend.SpendVectorBgColorClass" style="position: relative;">
             <span class="white-text">
-                <span class="badge white-text"><i class="material-icons left">@(spend.SpendVectorSysName == "INC" ? "add_circle_outline" : "remove_circle_outline")</i></span>
+                <span class="badge white-text"><i class="material-icons left">@spend.SpendVectorIconName</i></span>
                 <small>
                     @spend.SpendCategoryName
                 </small>

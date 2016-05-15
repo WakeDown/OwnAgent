@@ -267,6 +267,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\jquery-dateformat.js" />
+    <Content Include="Scripts\jquery.canvasjs.min.js" />
     <Content Include="Views\Balance\ShortList.cshtml" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <None Include="Properties\PublishProfiles\OwnAgent.pubxml" />
@@ -298,6 +299,7 @@
     <Content Include="Views\Balance\Stat.cshtml" />
     <Content Include="Views\Balance\SpendTop.cshtml" />
     <Content Include="Views\Balance\SpendLastAdd.cshtml" />
+    <Content Include="Views\Balance\SpendCategoryReport.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -356,11 +358,19 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj">
-      <Project>{7CEAE25A-8F29-4F3D-89B9-2B7ED5012483}</Project>
+      <Project>{7ceae25a-8f29-4f3d-89b9-2b7ed5012483}</Project>
       <Name>Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Helpers\Helpers.csproj">
+      <Project>{1e3ea167-a7ab-4ae0-90f7-395c1a6f177f}</Project>
+      <Name>Helpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Maper\Maper.csproj">
+      <Project>{2AE5CE6D-B9F0-4DED-8B9F-250A69E05B5A}</Project>
+      <Name>Maper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
-      <Project>{BC0EA413-1D77-408C-A409-2544FA05B0B2}</Project>
+      <Project>{bc0ea413-1d77-408c-a409-2544fa05b0b2}</Project>
       <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Models.ViewModels.SpendStatViewModel>
+
+@{
+    Layout = null;
+    double titalInc = Model.Where(x => x.SpendVectorSysName == "INC").Sum(x => x.Sum);
+    double titalExp = Model.Where(x => x.SpendVectorSysName == "EXP").Sum(x => x.Sum);
+    double totalSum = titalInc - titalExp;
+}
+
+@if (Model != null)
+{
+    <ul class="collection with-header">
+        <li class="collection-header"><h5>По категориям</h5></li>
+        @foreach (var item in Model)
+        {
+            <li class="collection-item @item.SpendVectorBgColorClass">
+                <div><span class="bold">@item.SpendCategoryName</span><span class="secondary-content white-text">@(String.Format("{0:N0} р.", item.Sum)) <i class="material-icons">@item.SpendVectorIconName</i></span></div>
+            </li>
+        }
+
+        <li class="collection-item bold">
+            <h5>
+                ИТОГО<span class="secondary-content @(totalSum > 0 ? "green-text" : "red-text")">@(totalSum > 0 ? "+" : "-")@(String.Format("{0:N0} р.", Math.Abs(totalSum)))</span>
+            </h5>
+        </li>
+    </ul>
+}

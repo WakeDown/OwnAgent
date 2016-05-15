@@ -106,12 +106,32 @@ namespace OwnAgent.Controllers
 
         //    return View(list);
         //}
-        public ActionResult Stat(int? y, int? m)
+        public ActionResult Stat(string filter, int? year, int? month)
         {
-            if (!y.HasValue || !m.HasValue)
-               return RedirectToAction("Stat", new {y = DateTime.Now.Year, m = DateTime.Now.Month});
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("Stat", new { filter = "month", year = year, month = month });
+            if (!year.HasValue) return RedirectToAction("Stat", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("Stat", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            //if (!y.HasValue || !m.HasValue)
+            //   return RedirectToAction("Stat", new {y = DateTime.Now.Year, m = DateTime.Now.Month});
 
             return View();
+        }
+
+        public ActionResult SpendCategoryReport(string filter, int? year, int? month)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            IEnumerable<SpendStatViewModel> list = new List<SpendStatViewModel>();
+            if (filter=="month")list = SpendService.Instance(User.Identity.GetUserId()).GetMonthlyCategoryReport(year.Value, month.Value);
+            if (filter == "quarter") list = SpendService.Instance(User.Identity.GetUserId()).GetQuarterCategoryReport(year.Value, month.Value);
+            if (filter == "year") list = SpendService.Instance(User.Identity.GetUserId()).GetYearlyCategoryReport(year.Value, month.Value);
+            if (filter == "5year") list = SpendService.Instance(User.Identity.GetUserId()).Get5YearlyCategoryReport(year.Value, month.Value);
+            if (filter == "alltime") list = SpendService.Instance(User.Identity.GetUserId()).GetAllTimeCategoryReport();
+
+            return View("SpendCategoryReport", list);
         }
     }
 }

@@ -20,13 +20,14 @@ namespace Models.ViewModels
     {
         public int Id { get; set; }
         public System.DateTime Date { get; set; }
+        public string SpendVectorBgColorClass { get; set; }
+        public string SpendVectorIconName { get; set; }
         public string SpendVectorSysName { get; set; }
         public string SpendVectorName { get; set; }
         public string SpendCategoryName { get; set; }
         public int SpendCategoryId { get; set; }
         public int SpendVectorId { get; set; }
         public double Sum { get; set; }
-        public string Comment { get; set; }
     }
 
     public class SpendLastAddViewModel
@@ -36,6 +37,18 @@ namespace Models.ViewModels
         public string SpendVectorName { get; set; }
         public string SpendCategoryName { get; set; }
         public double Sum { get; set; }
-        public string Comment { get; set; }
+        public string SpendVectorBgColorClass { get; set; }
+        public string SpendVectorIconName { get; set; }
+    }
+
+    public class SpendStatViewModel
+    {
+        public string SpendVectorSysName { get; set; }
+        public string SpendVectorName { get; set; }
+        public string SpendCategoryName { get; set; }
+        public double Sum { get; set; }
+        public string SpendVectorBgColorClass { get; set; }
+        public string SpendVectorIconName { get; set; }
+        public double Percent { get; set; }
     }
 }
