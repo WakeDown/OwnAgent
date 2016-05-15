@@ -16,7 +16,6 @@ namespace OwnAgent.Objects
         {
             UserSid = User.Identity.GetUserId();
             ViewBag.UserSid = UserSid;
-            base.OnActionExecuting(filterContext);
 
             //Создание категорий для нового пользователя
             if (Session["HasCategories"] == null || !Convert.ToBoolean(Session["HasCategories"]))
@@ -24,6 +23,10 @@ namespace OwnAgent.Objects
                 SpendService.Instance(UserSid).CreateDefaultCategories();
                 Session["HasCategories"] = true;
             }
+
+            base.OnActionExecuting(filterContext);
+
+            
         }
     }
 }
