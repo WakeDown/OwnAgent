@@ -103,7 +103,7 @@ namespace Data.Services
         public IEnumerable<Spend> GetSpendList(out int totalCount, int? page = null, int? psize = null)
         {
             var list = Uow.Spends.GetAllWithTotalCount(out totalCount, page, psize, x => x.UserSid == UserSid && x.Enabled
-            , x => x.OrderByDescending(y => y.Date), x => x.SpendCategory, x => x.SpendVector);
+            , x => x.OrderByDescending(y => y.Date).ThenByDescending(y=>y.Id), x => x.SpendCategory, x => x.SpendVector);
             return list;
         }
 
