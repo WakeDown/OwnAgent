@@ -18,7 +18,7 @@ namespace OwnAgent.Objects
             ViewBag.UserSid = UserSid;
 
             //Создание категорий для нового пользователя
-            if (Session["HasCategories"] == null || !Convert.ToBoolean(Session["HasCategories"]))
+            if (!String.IsNullOrEmpty(UserSid) && (Session["HasCategories"] == null || !Convert.ToBoolean(Session["HasCategories"])))
             {
                 SpendService.Instance(UserSid).CreateDefaultCategories();
                 Session["HasCategories"] = true;

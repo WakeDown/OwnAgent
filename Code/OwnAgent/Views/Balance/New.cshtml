@@ -102,7 +102,7 @@
                 $("#category option").filter(function () {
                     return $(this).attr('value') === catId;
                 }).attr('selected', true);
-                $('#frmSpend').submit();
+                //$('#frmSpend').submit();
             });
 
             loadLastadd();
@@ -124,7 +124,7 @@
         }
 
         function save(url, obj) {
-            var sum = $('#sum').val();
+            var sum = $('#sum').val().replace('.', ',');
 
             if (sum == '' || sum == '0') {
                 alert('Необходимо указать сумму!');
