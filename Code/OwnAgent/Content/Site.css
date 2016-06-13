@@ -63,3 +63,24 @@ nav a {
     font-weight: 700;
 }
 
+.last-add-card {
+    position: relative;
+}
+
+.last-add-more {
+    position: absolute;
+    top: 7px;
+    right: 0;
+    cursor: pointer;
+}
+
+.last-add-remove {
+    position: absolute;
+    top: 3px;
+    right: 0;
+    cursor: pointer;
+}
+
+.min-width {
+    width: 1px;
+}

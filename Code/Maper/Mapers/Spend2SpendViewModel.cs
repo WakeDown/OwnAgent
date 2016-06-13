@@ -13,6 +13,7 @@ namespace Models.Mappers
         public static SpendLastAddViewModel Map2LastAddViewModel(Spend spend)
         {
             var model = new SpendLastAddViewModel();
+            model.Id = spend.Id;
             model.Sum = spend.Sum;
             model.SpendCategoryName = spend.SpendCategory.Name;
             model.SpendVectorName = spend.SpendVector.Name;

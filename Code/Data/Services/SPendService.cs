@@ -68,6 +68,7 @@ namespace Data.Services
             }
         }
 
+
         public IEnumerable<KeyValuePair<int, string>> GetCategorySelectionList()
         {
             var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name));
@@ -97,6 +98,15 @@ namespace Data.Services
             spend.Enabled = true;
             spend.UserSid = UserSid;
             Uow.Spends.Insert(spend);
+            Uow.Commit();
+        }
+
+        public void SpendDelete(int id)
+        {
+            var spend = Uow.Spends.GetById(id);
+            spend.DeleteDate = DateTime.Now;
+            spend.Enabled = false;
+            Uow.Spends.Update(spend);
             Uow.Commit();
         }
 
@@ -350,6 +360,21 @@ namespace Data.Services
                   });
 
             return data;
+        }
+
+        public IEnumerable<SpendCategory> GetCategoryList()
+        {
+            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.Spend);
+
+            return list;
+        }
+
+        public void SpendCategoryDelete(int id)
+        {
+            var cat = Uow.SpendCategories.GetOne(x=>x.CategoryId==id, x=>x.Spend);
+            if (cat.Spend.Any(x => x.Enabled)) throw new ArgumentException("Нельзя удалить категорию пока она содержит записи трат! Удалите или переместите записи в другую категорию и посторите попытку!");
+            cat.Enabled = false;
+            Uow.Commit();
         }
 
         //public static IEnumerable<SpendStatItem> GetVectorMonthlyReport(string clientId, int year, int month)

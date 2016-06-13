@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Data.Models.SpendCategory>
+@{
+    ViewBag.Title = "Категории";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col l6">
+        <table>
+            <thead>
+            <tr>
+                <th>Категория</th>
+                <th>Кол-во  записей</th>
+                <th></th>
+            </tr>
+                @foreach (var item in Model)
+            {
+                <tr class="cat-item" cid="@item.CategoryId">
+                    <td>@item.Name</td>
+                    <td>@item.Spend.Count(x => x.Enabled)</td>
+                    <td>
+                        <a class="category-remove grey-text lighten-1 secondary-content" href="#"><i class="material-icons">delete</i></a>
+                    </td>
+                </tr>
+                }
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(function() {
+            $('.category-remove').click(removeSpend);
+        });
+
+        function removeSpend() {
+            if (!confirm('Подтвердите удаление!')) return;
+            var $tr = $(this).closest('.cat-item');
+            var cid = $tr.attr('cid');
+            $.ajax({
+                url: '@Url.Action("SpendCategoryDelete")',
+                method: 'POST',
+                data: { id: cid },
+                success: function (data) {
+                    if (data.responseText && data.responseText !== '') {
+                        alert(data.responseText);
+                        return;
+                    } else {
+                        $tr.remove();
+                    }
+                },
+                error: function (data) {
+                    console.error(data);
+                }
+            });
+        }
+    </script>
+}

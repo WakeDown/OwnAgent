@@ -4,18 +4,50 @@
 
 @{
     ViewBag.Title = "Список";
-    Layout = "~/Views/Shared/_BalanceLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div>
     <table class="striped">
         <thead>
-        <tr><th>Дата</th><th>Вектор</th><th>Категория</th><th>Сумма</th></tr>
+        <tr><th>Дата</th><th>Вектор</th><th>Категория</th><th>Сумма</th><th class="min-width"></th></tr>
         </thead>
         @foreach (Spend s in Model)
         {
-            <tr><td>@String.Format("{0:d}", s.Date)</td><td>@s.SpendVector.Name</td><td>@s.SpendCategory.Name</td><td>@s.Sum</td></tr>
+            <tr class="spend-item" sid="@s.Id">
+                <td>@String.Format("{0:d}", s.Date)</td>
+                <td>@s.SpendVector.Name</td>
+                <td>@s.SpendCategory.Name</td>
+                <td>@s.Sum</td>
+                <td>
+                    <a class="spend-remove grey-text lighten-1" href="#"><i class="material-icons">delete</i></a>
+                </td>
+            </tr>
         }
     </table>
 </div>
 
+@section scripts
+{
+    <script>
+        $(function() {
+            $('.spend-remove').click(removeSpend);
+        });
+        function removeSpend() {
+            if (!confirm('Подтвердите удаление!')) return;
+            var $tr = $(this).closest('.spend-item');
+            var sid = $tr.attr('sid');
+            $.ajax({
+                url: '@Url.Action("SpendDelete")',
+                method: 'POST',
+                data: { id: sid },
+                success: function () {
+                    $tr.remove();
+                },
+                error: function (data) {
+                    console.error(data);
+                }
+            });
+        }
+    </script>
+}

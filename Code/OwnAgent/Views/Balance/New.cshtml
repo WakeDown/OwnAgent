@@ -120,6 +120,24 @@
             var $cont = $('#lastAddContainer');
             $.get('@Url.Action("SpendLastAdd")', function (data) {
                 $cont.html(data);
+                $('.last-add-remove').click(removeSpend);
+            });
+        }
+        function removeSpend() {
+            if (!confirm('Подтвердите удаление!')) return;
+            var $card = $(this).closest('.last-add-card');
+            var sid = $card.attr('sid');
+            $.ajax({
+                url: '@Url.Action("SpendDelete")',
+                method: 'POST',
+                data: { id: sid },
+                success: function() {
+                    $card.remove();
+                    loadLastadd();
+                },
+                error: function(data) {
+                    console.error(data);
+                }
             });
         }
 

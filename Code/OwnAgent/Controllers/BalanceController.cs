@@ -185,5 +185,13 @@ namespace OwnAgent.Controllers
 
             return Json(list);
         }
+
+        public ActionResult SpendDelete(int? id)
+        {
+            if (!id.HasValue) return HttpNotFound();
+            SpendService.Instance(UserSid).SpendDelete(id.Value);
+
+            return Json(new {});
+        }
     }
 }

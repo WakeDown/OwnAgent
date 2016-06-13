@@ -8,7 +8,9 @@
 {
     foreach (var spend in Model)
     {
-        <div class="card-panel @spend.SpendVectorBgColorClass" style="position: relative;">
+        
+        <div class="last-add-card card-panel @spend.SpendVectorBgColorClass" sid="@spend.Id">
+            <a href="#" class="last-add-remove grey-text lighten-1"><i class="material-icons">clear</i></a>
             <span class="white-text">
                 <span class="badge white-text"><i class="material-icons left">@spend.SpendVectorIconName</i></span>
                 <small>
@@ -19,6 +21,7 @@
             </span>
         </div>
     }
+
     @*<div class="row">
         @foreach (var spend in Model)
         {
