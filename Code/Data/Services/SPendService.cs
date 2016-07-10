@@ -157,9 +157,15 @@ namespace Data.Services
             return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetQuarterCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        //public IEnumerable<SpendStatViewModel> GetQuarterCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        public IEnumerable<SpendStatViewModel> GetQuarterCategoryReport(int year, int quarter, string vectorSysName = null)
         {
-            var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            //var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            //var startMonth = endDate.AddMonths(-3).Month;
+            //var startYear = endDate.AddMonths(-3).Year;
+            //var startDate = new DateTime(startYear, startMonth, 1);
+            int month = quarter*3;
+            var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
             var startMonth = endDate.AddMonths(-3).Month;
             var startYear = endDate.AddMonths(-3).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
@@ -167,9 +173,10 @@ namespace Data.Services
             return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetYearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        //public IEnumerable<SpendStatViewModel> GetYearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        public IEnumerable<SpendStatViewModel> GetYearlyCategoryReport(int year, string vectorSysName = null)
         {
-            var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
             var startMonth = endDate.AddMonths(-12).Month;
             var startYear = endDate.AddMonths(-12).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
@@ -177,9 +184,10 @@ namespace Data.Services
             return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> Get5YearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        //public IEnumerable<SpendStatViewModel> Get5YearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        public IEnumerable<SpendStatViewModel> Get5YearlyCategoryReport(int year, string vectorSysName = null)
         {
-            var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
             var startMonth = endDate.AddMonths(-60).Month;
             var startYear = endDate.AddMonths(-60).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
@@ -325,9 +333,10 @@ namespace Data.Services
             return GetCumulativeTotalChartData(startDate, endDate);
         }
 
-        public IEnumerable<SpendChartViewModel> GetYearlyCumulativeTotalChartData(int endYear, int endMonth)
+        //public IEnumerable<SpendChartViewModel> GetYearlyCumulativeTotalChartData(int endYear, int endMonth)
+        public IEnumerable<SpendChartViewModel> GetYearlyCumulativeTotalChartData(int year)
         {
-            var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
             var startMonth = endDate.AddMonths(-12).Month;
             var startYear = endDate.AddMonths(-12).Year;
             var startDate = new DateTime(startYear, startMonth, 1);

@@ -72,7 +72,7 @@ namespace OwnAgent.Controllers
         }
 
         [HttpGet]
-        public ActionResult List(string filter = null, int? year = null, int? month = null, int? categoryId = null, int? vectorId = null)
+        public ActionResult List(string filter = null, int? year = null, int? month = null, int? quarter = null, int? categoryId = null, int? vectorId = null)
         {
             DateTime? dateStart = null;
             DateTime? dateEnd = null;
@@ -137,11 +137,20 @@ namespace OwnAgent.Controllers
 
         //    return View(list);
         //}
-        public ActionResult Stat(string filter, int? year, int? month)
+        public ActionResult Stat(string filter, int? year, int? month, int? quarter = null)
         {
-            if (String.IsNullOrEmpty(filter)) return RedirectToAction("Stat", new { filter = "month", year = year, month = month });
-            if (!year.HasValue) return RedirectToAction("Stat", new { filter = filter, year = DateTime.Now.Year, month = month });
-            if (!month.HasValue) return RedirectToAction("Stat", new { filter = filter, year = year, month = DateTime.Now.Month });
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("Stat", new { filter = "month", year = year, month = month, quarter = quarter });
+            if (!year.HasValue) return RedirectToAction("Stat", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
+            if (!month.HasValue) return RedirectToAction("Stat", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            if (!quarter.HasValue)
+            {
+                var quarterD = (double)month / 3;
+                if (quarterD < 1) quarter = 1;
+                if (quarterD < 1 && quarterD < 2) quarter = 2;
+                if (quarterD < 2 && quarterD < 3) quarter = 3;
+                if (quarterD < 3 && quarterD < 4) quarter = 4;
+                return RedirectToAction("Stat", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            }
 
             //if (!y.HasValue || !m.HasValue)
             //   return RedirectToAction("Stat", new {y = DateTime.Now.Year, m = DateTime.Now.Month});
@@ -149,33 +158,51 @@ namespace OwnAgent.Controllers
             return View();
         }
 
-        public ActionResult SpendCategoryReport(string filter, int? year, int? month)
+        public ActionResult SpendCategoryReport(string filter, int? year, int? month, int? quarter = null)
         {
-            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
-            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
-            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month", year= year, month= month,quarter=quarter });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            if (!quarter.HasValue)
+            {
+                var quarterD = (double)month/3;
+                if (quarterD < 1) quarter = 1;
+                if (quarterD < 1 && quarterD < 2) quarter=2;
+                if (quarterD < 2 && quarterD < 3) quarter = 3;
+                if (quarterD < 3 && quarterD < 4) quarter = 4;
+                return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            }
 
             IEnumerable<SpendStatViewModel> list = new List<SpendStatViewModel>();
             if (filter=="month")list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value);
-            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, month.Value);
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value, month.Value);
-            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value, month.Value);
+            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, quarter.Value);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value);
+            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value);
             if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport();
 
             return View("SpendCategoryReport", list);
         }
 
-        public ActionResult SpendCategoryReportData(string filter, int? year, int? month, string vectorSysName = null)
+        public ActionResult SpendCategoryReportData(string filter, int? year, int? month, int? quarter = null, string vectorSysName = null)
         {
-            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReportData", new { filter = "month" });
-            if (!year.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = DateTime.Now.Year, month = month });
-            if (!month.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month });
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReportData", new { filter = "month", year = year, month = month, quarter = quarter });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            if (!quarter.HasValue)
+            {
+                var quarterD = (double)month / 3;
+                if (quarterD < 1) quarter = 1;
+                if (quarterD < 1 && quarterD < 2) quarter = 2;
+                if (quarterD < 2 && quarterD < 3) quarter = 3;
+                if (quarterD < 3 && quarterD < 4) quarter = 4;
+                return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            }
 
             IEnumerable<SpendStatViewModel> list = new List<SpendStatViewModel>();
             if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value, vectorSysName);
-            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, month.Value, vectorSysName);
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value, month.Value, vectorSysName);
-            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value, month.Value, vectorSysName);
+            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, quarter.Value, vectorSysName);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value, vectorSysName);
+            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value, vectorSysName);
             if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport(vectorSysName);
 
             return Json(list);
@@ -217,16 +244,25 @@ namespace OwnAgent.Controllers
             return Json(list);
         }
 
-        public ActionResult GetCumulativeTotalChartData(string filter, int? year, int? month)
+        public ActionResult GetCumulativeTotalChartData(string filter, int? year, int? month, int? quarter = null)
         {
             if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
             if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
             if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month });
+            if (!quarter.HasValue)
+            {
+                var quarterD = (double)month / 3;
+                if (quarterD < 1) quarter = 1;
+                if (quarterD < 1 && quarterD < 2) quarter = 2;
+                if (quarterD < 2 && quarterD < 3) quarter = 3;
+                if (quarterD < 3 && quarterD < 4) quarter = 4;
+                return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            }
 
             IEnumerable<SpendChartViewModel> list = new List<SpendChartViewModel>();
             if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCumulativeTotalChartData(year.Value, month.Value);
-            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCumulativeTotalChartData(year.Value, month.Value);
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCumulativeTotalChartData(year.Value, month.Value);
+            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCumulativeTotalChartData(year.Value, quarter.Value);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCumulativeTotalChartData(year.Value);
             if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value, month.Value);
             if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData();
 
