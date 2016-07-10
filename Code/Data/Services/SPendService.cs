@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -110,9 +111,13 @@ namespace Data.Services
             Uow.Commit();
         }
 
-        public IEnumerable<Spend> GetSpendList(out int totalCount, int? page = null, int? psize = null)
+        public IEnumerable<Spend> GetSpendList(out int totalCount, int? page = null, int? psize = null, DateTime? dateStart = null, DateTime? dateEnd = null, int? categoryId = null, int? vectorId = null)
         {
             var list = Uow.Spends.GetAllWithTotalCount(out totalCount, page, psize, x => x.UserSid == UserSid && x.Enabled
+            && (!dateStart.HasValue || (dateStart.HasValue && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(dateStart)))
+            && (!dateEnd.HasValue || (dateEnd.HasValue && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(dateEnd)))
+            && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
+            && (!vectorId.HasValue || (vectorId.HasValue && x.VectorId == vectorId))
             , x => x.OrderByDescending(y => y.Date).ThenByDescending(y=>y.Id), x => x.SpendCategory, x => x.SpendVector);
             return list;
         }
@@ -144,55 +149,55 @@ namespace Data.Services
             return list;
         }
 
-        public IEnumerable<SpendStatViewModel> GetMonthlyCategoryReport(int year, int month)
+        public IEnumerable<SpendStatViewModel> GetMonthlyCategoryReport(int year, int month, string vectorSysName = null)
         {
             var startDate = new DateTime(year, month,1);
             var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
 
-            return GetPeriodReport(startDate, endDate);
+            return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetQuarterCategoryReport(int endYear, int endMonth)
+        public IEnumerable<SpendStatViewModel> GetQuarterCategoryReport(int endYear, int endMonth, string vectorSysName = null)
         {
             var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
             var startMonth = endDate.AddMonths(-3).Month;
             var startYear = endDate.AddMonths(-3).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
 
-            return GetPeriodReport(startDate, endDate);
+            return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetYearlyCategoryReport(int endYear, int endMonth)
+        public IEnumerable<SpendStatViewModel> GetYearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
         {
             var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
             var startMonth = endDate.AddMonths(-12).Month;
             var startYear = endDate.AddMonths(-12).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
 
-            return GetPeriodReport(startDate, endDate);
+            return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> Get5YearlyCategoryReport(int endYear, int endMonth)
+        public IEnumerable<SpendStatViewModel> Get5YearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
         {
             var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
             var startMonth = endDate.AddMonths(-60).Month;
             var startYear = endDate.AddMonths(-60).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
 
-            return GetPeriodReport(startDate, endDate);
+            return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetAllTimeCategoryReport()
+        public IEnumerable<SpendStatViewModel> GetAllTimeCategoryReport(string vectorSysName = null)
         {
             int endYear = DateTime.Now.Year + 100;
             int endMonth = DateTime.Now.Month;
             var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
             var startDate = new DateTime(1900, 1, 1);
 
-            return GetPeriodReport(startDate, endDate);
+            return GetPeriodReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetPeriodReport(DateTime startDate, DateTime endDate)
+        public IEnumerable<SpendStatViewModel> GetPeriodReport(DateTime startDate, DateTime endDate, string vectorSysName = null)
         {
             if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньшще даты начала!");
 
@@ -201,13 +206,15 @@ namespace Data.Services
             var sDate = startDate.Date;
             var eDate = endDate.Date;
 
-            var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate)
+            var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+                         && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
+                         )
                          group s by new
                          {
                              s.SpendCategory,
                              s.SpendVector
                          }
-                into gs
+                         into gs
                          select new
                          {
                              SpendVectorIconName = gs.Key.SpendVector.IconName,
@@ -215,7 +222,9 @@ namespace Data.Services
                              SpendVectorSysName = gs.Key.SpendVector.SysName,
                              SpendCategory = gs.Key.SpendCategory.Name,
                              SpendVector = gs.Key.SpendVector.Name,
-                             Sum = gs.Sum(x => x.Sum)
+                             Sum = gs.Sum(x => x.Sum),
+                             SpendCategoryId = gs.Key.SpendCategory.CategoryId,
+                             SpendVectorId = gs.Key.SpendVector.VectorId
                          };
             list = report.AsEnumerable().Select(x => new SpendStatViewModel
             {
@@ -224,7 +233,9 @@ namespace Data.Services
                 SpendVectorSysName = x.SpendVectorSysName,
                 SpendVectorName = x.SpendVector,
                 SpendCategoryName = x.SpendCategory,
-                Sum = x.Sum
+                Sum = x.Sum,
+                SpendCategoryId = x.SpendCategoryId,
+                SpendVectorId= x.SpendVectorId
             }).OrderBy(x => x.SpendVectorName).ThenByDescending(x => x.Sum).ToList();
 
 

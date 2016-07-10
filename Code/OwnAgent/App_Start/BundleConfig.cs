@@ -10,8 +10,9 @@ namespace OwnAgent
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery-dateformat.js",
-                        "~/Scripts/jquery.canvasjs.min.js"));
+                        "~/Scripts/jquery-dateformat.js"
+                        //"~/Scripts/jquery.canvasjs.min.js"
+                        ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));

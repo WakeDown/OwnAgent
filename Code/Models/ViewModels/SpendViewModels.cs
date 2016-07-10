@@ -46,6 +46,8 @@ namespace Models.ViewModels
         public string SpendVectorSysName { get; set; }
         public string SpendVectorName { get; set; }
         public string SpendCategoryName { get; set; }
+        public int SpendCategoryId { get; set; }
+        public int SpendVectorId { get; set; }
         public double Sum { get; set; }
         public string SpendVectorBgColorClass { get; set; }
         public string SpendVectorIconName { get; set; }
@@ -64,8 +66,10 @@ namespace Models.ViewModels
                 Year = date.Year;
                 Month = date.Month;
                 Day = date.Day;
+                DateStr = Date.ToString("dd.MM.yyyy");
             }
         }
+        public string DateStr { get; set; }
         public int Year { get; set; }
         public int Month { get; set; }
         public int Day { get; set; }

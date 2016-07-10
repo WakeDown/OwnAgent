@@ -13,7 +13,7 @@
         @foreach (var item in Model)
         {
             <li class="collection-item @item.SpendVectorBgColorClass">
-                <div><span class="bold">@item.SpendCategoryName</span><span class="secondary-content white-text">@(String.Format("{0:N0} р.", item.Sum)) <i class="material-icons">@item.SpendVectorIconName</i></span></div>
+                <div><a href="@Url.Action("List", new {filter=Request.QueryString["filter"],year=Request.QueryString["year"], month=Request.QueryString["month"], categoryId=item.SpendCategoryId, vectorId=item.SpendVectorId  })" target="_blank" class="text-black black-text"><span class="bold">@item.SpendCategoryName</span></a><span class="secondary-content white-text">@(String.Format("{0:N0} р.", item.Sum)) <i class="material-icons">@item.SpendVectorIconName</i></span></div>
             </li>
         }
 

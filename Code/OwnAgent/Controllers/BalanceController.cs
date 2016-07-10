@@ -72,11 +72,42 @@ namespace OwnAgent.Controllers
         }
 
         [HttpGet]
-        public ActionResult List()
+        public ActionResult List(string filter = null, int? year = null, int? month = null, int? categoryId = null, int? vectorId = null)
         {
+            DateTime? dateStart = null;
+            DateTime? dateEnd = null;
+            if (!year.HasValue) year = DateTime.Now.Year;
+            if (!month.HasValue) month = DateTime.Now.Month;
+            if (filter == "month")
+            {
+                dateStart = new DateTime(year.Value, month.Value, 1);
+                dateEnd = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value));
+            }
+            if (filter == "quarter")
+            {
+                dateEnd = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value));
+                var startMonth = dateEnd.Value.AddMonths(-3).Month;
+                var startYear = dateEnd.Value.AddMonths(-3).Year;
+                dateStart = new DateTime(startYear, startMonth, 1);
+            }
+            if (filter == "year")
+            {
+                dateEnd = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value));
+                var startMonth = dateEnd.Value.AddMonths(-12).Month;
+                var startYear = dateEnd.Value.AddMonths(-12).Year;
+                dateStart = new DateTime(startYear, startMonth, 1);
+            }
+            if (filter == "5year")
+            {
+                dateEnd = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value));
+                var startMonth = dateEnd.Value.AddYears(-5).Month;
+                var startYear = dateEnd.Value.AddYears(-5).Year;
+                dateStart = new DateTime(startYear, startMonth, 1);
+            }
+
             //var list =Spend.GetList(ClientId);
             int totalCount;
-            var list = SpendService.Instance(UserSid).GetSpendList(out totalCount);
+            var list = SpendService.Instance(UserSid).GetSpendList(out totalCount, dateStart: dateStart, dateEnd: dateEnd, categoryId: categoryId, vectorId: vectorId);
             return View(list);
         }
         
@@ -132,6 +163,22 @@ namespace OwnAgent.Controllers
             if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport();
 
             return View("SpendCategoryReport", list);
+        }
+
+        public ActionResult SpendCategoryReportData(string filter, int? year, int? month, string vectorSysName = null)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReportData", new { filter = "month" });
+            if (!year.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = DateTime.Now.Year, month = month });
+            if (!month.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month });
+
+            IEnumerable<SpendStatViewModel> list = new List<SpendStatViewModel>();
+            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value, vectorSysName);
+            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, month.Value, vectorSysName);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value, month.Value, vectorSysName);
+            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value, month.Value, vectorSysName);
+            if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport(vectorSysName);
+
+            return Json(list);
         }
 
         public ActionResult GetIncomeChartData(string filter, int? year, int? month)
