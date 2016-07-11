@@ -67,7 +67,7 @@
 <div class="row">
     <div class="col l4 m6 s12">
         <div class="row">
-            <div class="col l4 m6 s12">
+            <div class="col l4 m4 s4">
                 <a class='dropdown-button btn' href='#' data-activates='period'>
                     @if (Request.QueryString["filter"] == "month")
                     {
@@ -112,7 +112,7 @@
             </div>
             @if (Request.QueryString["filter"] == "month")
             {
-                <div class="col l4 m6 s12">
+                <div class="col l4 m4 s4">
 
                     <a class='dropdown-button btn' href='#' data-activates='month'>
                         @if (month > 0 && month <= 12)
@@ -135,7 +135,7 @@
             }
             else if (Request.QueryString["filter"] == "quarter")
             {
-                <div class="col l4 m6 s12">
+                <div class="col l4 m4 s4">
                     <a class='dropdown-button btn' href='#' data-activates='quarter'>
                         @if (quarter == 1)
                         {
@@ -164,7 +164,7 @@
             }
             @if (Request.QueryString["filter"] == "month" || Request.QueryString["filter"] == "quarter" || Request.QueryString["filter"] == "year")
             {
-                <div class="col l4 m6 s12">
+                <div class="col l4 m4 s4">
 
                     <a class='dropdown-button btn' href='#' data-activates='year'>
                         @year
@@ -179,7 +179,7 @@
             }
             @if (Request.QueryString["filter"] == "5year")
             {
-                <div class="col l4 m6 s12">
+                <div class="col l4 m4 s4">
                     <a class='dropdown-button btn' href='#' data-activates='year'>
                         @String.Format("{0}-{1}", year, year+5)
                     </a>
@@ -199,15 +199,10 @@
         </div>
     </div>
     <div class="col l8 m6 s12">
-        <div id="expPieChartContainer">
-
-        </div>
-        <div id="incPieChartContainer">
-
-        </div>
-        <div id="totalChartContainer">
-
-        </div>
+        <div id="incPieChartContainer"></div>
+        <div id="expPieChartContainer"></div>
+        <div id="totalChartContainer"></div>
+        <div id="calendarChartContainer"></div>
     </div>
 </div>
 <script type="text/javascript">
@@ -224,9 +219,78 @@
             //loadTotalChart();
         });
     }
-    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.load("current", { packages: ['corechart',"calendar"] });
     google.charts.setOnLoadCallback(loadTotalChart);
     google.charts.setOnLoadCallback(loadPieChart);
+    google.charts.setOnLoadCallback(loadCalendarChart);
+    function loadCalendarChart() {
+        $.ajax({
+            url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=',
+            method: 'POST',
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    //dataPoints.push(['Категория', 'Сумма', 'ID']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([new Date(item.Year, item.Month-1, item.Day), item.Sum]);
+                    }
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn({ type: 'date', id: 'Date' });
+                    dataTable.addColumn({ type: 'number', id: 'Sum' });
+                    dataTable.addRows(dataPoints);
+
+                    var chart = new google.visualization.Calendar(document.getElementById('calendarChartContainer'));
+
+                    var options = {
+                        title: "График",
+                        height: 900,
+                        noDataPattern: {
+                            backgroundColor: '#ddd',
+                            color: '#ccc'
+                        }
+                    };
+
+                    chart.draw(dataTable, options);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+
+        @*$.ajax({
+            url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
+            method: 'POST',
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    //dataPoints.push(['Категория', 'Сумма', 'ID']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([new Date(item.Year, item.Month, item.Day), item.Sum]);
+                    }
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn({ type: 'date', id: 'Date' });
+                    dataTable.addColumn({ type: 'number', id: 'Sum' });
+                    dataTable.addRows(dataPoints);
+
+                    var chart = new google.visualization.Calendar(document.getElementById('expCalendarChartContainer'));
+
+                    var options = {
+                        title: "Расход"
+                    };
+
+                    chart.draw(dataTable, options);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });*@
+    }
     function loadPieChart() {
 
         $.ajax({
@@ -236,15 +300,15 @@
             success: function (data) {
                 if (data.length > 0) {
                     var dataPoints = [];
-                    dataPoints.push(['Категория', 'Сумма', 'ID']);
+                    dataPoints.push(['Категория', 'Сумма']);
                     for (var i = 0; i < data.length; i++) {
                         var item = data[i];
-                        dataPoints.push([item.SpendCategoryName, item.Sum, item.SpendCategoryId]);
+                        dataPoints.push([item.SpendCategoryName, item.Sum]);
                     }
                     var chartData = google.visualization.arrayToDataTable(dataPoints);
 
                     var options = {
-                        title: 'Расходы',
+                        title: 'Расход',
                         //is3D: true,
                         height: 400,
                         //enableInteractivity: true,
@@ -287,7 +351,7 @@
                     var chartData = google.visualization.arrayToDataTable(dataPoints);
 
                     var options = {
-                        title: 'Доходы',
+                        title: 'Доход',
                         //is3D: true,
                         height: 400,
                         pieHole: 0.4
