@@ -303,6 +303,9 @@
     <Content Include="Views\Balance\SpendLastAdd.cshtml" />
     <Content Include="Views\Balance\SpendCategoryReport.cshtml" />
     <Content Include="Views\SpendCategories\Index.cshtml" />
+    <Content Include="Views\SpendCategories\New.cshtml" />
+    <Content Include="Views\SpendCategories\Merge.cshtml" />
+    <Content Include="Views\SpendCategories\Edit.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

@@ -1,0 +1,16 @@
+﻿@model Data.Models.SpendCategory
+@{
+    Layout = null;
+}
+
+<div class="modal-content">
+    <h4>Новая категория</h4>
+    <p>
+        <label for="catName">Название категории</label>
+        @Html.TextBoxFor(m => m.Name, new {@class = "validate", required = "required", id = "catName", placeholder = "Название категории"})
+    </p>
+</div>
+<div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat"><i class="material-icons">cancel</i></a>
+    <button id="catEdit" class="waves-effect btn-flat"><i class="material-icons">save</i></button>
+</div>

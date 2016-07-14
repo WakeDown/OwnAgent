@@ -222,12 +222,11 @@
     google.charts.load("current", { packages: ['corechart',"calendar"] });
     google.charts.setOnLoadCallback(loadTotalChart);
     google.charts.setOnLoadCallback(loadPieChart);
-    google.charts.setOnLoadCallback(loadCalendarChart);
+    //google.charts.setOnLoadCallback(loadCalendarChart);
     function loadCalendarChart() {
         $.ajax({
             url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=',
             method: 'POST',
-            async: false,
             success: function (data) {
                 if (data.length > 0) {
                     var dataPoints = [];
@@ -296,7 +295,6 @@
         $.ajax({
             url: '@Url.Action("SpendCategoryReportData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
             method: 'POST',
-            async: false,
             success: function (data) {
                 if (data.length > 0) {
                     var dataPoints = [];
@@ -339,7 +337,6 @@
         $.ajax({
             url: '@Url.Action("SpendCategoryReportData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=INC',
             method: 'POST',
-            async: false,
             success: function (data) {
                 if (data.length > 0) {
                     var dataPoints = [];
@@ -374,7 +371,6 @@
         $.ajax({
             url: '@Url.Action("GetCumulativeTotalChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]',
             method: 'POST',
-            async: false,
             success: function (data) {
                 if (data.length > 0) {
                     var dataPoints = [];

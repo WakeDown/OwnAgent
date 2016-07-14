@@ -10,7 +10,14 @@
 <div>
     <table class="striped">
         <thead>
-        <tr><th>Дата</th><th>Вектор</th><th>Категория</th><th>Сумма</th><th class="min-width"></th></tr>
+        <tr>
+            <th>Дата</th>
+            <th>Вектор</th>
+            <th>Категория</th>
+            <th>Сумма</th>
+            <th>Комментарий</th>
+            <th class="min-width"></th>
+        </tr>
         </thead>
         @foreach (Spend s in Model)
         {
@@ -19,6 +26,7 @@
                 <td>@s.SpendVector.Name</td>
                 <td>@s.SpendCategory.Name</td>
                 <td>@s.Sum</td>
+                <td>@s.Comment</td>
                 <td>
                     <a class="spend-remove grey-text lighten-1" href="#"><i class="material-icons">delete</i></a>
                 </td>

@@ -3,37 +3,249 @@
     ViewBag.Title = "Категории";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<p>
+    <div class="row">
+        <div class="col l6">
+            <a id="newCat" class="waves-effect waves-light btn" href="#categoryModal" title="новая"><i class="material-icons">add</i></a>
+            <a id="catMergeModal" class="waves-effect waves-light btn" href="#!" title="слияние"><i class="material-icons">merge_type</i></a>
+        </div>
+    </div>
+</p>
 <div class="row">
     <div class="col l6">
         <table>
             <thead>
             <tr>
+                <th>
+                    <input id="cat-all" type="checkbox" title="все"/>
+                    <label for="cat-all"></label>
+                </th>
+                <th></th>
+                <th></th>
                 <th>Категория</th>
-                <th>Кол-во  записей</th>
+                <th>Кол-во записей</th>
                 <th></th>
             </tr>
                 @foreach (var item in Model)
-            {
-                <tr class="cat-item" cid="@item.CategoryId">
-                    <td>@item.Name</td>
-                    <td>@item.Spend.Count(x => x.Enabled)</td>
-                    <td>
-                        <a class="category-remove grey-text lighten-1 secondary-content" href="#"><i class="material-icons">delete</i></a>
-                    </td>
-                </tr>
+                {
+                    <tr class="cat-item" cid="@item.CategoryId">
+                        <td>
+                            <input id="cat-@item.CategoryId" value="@item.CategoryId" cname="@item.Name" type="checkbox"/>
+                            <label for="cat-@item.CategoryId"></label>
+                        </td>
+                        <td>
+                            <a class="category-order-up lighten-1 secondary-content" href="#" title="вверх"><i class="material-icons">keyboard_arrow_up</i></a>
+                            <a class="category-order-down lighten-1 secondary-content" href="#" title="вниз"><i class="material-icons">keyboard_arrow_down</i></a>
+                        </td>
+                        <td>
+                            <a class="category-edit lighten-1 secondary-content" href="#" title="изменить"><i class="material-icons">edit</i></a>
+                        </td>
+                        <td>@item.Name</td>
+                        <td>@item.Spend.Count(x => x.Enabled)</td>
+                        <td>
+                            <a class="category-remove grey-text lighten-1 secondary-content" href="#" title="удалить"><i class="material-icons">delete</i></a>
+                        </td>
+                    </tr>
                 }
             </thead>
         </table>
     </div>
 </div>
 
+<div id="categoryModal" class="modal"></div>
+
 @section scripts
 {
     <script>
-        $(function() {
+        $(function () {
+            $('#newCat').click(newModal);
             $('.category-remove').click(removeSpend);
+            $('.category-order-up').click(catOrderUp);
+            $('.category-order-down').click(catOrderDown);
+            $('.category-edit').click(editModal);
+            $('#cat-all').change(checkAll);
+            $('#catMergeModal').click(catMergeModal);
         });
+        function catOrderDown() {
+            var id = $(this).closest('.cat-item').attr('cid');
+            $.ajax({
+                url: '@Url.Action("SpendCategoryOrderDown")',
+                method: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    console.error(data);
+                }
+            });
+        }
+        function catOrderUp() {
+            var id = $(this).closest('.cat-item').attr('cid');
+            $.ajax({
+                url: '@Url.Action("SpendCategoryOrderUp")',
+                method: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    console.error(data);
+                }
+            });
+        }
+        function catMergeModal() {
+            var $chkList = $('[id^=cat-]:checked').not('#cat-all');
+            if ($chkList.length <= 1) {
+                alert('Необходимо выбрать 2 или более категорий');
+                return false;
+            }
+            var $cont = $('#categoryModal');
+            $.ajax({
+                url: '@Url.Action("Merge")',
+                success: function (data) {
+                    $cont.html(data);
+                    $cont.openModal();
+                    setTimeout(function () {
+                        $('#catName').focus();
+                        $('#catMerge').click(catMerge);
+                        loadCatMergeNameList();
+                    }, 200);
+
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+            return false;
+        }
+        function loadCatMergeNameList() {
+            var $select = $('#catMergeName');
+            $select.empty();
+            var $chkList = $('[id^=cat-]:checked').not('#cat-all');
+            for (var i = 0; i < $chkList.length; i++) {
+                var $item = $($chkList[i]);
+                var name = $item.attr('cname');
+                var id = $item.val();
+                $select.append('<option value="' + id + '">' + name + '</option>');
+            }
+
+        }
+        function catMerge() {
+            var cats = [];
+            var $chkList = $('[id^=cat-]:checked').not('#cat-all');
+            if ($chkList.length <= 1) {
+                alert('Необходимо выбрать 2 или более категорий');
+                return;
+            }
+            if (!confirm('Подтвердите слияние всех записей по выбранным категориям. После слияния нельзя будет разделить записи обратно!')) return;
+            for (var i = 0; i < $chkList.length; i++) {
+                var $item = $($chkList[i]);
+                cats.push($item.val());
+            }
+            var nameId = $('#catMergeName').val();
+            if (nameId == '' || nameId == null) {
+                alert('Укажите название объединенной категории!');
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("CatMerge")',
+                method:'POST',
+                data: { cats, nameId},
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+        function checkAll() {
+            var chacked = $('#cat-all').is(':checked');
+            var $chkList = $('[id^=cat-]').not('#cat-all');
+            $chkList.prop('checked', chacked);
+        }
+        function newModal() {
+            var $cont = $('#categoryModal');
+            $.ajax({
+                url: '@Url.Action("New")',
+                success: function(data) {
+                    $cont.html(data);
+                    $cont.openModal();
+                    setTimeout(function() {
+                        $('#catName').focus();
+                        $('#catCreate').click(catCreate);
+                    }, 200);
+
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
+            return false;
+        }
+
+        function catCreate() {
+            var name = $('#catName').val();
+            if (name == null || name == '') {
+                alert('Введите название категории!');
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("Create")',
+                method: 'POST',
+                data: { Name: name },
+                success:function() {
+                    $('#categoryModal').closeModal();
+                    location.reload();
+                },
+                error:function(data) {
+                    console.log(data);
+                }
+            });
+        }
+        function editModal() {
+            var id = $(this).closest('.cat-item').attr('cid');
+            var $cont = $('#categoryModal');
+            $.ajax({
+                url: '@Url.Action("Edit")',
+                data:{id},
+                success: function (data) {
+                    $cont.html(data);
+                    $cont.openModal();
+                    setTimeout(function () {
+                        $('#catName').focus();
+                        $('#catEdit').click(catEdit);
+                        $('#catEdit').attr('cid', id);
+                    }, 200);
+
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+            return false;
+        }
+        function catEdit() {
+            var name = $('#catName').val();
+            if (name == null || name == '') {
+                alert('Введите название категории!');
+                return;
+            }
+            var id = $('#catEdit').attr('cid');
+            $.ajax({
+                url: '@Url.Action("Edit")',
+                method: 'POST',
+                data: { CategoryId: id, Name: name },
+                success: function () {
+                    $('#categoryModal').closeModal();
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
 
         function removeSpend() {
             if (!confirm('Подтвердите удаление!')) return;

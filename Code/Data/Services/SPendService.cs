@@ -440,6 +440,97 @@ namespace Data.Services
             Uow.Commit();
         }
 
+        public SpendCategory SpendCategoryGet(int id)
+        {
+            var model = Uow.SpendCategories.GetOne(x=>x.CategoryId==id);
+            return model;
+        }
+
+        public void SpendCategoryCreate(SpendCategory model)
+        {
+            if (String.IsNullOrEmpty(model.Name)) throw new ArgumentException("Необходимо заполнить название категории!");
+            var cat = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid==UserSid && x.Name == model.Name);
+            if (cat.Any()) throw new ArgumentException("Такое название категории уже существует!");
+            model.Enabled = true;
+            model.UserSid = UserSid;
+            model.OrderNum = 500;
+            Uow.SpendCategories.Insert(model);
+            Uow.Commit();
+        }
+
+        public void SpendCategoryEdit(SpendCategory model)
+        {
+            if (String.IsNullOrEmpty(model.Name)) throw new ArgumentException("Необходимо заполнить название категории!");
+            var catExists = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && x.Name == model.Name);
+            if (catExists.Any()) throw new ArgumentException("Такое название категории уже существует!");
+            var cat = Uow.SpendCategories.GetOne(x => x.CategoryId == model.CategoryId);
+            cat.Name = model.Name;
+            Uow.SpendCategories.Update(cat);
+            Uow.Commit();
+        }
+
+        public void SpendCategoryOrderUp(int id)
+        {
+            var cat = Uow.SpendCategories.GetOne(x => x.CategoryId == id);
+
+            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && x.CategoryId != id && x.OrderNum < cat.OrderNum);
+
+            if (cats.Any())
+            {
+                var upperCat = cats.OrderByDescending(x => x.OrderNum).First();
+                int oldOrder = cat.OrderNum;
+                cat.OrderNum = upperCat.OrderNum;
+                upperCat.OrderNum = oldOrder;
+                Uow.SpendCategories.Update(upperCat);
+            }
+            else
+            {
+                cat.OrderNum--;
+            }
+
+            Uow.SpendCategories.Update(cat);
+            Uow.Commit();
+        }
+
+        public void SpendCategoryOrderDown(int id)
+        {
+            var cat = Uow.SpendCategories.GetOne(x => x.CategoryId == id);
+
+            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && x.CategoryId != id && x.OrderNum > cat.OrderNum);
+
+            if (cats.Any())
+            {
+                var upperCat = cats.OrderBy(x => x.OrderNum).First();
+                int oldOrder = cat.OrderNum;
+                cat.OrderNum = upperCat.OrderNum;
+                upperCat.OrderNum = oldOrder;
+                Uow.SpendCategories.Update(upperCat);
+            }
+            else
+            {
+                cat.OrderNum++;
+            }
+
+            Uow.SpendCategories.Update(cat);
+            Uow.Commit();
+        }
+
+        public void SpendCategoryMerge(int[] catIds, int catNameId)
+        {
+            var list = Uow.Spends.GetAll(x => x.Enabled && x.UserSid == UserSid && catIds.Contains(x.CategoryId));
+            foreach (var item in list)
+            {
+                item.CategoryId = catNameId;
+            }
+            var oldCats = Uow.SpendCategories.GetAll(
+                x => x.Enabled && x.UserSid == UserSid && catIds.Contains(x.CategoryId) && x.CategoryId != catNameId);
+            foreach (var cat in oldCats)
+            {
+                cat.Enabled = false;
+            }
+            Uow.Commit();
+        }
+
         //public static IEnumerable<SpendStatItem> GetVectorMonthlyReport(string clientId, int year, int month)
         //{		
         //    var list = new List<SpendStatItem>();		
