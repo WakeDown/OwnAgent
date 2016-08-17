@@ -3,18 +3,26 @@
     Layout = null;
 }
 
-<div class="modal-content">
-    <h4>Слияние категорий</h4>
-    <p>
-        <div class="row">
-            <div class="col lg4 m6 s12">
-                <label for="catMergeName">Выберите название объединенной категории</label>
-                <select id="catMergeName" class="browser-default"></select>
-            </div>
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Слияние категорий</h4>
         </div>
-    </p>
-</div>
-<div class="modal-footer">
-    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat"><i class="material-icons">cancel</i></a>
-    <button id="catMerge" class="waves-effect btn-flat"><i class="material-icons">save</i></button>
-</div>
+        <div class="modal-body">
+            <p>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <label for="catMergeName">Выберите название объединенной категории</label>
+                        <select id="catMergeName" class="form-control"></select>
+                    </div>
+                </div>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button id="catMerge" class="btn btn-success">Сохранить</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+

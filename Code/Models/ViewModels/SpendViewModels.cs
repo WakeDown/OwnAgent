@@ -39,6 +39,7 @@ namespace Models.ViewModels
         public double Sum { get; set; }
         public string SpendVectorBgColorClass { get; set; }
         public string SpendVectorIconName { get; set; }
+        public string SpendVectorSysName { get; set; }
     }
 
     public class SpendStatViewModel

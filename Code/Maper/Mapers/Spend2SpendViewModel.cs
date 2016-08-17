@@ -19,6 +19,7 @@ namespace Models.Mappers
             model.SpendVectorName = spend.SpendVector.Name;
             model.SpendVectorBgColorClass = spend.SpendVector.BgColorClass;
             model.SpendVectorIconName = spend.SpendVector.IconName;
+            model.SpendVectorSysName = spend.SpendVector.SysName;
             model.Date = spend.Date;
             return model;
         }

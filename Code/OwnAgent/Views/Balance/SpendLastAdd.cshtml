@@ -6,22 +6,28 @@
 
 @if (Model != null && Model.Any())
 {
-    foreach (var spend in Model)
-    {
-        
-        <div class="last-add-card card-panel @spend.SpendVectorBgColorClass" sid="@spend.Id">
-            <a href="#" class="last-add-remove grey-text lighten-1"><i class="material-icons">clear</i></a>
-            <span class="white-text">
-                <span class="badge white-text"><i class="material-icons left">@spend.SpendVectorIconName</i></span>
-                <small>
-                    @spend.SpendCategoryName
-                </small>
-                <br />
-                @spend.Sum
-            </span>
-        </div>
-    }
+    <ul class="list-group">
+            @foreach (var spend in Model)
+            {
 
+                <li class="last-add-card list-group-item @spend.SpendVectorBgColorClass" sid="@spend.Id">
+
+                    <div class="@(spend.SpendVectorSysName == "EXP" ? "text-danger" : "text-success")">
+                        <a href="#" class="last-add-remove text-muted"><i class="fa fa-remove"></i></a>
+                        <div>
+                            <small class="text-muted">@spend.Date.ToString("D")</small>
+                        </div>
+                        <i class="@spend.SpendVectorIconName"></i>
+                        <small>
+                            @spend.SpendCategoryName
+                        </small>
+                        <div style="padding-left: 15px;">
+                            @spend.Sum
+                        </div>
+                    </div>
+                </li>
+            }
+    </ul>
     @*<div class="row">
         @foreach (var spend in Model)
         {
