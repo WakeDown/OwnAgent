@@ -1,4 +1,7 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="bootstrap.js" />
+/// <reference path="bootstrap-datepicker.js" />
+/// <reference path="bootstrap-datepicker.ru.js" />
 /// <reference path="jquery.canvasjs.min.js" />
 /// <reference path="jquery.validate.js" />
 /// <reference path="jquery.validate.unobtrusive.js" />

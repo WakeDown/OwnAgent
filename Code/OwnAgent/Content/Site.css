@@ -1,4 +1,4 @@
-﻿/*body {
+﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -16,7 +16,56 @@ input,
 select,
 textarea {
     max-width: 280px;
-}*/
+}
+
+
+input.bg-warning, textarea.bg-warning {
+    background-color: #fcf8e3;
+}
+
+textarea.no-border-top {
+    border-top: 0;
+}
+
+.nav-tabs > li.active > a.bg-warning, .nav-tabs > li.active > a.bg-warning:hover, .nav-tabs > li.active > a.bg-warning:focus {
+    background-color: #fcf8e3;
+}
+
+.navbar-brand {
+    padding-top: 3px;
+}
+
+.head-logo {
+    height: 25px;
+}
+
+.spinner {
+    display: inline-block;
+    opacity: 0;
+    max-width: 0;
+    -webkit-transition: opacity 0.25s, max-width 0.45s;
+    -moz-transition: opacity 0.25s, max-width 0.45s;
+    -o-transition: opacity 0.25s, max-width 0.45s;
+    transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
+}
+
+    .spinner.on-input {
+        z-index: 999;
+        position: absolute;
+        top: 7px;
+        left: 10px;
+    }
+
+    .spinner.on-element {
+        z-index: 999;
+        position: absolute;
+    }
+
+    .spinner.active {
+        cursor: progress;
+        opacity: 1;
+        max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
+    }
 
 .btn-full {
     width: 100%;
@@ -83,4 +132,8 @@ nav a {
 
 .min-width {
     width: 1px;
+}
+
+.text-black {
+  color: #000000 !important;
 }

@@ -64,147 +64,159 @@
         </ul>*@
 </p>
 <div class="clearfix"></div>
-<div class="row">
-    <div class="col l4 m6 s12">
-        <div class="row">
-            <div class="col l4 m4 s4">
-                <a class='dropdown-button btn' href='#' data-activates='period'>
-                    @if (Request.QueryString["filter"] == "month")
-                    {
-                        <span>месяц</span>
-                    }
-                    else if (Request.QueryString["filter"] == "quarter")
-                    {
-                        <span>квартал</span>
-                    }
-                    else if (Request.QueryString["filter"] == "year")
-                    {
-                        <span>год</span>
-                    }
-                    else if (Request.QueryString["filter"] == "5year")
-                    {
-                        <span>5 лет</span>
-                    }
-                    else if (Request.QueryString["filter"] == "alltime")
-                    {
-                        <span>все время</span>
-                    }
-                </a>
-
-                <!-- Dropdown Structure -->
-                <ul id='period' class='dropdown-content'>
-                    <li>
-                        <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">месяц</a>
-                    </li>
-                    <li>
-                        <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">квартал</a>
-                    </li>
-                    <li>
-                        <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">год</a>
-                    </li>
-                    @*<li>
-                        <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
-                    </li>*@
-                    <li>
-                        <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">все время</a>
-                    </li>
-                </ul>
-            </div>
-            @if (Request.QueryString["filter"] == "month")
-            {
-                <div class="col l4 m4 s4">
-
-                    <a class='dropdown-button btn' href='#' data-activates='month'>
-                        @if (month > 0 && month <= 12)
+<p>
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="btn-group btn-full">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @if (Request.QueryString["filter"] == "month")
                         {
-                            @DateTimeFormatInfo.CurrentInfo.GetMonthName(month)
+                                <span>месяц</span>
                         }
-                        else
+                        else if (Request.QueryString["filter"] == "quarter")
                         {
-                            @:error
-            }
-                    </a>
-                    <ul id='month' class='dropdown-content'>
-                        @for (int i = 1; i <= 12; i++)
-                        {
-                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"month", i}})">@DateTimeFormatInfo.CurrentInfo.GetMonthName(i)</a></li>
+                                <span>квартал</span>
                         }
-                    </ul>
-
+                        else if (Request.QueryString["filter"] == "year")
+                        {
+                                <span>год</span>
+                        }
+                        else if (Request.QueryString["filter"] == "5year")
+                        {
+                                <span>5 лет</span>
+                        }
+                        else if (Request.QueryString["filter"] == "alltime")
+                        {
+                                <span>все время</span>
+                        }
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">месяц</a>
+                            </li>
+                            <li>
+                                <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">квартал</a>
+                            </li>
+                            <li>
+                                <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">год</a>
+                            </li>
+                            @*<li>
+                                    <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
+                                </li>*@
+                            <li>
+                                <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">все время</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                @if (Request.QueryString["filter"] == "month")
+            {
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+
+                        <div class="btn-group btn-full">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (month > 0 && month <= 12)
+                                {
+                                    @DateTimeFormatInfo.CurrentInfo.GetMonthName(month)
+                                }
+                                else
+                                {
+                                    @:error
+                                }
+                                 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"month", i}})">@DateTimeFormatInfo.CurrentInfo.GetMonthName(i)</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
             }
             else if (Request.QueryString["filter"] == "quarter")
             {
-                <div class="col l4 m4 s4">
-                    <a class='dropdown-button btn' href='#' data-activates='quarter'>
-                        @if (quarter == 1)
-                        {
-                            @:I
-            }
-                        else if (quarter == 2)
-                        {
-                            @:II
-            }
-                        else if (quarter == 3)
-                        {
-                            @:III
-            }
-                        else if (quarter == 4)
-                        {
-                            @:IV
-            }
-                    </a>
-                    <ul id='quarter' class='dropdown-content'>
-                        <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 1}})">I</a></li>
-                        <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 2}})">II</a></li>
-                        <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 3}})">III</a></li>
-                        <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 4}})">IV</a></li>
-                    </ul>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="btn-group btn-full">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @if (quarter == 1)
+                            {
+                                @:I
+                        }
+                            else if (quarter == 2)
+                            {
+                                @:II
+                        }
+                            else if (quarter == 3)
+                            {
+                                @:III
+                        }
+                            else if (quarter == 4)
+                            {
+                                @:IV
+                        }
+                             <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 1}})">I</a></li>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 2}})">II</a></li>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 3}})">III</a></li>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 4}})">IV</a></li>
+                        </ul>
+                    </div>
                 </div>
             }
-            @if (Request.QueryString["filter"] == "month" || Request.QueryString["filter"] == "quarter" || Request.QueryString["filter"] == "year")
+                @if (Request.QueryString["filter"] == "month" || Request.QueryString["filter"] == "quarter" || Request.QueryString["filter"] == "year")
             {
-                <div class="col l4 m4 s4">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
 
-                    <a class='dropdown-button btn' href='#' data-activates='year'>
-                        @year
-                    </a>
-                    <ul id='year' class='dropdown-content'>
-                        @for (int i = 2014; i <= DateTime.Now.Year; i++)
-                        {
-                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@i</a></li>
-                        }
-                    </ul>
-                </div>
+                        <div class="btn-group btn-full">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @year <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @for (int i = 2014; i <= DateTime.Now.Year; i++)
+                                {
+                                    <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@i</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
             }
-            @if (Request.QueryString["filter"] == "5year")
+                @if (Request.QueryString["filter"] == "5year")
             {
-                <div class="col l4 m4 s4">
-                    <a class='dropdown-button btn' href='#' data-activates='year'>
-                        @String.Format("{0}-{1}", year, year+5)
-                    </a>
-                    <ul id='year' class='dropdown-content'>
-                        @for (int i = 2010; i <= DateTime.Now.Year; i+=5)
-                        {
-                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@String.Format("{0}-{1}", i, i + 5)</a></li>
-                        }
-                    </ul>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="btn-group btn-full">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @String.Format("{0}-{1}", year, year + 5) <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            @for (int i = 2010; i <= DateTime.Now.Year; i += 5)
+                            {
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@String.Format("{0}-{1}", i, i + 5)</a></li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             }
-        </div>
-        <div class="row">
-            <div class="col l12 s12 m12" id="categoryContainer">
-                @Html.Partial("Loader")
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-12" id="categoryContainer">
+                    @Html.Partial("Loader")
+                </div>
             </div>
         </div>
+        <div class="col-lg-8 col-md-6 col-sm-12">
+            <div id="incPieChartContainer"></div>
+            <div id="expPieChartContainer"></div>
+            <div id="totalChartContainer"></div>
+            <div id="calendarChartContainer"></div>
+        </div>
     </div>
-    <div class="col l8 m6 s12">
-        <div id="incPieChartContainer"></div>
-        <div id="expPieChartContainer"></div>
-        <div id="totalChartContainer"></div>
-        <div id="calendarChartContainer"></div>
-    </div>
-</div>
+</p>
 <script type="text/javascript">
     $(function () {
         //$('#mthYear li a').click(selYm);

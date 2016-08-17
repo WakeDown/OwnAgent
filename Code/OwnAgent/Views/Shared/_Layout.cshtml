@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">*@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
@@ -12,51 +12,94 @@
     @RenderSection("head", required: false)
 </head>
 <body>
-    <div class="navbar-fixed">
-        <nav class="indigo lighten-3">
-            <div class="nav-wrapper">
-                <div class="row">
-                    <div class="col s12">
-                        @Html.ActionLink("Бюджет", "Stat", "Balance", new { area = "" }, new { @class = "brand-logo" })
-                        <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
-                        <ul id="nav-mobile" class="right hide-on-med-and-down">
-                            <li><a href="@Url.Action("New", "Balance")"><i class="material-icons large" title="Новое">add</i></a></li>
-                            <li><a href="@Url.Action("List", "Balance")"><i class="material-icons large" title="Список">view_list</i></a></li>
-                            <li><a href="@Url.Action("Stat", "Balance")"><i class="material-icons large" title="Статистика">trending_up</i></a></li>
-                            @*<li><a href="@Url.Action("Stat", "Balance")"><i class="material-icons large" title="Статистика">insert_chart</i></a></li>*@
-                            <li><a href="@Url.Action("Index", "SpendCategories")"><i class="material-icons large" title="Настройка">settings</i></a></li>
-                            <li>
-                                @Html.Partial("_LoginPartial")
-                            </li>
-                        </ul>
-                        <ul class="side-nav" id="mobile-menu">
-                            <li><a href="@Url.Action("New", "Balance")">Новое</a></li>
-                            <li><a href="@Url.Action("List", "Balance")">Список</a></li>
-                            <li><a href="@Url.Action("Stat", "Balance")">Статистика</a></li>
-                            <li><a href="@Url.Action("Index", "SpendCategories")">Настройка</a></li>
-                        </ul>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainMenu" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="@Url.Action("Stat", "Balance")" class="navbar-brand">
+                    @*<img class="head-logo" src="~/Content/img/logo.png" />*@
+                    <i class="fa fa-money fa-2x text-success" title="" style="padding-left: 28px;"></i>
+                    <div class="" style="padding-left: 15px; padding-top: 0px;">Бюджет</div>
+                </a>
+            </div>
+            <div id="mainMenu" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="@Url.Action("New", "Balance")"><i class="fa fa-plus-circle fa-2x" title="Новое"></i></a></li>
+                    <li><a href="@Url.Action("List", "Balance")"><i class="fa fa-list fa-2x" title="Список"></i></a></li>
+                    <li><a href="@Url.Action("Stat", "Balance")"><i class="fa fa-bar-chart-o fa-2x" title="Статистика"></i></a></li>
+                    @*<li><a href="@Url.Action("Stat", "Balance")"><i class="material-icons large" title="Статистика">insert_chart</i></a></li>*@
+                    <li><a href="@Url.Action("Index", "SpendCategories")"><i class="fa fa-cogs fa-2x" title="Настройки"></i></a></li>
+                </ul>
+
+                @Html.Partial("_LoginPartial")
+
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <noscript>
+            <blockquote class="alert alert-danger">Необходимо включить JavaScript в браузере!</blockquote>
+        </noscript>
+        @RenderBody()
+        <hr />
+        <footer class="">
+            <p>&copy; @DateTime.Now.Year - Бюджет</p>
+        </footer>
+    </div>
+    @RenderSection("scripts", required: false)
+
+
+
+
+
+    @*<div class="navbar-fixed">
+            <nav class="indigo lighten-3">
+                <div class="nav-wrapper">
+                    <div class="row">
+                        <div class="col s12">
+                            @Html.ActionLink("Бюджет", "Stat", "Balance", new {area = ""}, new {@class = "brand-logo"})
+                            <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+                            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                                <li><a href="@Url.Action("New", "Balance")"><i class="material-icons large" title="Новое">add</i></a></li>
+                                <li><a href="@Url.Action("List", "Balance")"><i class="material-icons large" title="Список">view_list</i></a></li>
+                                <li><a href="@Url.Action("Stat", "Balance")"><i class="material-icons large" title="Статистика">trending_up</i></a></li>
+                                <li><a href="@Url.Action("Index", "SpendCategories")"><i class="material-icons large" title="Настройка">settings</i></a></li>
+                                <li>
+                                    @Html.Partial("_LoginPartial")
+                                </li>
+                            </ul>
+                            <ul class="side-nav" id="mobile-menu">
+                                <li><a href="@Url.Action("New", "Balance")">Новое</a></li>
+                                <li><a href="@Url.Action("List", "Balance")">Список</a></li>
+                                <li><a href="@Url.Action("Stat", "Balance")">Статистика</a></li>
+                                <li><a href="@Url.Action("Index", "SpendCategories")">Настройка</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nav>
-    </div>
+            </nav>
+        </div>
         <main>
             <div class="container">
                 @RenderBody()
-                <hr />
+                <hr/>
             </div>
         </main>
         <footer>
             <div class="container">
                 <p>&copy; @DateTime.Now.Year</p>
-                @*<a href="mailto: wakedown.59@gmail.com" class="btn waves-effect waves-light red lighten-3">Оставить отзыв</a>*@
             </div>
         </footer>
         <script>
-            $(function () {
+            $(function() {
                 $(".button-collapse").sideNav();
             });
         </script>
-        @RenderSection("scripts", required: false)
+        @RenderSection("scripts", required: false)*@
 </body>
 </html>

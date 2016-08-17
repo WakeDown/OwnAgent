@@ -9,29 +9,36 @@
 
 @if (Model != null)
 {
-    <ul class="collection">
-        <li class="collection-item bold">
-            <h5>
-                ИТОГО<span class="secondary-content @(totalSum > 0 ? "green-text" : "red-text")">@(totalSum > 0 ? "+" : totalSum == 0 ? "" : "-")@(String.Format("{0:N0} р.", Math.Abs(totalSum)))</span>
-            </h5>
-        </li>
-        <li class="collection-item bold">
-            ДОХОД<span class="secondary-content green-text">@(String.Format("{0:N0} р.", Math.Abs(totalInc))) <i class="material-icons">add_circle_outline</i></span>
-        </li>
-        <li class="collection-item bold">
-            РАСХОД<span class="secondary-content red-text">@(String.Format("{0:N0} р.", Math.Abs(totalExp))) <i class="material-icons">remove_circle_outline</i></span>
-        </li>
-    </ul>
+    <p>
+        <div class="panel panel-default">
 
-        <ul class="collection">
-            
-            @foreach (var item in Model)
-            {
-                <li class="collection-item @item.SpendVectorBgColorClass">
-                    <div><a href="@Url.Action("List", new {filter = Request.QueryString["filter"], year = Request.QueryString["year"], month = Request.QueryString["month"], categoryId = item.SpendCategoryId, vectorId = item.SpendVectorId})" target="_blank" class="text-black black-text"><span class="">@item.SpendCategoryName</span> <i class="material-icons">link</i></a><span class="secondary-content white-text">@(String.Format("{0:N0} р.", item.Sum)) <i class="material-icons">@item.SpendVectorIconName</i></span></div>
-                </li>
-            }
-
-
-        </ul>
-        }
+            <div class="panel-body">
+                <h4 class="text-lg">
+                    @*@(totalSum > 0 ? "+" : totalSum == 0 ? "" : "-")*@
+                    ИТОГО<span class="pull-right @(totalSum > 0 ? "text-success" : "text-danger")">@(String.Format("{0:N0} р.", Math.Abs(totalSum))) <i class="fa @(totalSum > 0 ? "fa-plus-circle" : totalSum == 0 ? "" : "fa-minus-circle")"></i></span>
+                </h4>
+            </div>
+            <div class="panel-body bg-success text-success text-lg">
+                ДОХОД<span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalInc))) <i class="fa fa-plus-circle"></i></span>
+            </div>
+            <div class="panel-body bg-danger text-danger text-lg">
+                РАСХОД<span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalExp))) <i class="fa fa-minus-circle"></i></span>
+            </div>
+        </div>
+    </p>
+    <p>
+        <div class="panel panel-default">
+            <ul class="list-group">
+                @foreach (var item in Model)
+                {
+                    <li class="list-group-item">
+                        <a href="@Url.Action("List", new {filter = Request.QueryString["filter"], year = Request.QueryString["year"], month = Request.QueryString["month"], categoryId = item.SpendCategoryId, vectorId = item.SpendVectorId})" target="_blank" class="text-black">
+                            <span class="">@item.SpendCategoryName</span> <i class="fa fa-external-link"></i>
+                        </a>
+                        <span class="pull-right @(item.SpendVectorSysName == "EXP" ? "text-danger" : "text-success")">@(String.Format("{0:N0} р.", item.Sum)) <i class="@item.SpendVectorIconName"></i></span>
+                    </li>
+                }
+            </ul>
+    </div>
+    </p>
+}

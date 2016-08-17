@@ -10,7 +10,9 @@ namespace OwnAgent
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery-dateformat.js"
+                        "~/Scripts/jquery-dateformat.js",
+                        "~/Scripts/bootstrap-datepicker.js",
+                        "~/Scripts/bootstrap-datepicker.ru.js"
                         //"~/Scripts/jquery.canvasjs.min.js"
                         ));
 
@@ -23,10 +25,15 @@ namespace OwnAgent
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
-                      "~/Scripts/materialize/materialize.min.js"));
+                      //"~/Scripts/materialize/materialize.min.js"
+                      "~/Scripts/bootstrap.js"
+                      ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/materialize/css/materialize.min.css",
+                      //"~/Content/materialize/css/materialize.min.css",
+                      "~/Content/bootstrap.min.css",
+                      "~/Content/bootstrap-datepicker3.css",
+                      "~/Content/font-awesome.min.css",
                       "~/Content/site.css"));
             BundleTable.EnableOptimizations = true;
         }
