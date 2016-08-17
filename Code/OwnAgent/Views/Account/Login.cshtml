@@ -6,7 +6,7 @@
 
 <h2>@ViewBag.Title</h2>
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-sm-12">
         <section id="loginForm">
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
             {
@@ -15,21 +15,21 @@
                 <hr />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="row">
-                    <div class="col l4 m6 s12 input-field">
+                    <div class="col-lg-4 col-md-6 col-sm-12 input-field">
                         @Html.LabelFor(m => m.Email)
-                        @Html.TextBoxFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, "", new { @class="form-control"})
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red-text" })
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col l4 m6 s12 input-field">
+                    <div class="col-lg-4 col-md-6 col-sm-12 input-field">
                         @Html.LabelFor(m => m.Password)
-                        @Html.PasswordFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red-text" })
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
                         @*@Html.CheckBoxFor(m => m.RememberMe, new {type="checkbox"})*@
                         <input id="RememberMe" name="RememberMe" type="checkbox" value="@Model.RememberMe.ToString()" checked="checked" />
                         @*<input type="checkbox" name="Model.RememberMe" class="filled-in" checked="checked"  />*@
@@ -45,8 +45,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12">
-                        <input type="submit" value="Войти" class="btn btn-default" />
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <input type="submit" value="Войти" class="btn btn-primary pull-right" />
                     </div>
                 </div>
                 <p>
@@ -54,13 +54,13 @@
                 </p>
                 //Enable this once you have account confirmation enabled for password reset functionality
                 <p>
-                    @Html.ActionLink("Вспомнить пароль?", "ForgotPassword")
+                    @Html.ActionLink("Забыли пароль?", "ForgotPassword")
                 </p>
             }
         </section>
 
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-12">
         <section id="socialLoginForm">
             @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
         </section>
