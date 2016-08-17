@@ -73,15 +73,15 @@
                         <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             @if (Request.QueryString["filter"] == "month")
                         {
-                                <span>месяц</span>
+                                <span>Месяц</span>
                         }
                         else if (Request.QueryString["filter"] == "quarter")
                         {
-                                <span>квартал</span>
+                                <span>Квартал</span>
                         }
                         else if (Request.QueryString["filter"] == "year")
                         {
-                                <span>год</span>
+                                <span>Год</span>
                         }
                         else if (Request.QueryString["filter"] == "5year")
                         {
@@ -89,25 +89,25 @@
                         }
                         else if (Request.QueryString["filter"] == "alltime")
                         {
-                                <span>все время</span>
+                                <span>Все время</span>
                         }
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">месяц</a>
+                                <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">Месяц</a>
                             </li>
                             <li>
-                                <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">квартал</a>
+                                <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">Квартал</a>
                             </li>
                             <li>
-                                <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">год</a>
+                                <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">Год</a>
                             </li>
                             @*<li>
                                     <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
                                 </li>*@
                             <li>
-                                <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">все время</a>
+                                <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">Все время</a>
                             </li>
                         </ul>
                     </div>
