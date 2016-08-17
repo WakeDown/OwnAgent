@@ -1,0 +1,326 @@
+﻿@using System.Globalization
+@using Helpers
+
+@{
+    ViewBag.Title = "Статистика";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int year = Convert.ToInt32(Request.QueryString["year"]);
+    int month = Convert.ToInt32(Request.QueryString["month"]);
+    int quarter = Convert.ToInt32(Request.QueryString["quarter"]);
+
+    string url2Modify = Url.Action("Charts") + "?" + Request.QueryString;
+}
+@section head{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+}
+<p>
+    <div class="row">
+        <div class="col l4">
+            <div class="row">
+                <div class="col l4 m4 s4">
+                    <a class='dropdown-button btn' href='#' data-activates='period'>
+                        @if (Request.QueryString["filter"] == "month")
+                        {
+                            <span>месяц</span>
+                        }
+                        else if (Request.QueryString["filter"] == "quarter")
+                        {
+                            <span>квартал</span>
+                        }
+                        else if (Request.QueryString["filter"] == "year")
+                        {
+                            <span>год</span>
+                        }
+                        else if (Request.QueryString["filter"] == "5year")
+                        {
+                            <span>5 лет</span>
+                        }
+                        else if (Request.QueryString["filter"] == "alltime")
+                        {
+                            <span>все время</span>
+                        }
+                    </a>
+
+                    <!-- Dropdown Structure -->
+                    <ul id='period' class='dropdown-content'>
+                        @*<li>
+                            <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">месяц</a>
+                        </li>
+                        <li>
+                            <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">квартал</a>
+                        </li>*@
+                        <li>
+                            <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">год</a>
+                        </li>
+                        @*<li>
+                        <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
+                    </li>*@
+                        <li>
+                            <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">все время</a>
+                        </li>
+                    </ul>
+                </div>
+                @if (Request.QueryString["filter"] == "month")
+                {
+                    <div class="col l4 m4 s4">
+
+                        <a class='dropdown-button btn' href='#' data-activates='month'>
+                            @if (month > 0 && month <= 12)
+                            {
+                                @DateTimeFormatInfo.CurrentInfo.GetMonthName(month)
+                            }
+                            else
+                            {
+                                @:error
+                            }
+                        </a>
+                        <ul id='month' class='dropdown-content'>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"month", i}})">@DateTimeFormatInfo.CurrentInfo.GetMonthName(i)</a></li>
+                            }
+                        </ul>
+
+                    </div>
+                }
+                else if (Request.QueryString["filter"] == "quarter")
+                {
+                    <div class="col l4 m4 s4">
+                        <a class='dropdown-button btn' href='#' data-activates='quarter'>
+                            @if (quarter == 1)
+                            {
+                                @:I
+                            }
+                            else if (quarter == 2)
+                            {
+                                @:II
+                            }
+                            else if (quarter == 3)
+                            {
+                                @:III
+                            }
+                            else if (quarter == 4)
+                            {
+                                @:IV
+                            }
+                        </a>
+                        <ul id='quarter' class='dropdown-content'>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 1}})">I</a></li>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 2}})">II</a></li>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 3}})">III</a></li>
+                            <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 4}})">IV</a></li>
+                        </ul>
+                    </div>
+                }
+                @if (Request.QueryString["filter"] == "month" || Request.QueryString["filter"] == "quarter" || Request.QueryString["filter"] == "year")
+                {
+                    <div class="col l4 m4 s4">
+
+                        <a class='dropdown-button btn' href='#' data-activates='year'>
+                            @year
+                        </a>
+                        <ul id='year' class='dropdown-content'>
+                            @for (int i = 2014; i <= DateTime.Now.Year; i++)
+                            {
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@i</a></li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (Request.QueryString["filter"] == "5year")
+                {
+                    <div class="col l4 m4 s4">
+                        <a class='dropdown-button btn' href='#' data-activates='year'>
+                            @String.Format("{0}-{1}", year, year + 5)
+                        </a>
+                        <ul id='year' class='dropdown-content'>
+                            @for (int i = 2010; i <= DateTime.Now.Year; i += 5)
+                            {
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@String.Format("{0}-{1}", i, i + 5)</a></li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col l12">
+            <div id="caregoryChartContainer"></div>
+            <div id="totalChartContainer"></div>
+            <div id="calendarChartContainer"></div>
+        </div>
+    </div>
+</p>
+@section scripts {
+    <script>
+        google.charts.load("current", { packages: ['corechart', "calendar"] });
+        google.charts.setOnLoadCallback(loadTotalChart);
+        //google.charts.setOnLoadCallback(loadCalendarChart);
+        google.charts.setOnLoadCallback(loadCategoryChart);
+
+        function loadCategoryChart() {
+
+            $.ajax({
+                url: '@Url.Action("GetCumulativeCategoryChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
+                method: 'POST',
+                success: function (data) {
+                    if (data.length > 0) {
+                        var dataT = new google.visualization.DataTable();
+                        dataT.addColumn('number', 'x');
+                        dataT.addColumn('number', 'values');
+                        var dataPoints = [];
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            dataT.addColumn('number', item.Key);
+                            dataPoints.push([item.DateStr, item.CumulativeTotal]);
+                        }
+                        var chartData = google.visualization.arrayToDataTable(dataPoints);
+
+                        var options = {
+                            title: 'Состояние счета',
+                            hAxis: { title: 'Дата', titleTextStyle: { color: '#333' } },
+                            vAxis: { minValue: 0 }
+                        };
+
+                        var chart = new google.visualization.SteppedAreaChart(document.getElementById('totalChartContainer'));
+                        chart.draw(chartData, options);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 'x');
+            data.addColumn('number', 'values');
+            data.addColumn({ id: 'i0', type: 'number', role: 'interval' });
+            data.addColumn({ id: 'i1', type: 'number', role: 'interval' });
+            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+
+            data.addRows([
+                [1, 100, 90, 110, 85, 96, 104, 120],
+                [2, 120, 95, 130, 90, 113, 124, 140],
+                [3, 130, 105, 140, 100, 117, 133, 139],
+                [4, 90, 85, 95, 85, 88, 92, 95],
+                [5, 70, 74, 63, 67, 69, 70, 72],
+                [6, 30, 39, 22, 21, 28, 34, 40],
+                [7, 80, 77, 83, 70, 77, 85, 90],
+                [8, 100, 90, 110, 85, 95, 102, 110]]);
+
+            // The intervals data as narrow lines (useful for showing raw source data)
+            var options_lines = {
+                title: 'Line intervals, default',
+                curveType: 'function',
+                lineWidth: 4,
+                intervals: { 'style': 'line' },
+                legend: 'none'
+            };
+
+            var chart_lines = new google.visualization.LineChart(document.getElementById('caregoryChartContainer'));
+            chart_lines.draw(data, options_lines);
+        }
+
+        function loadTotalChart() {
+            $.ajax({
+                url: '@Url.Action("GetCumulativeTotalChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]',
+                method: 'POST',
+                success: function (data) {
+                    if (data.length > 0) {
+                        var dataPoints = [];
+                        dataPoints.push(['Дата', 'Сумма']);
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            dataPoints.push([item.DateStr, item.CumulativeTotal]);
+                        }
+                        var chartData = google.visualization.arrayToDataTable(dataPoints);
+
+                        var options = {
+                            title: 'Состояние счета',
+                            hAxis: { title: 'Дата', titleTextStyle: { color: '#333' } },
+                            vAxis: { minValue: 0 }
+                        };
+
+                        var chart = new google.visualization.SteppedAreaChart(document.getElementById('totalChartContainer'));
+                        chart.draw(chartData, options);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function loadCalendarChart() {
+            $.ajax({
+                url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=',
+                method: 'POST',
+                success: function (data) {
+                    if (data.length > 0) {
+                        var dataPoints = [];
+                        //dataPoints.push(['Категория', 'Сумма', 'ID']);
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            dataPoints.push([new Date(item.Year, item.Month-1, item.Day), item.Sum]);
+                        }
+                        var dataTable = new google.visualization.DataTable();
+                        dataTable.addColumn({ type: 'date', id: 'Date' });
+                        dataTable.addColumn({ type: 'number', id: 'Sum' });
+                        dataTable.addRows(dataPoints);
+
+                        var chart = new google.visualization.Calendar(document.getElementById('calendarChartContainer'));
+
+                        var options = {
+                            title: "График",
+                            height: 900,
+                            noDataPattern: {
+                                backgroundColor: '#ddd',
+                                color: '#ccc'
+                            }
+                        };
+
+                        chart.draw(dataTable, options);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+
+        @*$.ajax({
+            url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
+            method: 'POST',
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    //dataPoints.push(['Категория', 'Сумма', 'ID']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([new Date(item.Year, item.Month, item.Day), item.Sum]);
+                    }
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn({ type: 'date', id: 'Date' });
+                    dataTable.addColumn({ type: 'number', id: 'Sum' });
+                    dataTable.addRows(dataPoints);
+
+                    var chart = new google.visualization.Calendar(document.getElementById('expCalendarChartContainer'));
+
+                    var options = {
+                        title: "Расход"
+                    };
+
+                    chart.draw(dataTable, options);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });*@
+        }
+    </script>
+}

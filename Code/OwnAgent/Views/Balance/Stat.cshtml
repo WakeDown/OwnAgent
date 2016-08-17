@@ -6,7 +6,7 @@
 @using WebGrease
 
 @{
-    ViewBag.Title = "Статистика";
+    ViewBag.Title = "Главная";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     int year = Convert.ToInt32(Request.QueryString["year"]);
@@ -220,7 +220,7 @@
         });
     }
     google.charts.load("current", { packages: ['corechart',"calendar"] });
-    google.charts.setOnLoadCallback(loadTotalChart);
+    //google.charts.setOnLoadCallback(loadTotalChart);
     google.charts.setOnLoadCallback(loadPieChart);
     //google.charts.setOnLoadCallback(loadCalendarChart);
     function loadCalendarChart() {

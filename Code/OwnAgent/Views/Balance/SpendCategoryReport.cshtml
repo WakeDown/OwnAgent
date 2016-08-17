@@ -2,25 +2,36 @@
 
 @{
     Layout = null;
-    double titalInc = Model.Where(x => x.SpendVectorSysName == "INC").Sum(x => x.Sum);
-    double titalExp = Model.Where(x => x.SpendVectorSysName == "EXP").Sum(x => x.Sum);
-    double totalSum = titalInc - titalExp;
+    double totalInc = Model.Where(x => x.SpendVectorSysName == "INC").Sum(x => x.Sum);
+    double totalExp = Model.Where(x => x.SpendVectorSysName == "EXP").Sum(x => x.Sum);
+    double totalSum = totalInc - totalExp;
 }
 
 @if (Model != null)
 {
     <ul class="collection">
-        @foreach (var item in Model)
-        {
-            <li class="collection-item @item.SpendVectorBgColorClass">
-                <div><a href="@Url.Action("List", new {filter=Request.QueryString["filter"],year=Request.QueryString["year"], month=Request.QueryString["month"], categoryId=item.SpendCategoryId, vectorId=item.SpendVectorId  })" target="_blank" class="text-black black-text"><span class="bold">@item.SpendCategoryName</span></a><span class="secondary-content white-text">@(String.Format("{0:N0} р.", item.Sum)) <i class="material-icons">@item.SpendVectorIconName</i></span></div>
-            </li>
-        }
-
         <li class="collection-item bold">
             <h5>
                 ИТОГО<span class="secondary-content @(totalSum > 0 ? "green-text" : "red-text")">@(totalSum > 0 ? "+" : totalSum == 0 ? "" : "-")@(String.Format("{0:N0} р.", Math.Abs(totalSum)))</span>
             </h5>
         </li>
+        <li class="collection-item bold">
+            ДОХОД<span class="secondary-content green-text">@(String.Format("{0:N0} р.", Math.Abs(totalInc))) <i class="material-icons">add_circle_outline</i></span>
+        </li>
+        <li class="collection-item bold">
+            РАСХОД<span class="secondary-content red-text">@(String.Format("{0:N0} р.", Math.Abs(totalExp))) <i class="material-icons">remove_circle_outline</i></span>
+        </li>
     </ul>
-}
+
+        <ul class="collection">
+            
+            @foreach (var item in Model)
+            {
+                <li class="collection-item @item.SpendVectorBgColorClass">
+                    <div><a href="@Url.Action("List", new {filter = Request.QueryString["filter"], year = Request.QueryString["year"], month = Request.QueryString["month"], categoryId = item.SpendCategoryId, vectorId = item.SpendVectorId})" target="_blank" class="text-black black-text"><span class="">@item.SpendCategoryName</span> <i class="material-icons">link</i></a><span class="secondary-content white-text">@(String.Format("{0:N0} р.", item.Sum)) <i class="material-icons">@item.SpendVectorIconName</i></span></div>
+                </li>
+            }
+
+
+        </ul>
+        }

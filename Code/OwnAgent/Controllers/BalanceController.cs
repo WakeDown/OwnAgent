@@ -282,12 +282,40 @@ namespace OwnAgent.Controllers
             return Json(list);
         }
 
+        public ActionResult GetCumulativeCategoryChartData(string filter, int? year, int? quarter = null, string vectorSysName = null)
+        {
+            IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCumulativeCategoryChartData(year.Value, vectorSysName);
+            //if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value);
+            //if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData();
+
+            return Json(list);
+        }
+
         public ActionResult SpendDelete(int? id)
         {
             if (!id.HasValue) return HttpNotFound();
             SpendService.Instance(UserSid).SpendDelete(id.Value);
 
             return Json(new {});
+        }
+
+        public ActionResult Charts(string filter, int? year, int? month, int? quarter = null)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("Charts", new { filter = "year", year = year, month = month, quarter = quarter });
+            if (!year.HasValue) return RedirectToAction("Charts", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
+            if (!month.HasValue) return RedirectToAction("Charts", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            if (!quarter.HasValue)
+            {
+                var quarterD = (double)month / 3;
+                if (quarterD < 1) quarter = 1;
+                else if (quarterD > 1 && quarterD < 2) quarter = 2;
+                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 3 && quarterD < 4) quarter = 4;
+                return RedirectToAction("Charts", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            }
+
+            return View();
         }
     }
 }
