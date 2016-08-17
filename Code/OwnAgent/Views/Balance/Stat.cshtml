@@ -66,9 +66,9 @@
 <div class="clearfix"></div>
 <p>
     <div class="row">
-        <div class="col-lg-4 col-md-6 col-sm-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="btn-group btn-full">
                         <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             @if (Request.QueryString["filter"] == "month")
@@ -114,7 +114,7 @@
                 </div>
                 @if (Request.QueryString["filter"] == "month")
             {
-                    <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 
                         <div class="btn-group btn-full">
                             <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -139,7 +139,7 @@
             }
             else if (Request.QueryString["filter"] == "quarter")
             {
-                <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="btn-group btn-full">
                         <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             @if (quarter == 1)
@@ -171,7 +171,7 @@
             }
                 @if (Request.QueryString["filter"] == "month" || Request.QueryString["filter"] == "quarter" || Request.QueryString["filter"] == "year")
             {
-                    <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 
                         <div class="btn-group btn-full">
                             <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -188,7 +188,7 @@
             }
                 @if (Request.QueryString["filter"] == "5year")
             {
-                <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="btn-group btn-full">
                         <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             @String.Format("{0}-{1}", year, year + 5) <span class="caret"></span>
@@ -209,7 +209,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8 col-md-6 col-sm-12">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div id="incPieChartContainer"></div>
             <div id="expPieChartContainer"></div>
             <div id="totalChartContainer"></div>
