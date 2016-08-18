@@ -654,6 +654,18 @@ namespace Data.Services
             Uow.Commit();
         }
 
+        public IEnumerable<SpendBills> SpendBillGetList()
+        {
+            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
+            return model;
+        }
+
+        public SpendBills SpendBillGet(int id)
+        {
+            var model = Uow.SpendBills.GetOne(x => x.Id == id);
+            return model;
+        }
+
         //public static IEnumerable<SpendStatItem> GetVectorMonthlyReport(string clientId, int year, int month)
         //{		
         //    var list = new List<SpendStatItem>();		

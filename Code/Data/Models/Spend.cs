@@ -24,9 +24,11 @@ namespace Data.Models
         public System.DateTime CreateDate { get; set; }
         public bool Enabled { get; set; }
         public Nullable<System.DateTime> DeleteDate { get; set; }
+        public Nullable<int> BillId { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual SpendCategory SpendCategory { get; set; }
         public virtual SpendVector SpendVector { get; set; }
+        public virtual SpendBills SpendBills { get; set; }
     }
 }

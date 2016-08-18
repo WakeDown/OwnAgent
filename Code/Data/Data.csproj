@@ -63,6 +63,9 @@
     <Compile Include="Models\AspNetUsers.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BillCapitalizationTypes.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
@@ -82,6 +85,12 @@
       <DependentUpon>OwnAgentModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Spend.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SpendBills.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SpendBillTypes.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpendCategory.cs">

@@ -30,7 +30,10 @@ namespace Data.Models
         public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        public virtual DbSet<BillCapitalizationTypes> BillCapitalizationTypes { get; set; }
         public virtual DbSet<Spend> Spend { get; set; }
+        public virtual DbSet<SpendBills> SpendBills { get; set; }
+        public virtual DbSet<SpendBillTypes> SpendBillTypes { get; set; }
         public virtual DbSet<SpendCategory> SpendCategory { get; set; }
         public virtual DbSet<SpendVector> SpendVector { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }

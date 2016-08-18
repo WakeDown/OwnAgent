@@ -66,6 +66,16 @@
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
         </EntityType>
+        <EntityType Name="BillCapitalizationTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" />
+          <Property Name="WhenFinished" Type="bit" Nullable="false" />
+          <Property Name="DaysCount" Type="int" Nullable="false" />
+          <Property Name="OrderNum" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Spend">
           <Key>
             <PropertyRef Name="Id" />
@@ -80,6 +90,35 @@
           <Property Name="CreateDate" Type="datetime" Nullable="false" />
           <Property Name="Enabled" Type="bit" Nullable="false" />
           <Property Name="DeleteDate" Type="datetime" />
+          <Property Name="BillId" Type="int" />
+        </EntityType>
+        <EntityType Name="SpendBills">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="TypeId" Type="int" Nullable="false" />
+          <Property Name="StartAmount" Type="money" />
+          <Property Name="Percent" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="CapitalizationTypeId" Type="int" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="4000" />
+          <Property Name="UserSid" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+          <Property Name="DeleteDate" Type="datetime" />
+          <Property Name="OrderNum" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SpendBillTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SysName" Type="nvarchar" MaxLength="50" />
+          <Property Name="OrderNum" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="SpendCategory">
           <Key>
@@ -208,6 +247,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Spend_SpendBills">
+          <End Role="SpendBills" Type="Self.SpendBills" Multiplicity="0..1" />
+          <End Role="Spend" Type="Self.Spend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpendBills">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Spend">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpendBills_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="SpendBills" Type="Self.SpendBills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpendBills">
+              <PropertyRef Name="UserSid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpendBills_BillCapitalizationTypes">
+          <End Role="BillCapitalizationTypes" Type="Self.BillCapitalizationTypes" Multiplicity="0..1" />
+          <End Role="SpendBills" Type="Self.SpendBills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillCapitalizationTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpendBills">
+              <PropertyRef Name="CapitalizationTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpendBills_SpendBillTypes">
+          <End Role="SpendBillTypes" Type="Self.SpendBillTypes" Multiplicity="1" />
+          <End Role="SpendBills" Type="Self.SpendBills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpendBillTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpendBills">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SpendCategory_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="SpendCategory" Type="Self.SpendCategory" Multiplicity="*" />
@@ -227,7 +314,10 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BillCapitalizationTypes" EntityType="Self.BillCapitalizationTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Spend" EntityType="Self.Spend" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SpendBills" EntityType="Self.SpendBills" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SpendBillTypes" EntityType="Self.SpendBillTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpendCategory" EntityType="Self.SpendCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpendVector" EntityType="Self.SpendVector" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -259,6 +349,22 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Spend" EntitySet="Spend" />
           </AssociationSet>
+          <AssociationSet Name="FK_Spend_SpendBills" Association="Self.FK_Spend_SpendBills">
+            <End Role="SpendBills" EntitySet="SpendBills" />
+            <End Role="Spend" EntitySet="Spend" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpendBills_AspNetUsers" Association="Self.FK_SpendBills_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="SpendBills" EntitySet="SpendBills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpendBills_BillCapitalizationTypes" Association="Self.FK_SpendBills_BillCapitalizationTypes">
+            <End Role="BillCapitalizationTypes" EntitySet="BillCapitalizationTypes" />
+            <End Role="SpendBills" EntitySet="SpendBills" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpendBills_SpendBillTypes" Association="Self.FK_SpendBills_SpendBillTypes">
+            <End Role="SpendBillTypes" EntitySet="SpendBillTypes" />
+            <End Role="SpendBills" EntitySet="SpendBills" />
+          </AssociationSet>
           <AssociationSet Name="FK_SpendCategory_AspNetUsers" Association="Self.FK_SpendCategory_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="SpendCategory" EntitySet="SpendCategory" />
@@ -274,7 +380,10 @@
           <EntitySet Name="AspNetUserClaims" EntityType="OwnAgentModel.AspNetUserClaims" />
           <EntitySet Name="AspNetUserLogins" EntityType="OwnAgentModel.AspNetUserLogins" />
           <EntitySet Name="AspNetUsers" EntityType="OwnAgentModel.AspNetUsers" />
+          <EntitySet Name="BillCapitalizationTypes" EntityType="OwnAgentModel.BillCapitalizationTypes" />
           <EntitySet Name="Spend" EntityType="OwnAgentModel.Spend" />
+          <EntitySet Name="SpendBills" EntityType="OwnAgentModel.SpendBills" />
+          <EntitySet Name="SpendBillTypes" EntityType="OwnAgentModel.SpendBillTypes" />
           <EntitySet Name="SpendCategory" EntityType="OwnAgentModel.SpendCategory" />
           <EntitySet Name="SpendVector" EntityType="OwnAgentModel.SpendVector" />
           <EntitySet Name="sysdiagrams" EntityType="OwnAgentModel.sysdiagrams" />
@@ -290,9 +399,17 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Spend" EntitySet="Spend" />
           </AssociationSet>
+          <AssociationSet Name="FK_SpendBills_AspNetUsers" Association="OwnAgentModel.FK_SpendBills_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="SpendBills" EntitySet="SpendBills" />
+          </AssociationSet>
           <AssociationSet Name="FK_SpendCategory_AspNetUsers" Association="OwnAgentModel.FK_SpendCategory_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="SpendCategory" EntitySet="SpendCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpendBills_BillCapitalizationTypes" Association="OwnAgentModel.FK_SpendBills_BillCapitalizationTypes">
+            <End Role="BillCapitalizationTypes" EntitySet="BillCapitalizationTypes" />
+            <End Role="SpendBills" EntitySet="SpendBills" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Spend_dbo_SpendCategory_CategoryId" Association="OwnAgentModel.FK_dbo_Spend_dbo_SpendCategory_CategoryId">
             <End Role="SpendCategory" EntitySet="SpendCategory" />
@@ -301,6 +418,14 @@
           <AssociationSet Name="FK_dbo_Spend_dbo_SpendVector_VectorId" Association="OwnAgentModel.FK_dbo_Spend_dbo_SpendVector_VectorId">
             <End Role="SpendVector" EntitySet="SpendVector" />
             <End Role="Spend" EntitySet="Spend" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Spend_SpendBills" Association="OwnAgentModel.FK_Spend_SpendBills">
+            <End Role="SpendBills" EntitySet="SpendBills" />
+            <End Role="Spend" EntitySet="Spend" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpendBills_SpendBillTypes" Association="OwnAgentModel.FK_SpendBills_SpendBillTypes">
+            <End Role="SpendBillTypes" EntitySet="SpendBillTypes" />
+            <End Role="SpendBills" EntitySet="SpendBills" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="OwnAgentModel.AspNetUserRoles">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
@@ -365,8 +490,20 @@
           <NavigationProperty Name="AspNetUserClaims" Relationship="OwnAgentModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="OwnAgentModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
           <NavigationProperty Name="Spend" Relationship="OwnAgentModel.FK_Spend_AspNetUsers" FromRole="AspNetUsers" ToRole="Spend" />
+          <NavigationProperty Name="SpendBills" Relationship="OwnAgentModel.FK_SpendBills_AspNetUsers" FromRole="AspNetUsers" ToRole="SpendBills" />
           <NavigationProperty Name="SpendCategory" Relationship="OwnAgentModel.FK_SpendCategory_AspNetUsers" FromRole="AspNetUsers" ToRole="SpendCategory" />
           <NavigationProperty Name="AspNetRoles" Relationship="OwnAgentModel.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+        </EntityType>
+        <EntityType Name="BillCapitalizationTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="WhenFinished" Type="Boolean" Nullable="false" />
+          <Property Name="DaysCount" Type="Int32" Nullable="false" />
+          <Property Name="OrderNum" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SpendBills" Relationship="OwnAgentModel.FK_SpendBills_BillCapitalizationTypes" FromRole="BillCapitalizationTypes" ToRole="SpendBills" />
         </EntityType>
         <EntityType Name="Spend">
           <Key>
@@ -382,9 +519,44 @@
           <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Enabled" Type="Boolean" Nullable="false" />
           <Property Name="DeleteDate" Type="DateTime" Precision="3" />
+          <Property Name="BillId" Type="Int32" />
           <NavigationProperty Name="AspNetUsers" Relationship="OwnAgentModel.FK_Spend_AspNetUsers" FromRole="Spend" ToRole="AspNetUsers" />
           <NavigationProperty Name="SpendCategory" Relationship="OwnAgentModel.FK_dbo_Spend_dbo_SpendCategory_CategoryId" FromRole="Spend" ToRole="SpendCategory" />
           <NavigationProperty Name="SpendVector" Relationship="OwnAgentModel.FK_dbo_Spend_dbo_SpendVector_VectorId" FromRole="Spend" ToRole="SpendVector" />
+          <NavigationProperty Name="SpendBills" Relationship="OwnAgentModel.FK_Spend_SpendBills" FromRole="Spend" ToRole="SpendBills" />
+        </EntityType>
+        <EntityType Name="SpendBills">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="StartAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Percent" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="CapitalizationTypeId" Type="Int32" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="Comment" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="UserSid" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <Property Name="DeleteDate" Type="DateTime" Precision="3" />
+          <Property Name="OrderNum" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="OwnAgentModel.FK_SpendBills_AspNetUsers" FromRole="SpendBills" ToRole="AspNetUsers" />
+          <NavigationProperty Name="BillCapitalizationTypes" Relationship="OwnAgentModel.FK_SpendBills_BillCapitalizationTypes" FromRole="SpendBills" ToRole="BillCapitalizationTypes" />
+          <NavigationProperty Name="Spend" Relationship="OwnAgentModel.FK_Spend_SpendBills" FromRole="SpendBills" ToRole="Spend" />
+          <NavigationProperty Name="SpendBillTypes" Relationship="OwnAgentModel.FK_SpendBills_SpendBillTypes" FromRole="SpendBills" ToRole="SpendBillTypes" />
+        </EntityType>
+        <EntityType Name="SpendBillTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SysName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrderNum" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SpendBills" Relationship="OwnAgentModel.FK_SpendBills_SpendBillTypes" FromRole="SpendBillTypes" ToRole="SpendBills" />
         </EntityType>
         <EntityType Name="SpendCategory">
           <Key>
@@ -406,9 +578,9 @@
           <Property Name="VectorId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SysName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Spend" Relationship="OwnAgentModel.FK_dbo_Spend_dbo_SpendVector_VectorId" FromRole="SpendVector" ToRole="Spend" />
           <Property Name="BgColorClass" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IconName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Spend" Relationship="OwnAgentModel.FK_dbo_Spend_dbo_SpendVector_VectorId" FromRole="SpendVector" ToRole="Spend" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -460,6 +632,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SpendBills_AspNetUsers">
+          <End Type="OwnAgentModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="OwnAgentModel.SpendBills" Role="SpendBills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpendBills">
+              <PropertyRef Name="UserSid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SpendCategory_AspNetUsers">
           <End Type="OwnAgentModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
           <End Type="OwnAgentModel.SpendCategory" Role="SpendCategory" Multiplicity="*" />
@@ -469,6 +653,18 @@
             </Principal>
             <Dependent Role="SpendCategory">
               <PropertyRef Name="UserSid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpendBills_BillCapitalizationTypes">
+          <End Type="OwnAgentModel.BillCapitalizationTypes" Role="BillCapitalizationTypes" Multiplicity="0..1" />
+          <End Type="OwnAgentModel.SpendBills" Role="SpendBills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BillCapitalizationTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpendBills">
+              <PropertyRef Name="CapitalizationTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -500,11 +696,35 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Spend_SpendBills">
+          <End Type="OwnAgentModel.SpendBills" Role="SpendBills" Multiplicity="0..1" />
+          <End Type="OwnAgentModel.Spend" Role="Spend" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpendBills">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Spend">
+              <PropertyRef Name="BillId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpendBills_SpendBillTypes">
+          <End Type="OwnAgentModel.SpendBillTypes" Role="SpendBillTypes" Multiplicity="1" />
+          <End Type="OwnAgentModel.SpendBills" Role="SpendBills" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpendBillTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpendBills">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="AspNetUserRoles">
           <End Type="OwnAgentModel.AspNetRoles" Role="AspNetRoles" Multiplicity="*" />
           <End Type="OwnAgentModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -565,9 +785,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BillCapitalizationTypes">
+            <EntityTypeMapping TypeName="OwnAgentModel.BillCapitalizationTypes">
+              <MappingFragment StoreEntitySet="BillCapitalizationTypes">
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="DaysCount" ColumnName="DaysCount" />
+                <ScalarProperty Name="WhenFinished" ColumnName="WhenFinished" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Spend">
             <EntityTypeMapping TypeName="OwnAgentModel.Spend">
               <MappingFragment StoreEntitySet="Spend">
+                <ScalarProperty Name="BillId" ColumnName="BillId" />
                 <ScalarProperty Name="DeleteDate" ColumnName="DeleteDate" />
                 <ScalarProperty Name="Enabled" ColumnName="Enabled" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
@@ -577,6 +809,36 @@
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="VectorId" ColumnName="VectorId" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpendBills">
+            <EntityTypeMapping TypeName="OwnAgentModel.SpendBills">
+              <MappingFragment StoreEntitySet="SpendBills">
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="DeleteDate" ColumnName="DeleteDate" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UserSid" ColumnName="UserSid" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="CapitalizationTypeId" ColumnName="CapitalizationTypeId" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+                <ScalarProperty Name="StartAmount" ColumnName="StartAmount" />
+                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpendBillTypes">
+            <EntityTypeMapping TypeName="OwnAgentModel.SpendBillTypes">
+              <MappingFragment StoreEntitySet="SpendBillTypes">
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="SysName" ColumnName="SysName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

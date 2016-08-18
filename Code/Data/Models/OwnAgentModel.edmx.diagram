@@ -6,20 +6,27 @@
     <edmx:Diagrams>
       <Diagram DiagramId="d1ca2c3b69ec4b9ca67d62b96e5a61e8" Name="Diagram1">
         <EntityTypeShape EntityType="OwnAgentModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="OwnAgentModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="6.625" />
-        <EntityTypeShape EntityType="OwnAgentModel.AspNetUserClaims" Width="1.5" PointX="5.25" PointY="3.625" />
-        <EntityTypeShape EntityType="OwnAgentModel.AspNetUserLogins" Width="1.5" PointX="5.25" PointY="13.875" />
-        <EntityTypeShape EntityType="OwnAgentModel.AspNetUsers" Width="1.5" PointX="3" PointY="5.375" />
-        <EntityTypeShape EntityType="OwnAgentModel.Spend" Width="1.5" PointX="7.5" PointY="7.5" />
-        <EntityTypeShape EntityType="OwnAgentModel.SpendCategory" Width="1.5" PointX="5.25" PointY="10.625" />
-        <EntityTypeShape EntityType="OwnAgentModel.SpendVector" Width="1.5" PointX="5.25" PointY="7.375" />
+        <EntityTypeShape EntityType="OwnAgentModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="OwnAgentModel.AspNetUserClaims" Width="1.5" PointX="5.25" PointY="6.625" />
+        <EntityTypeShape EntityType="OwnAgentModel.AspNetUserLogins" Width="1.5" PointX="5.25" PointY="22.625" />
+        <EntityTypeShape EntityType="OwnAgentModel.AspNetUsers" Width="1.5" PointX="3" PointY="8.375" />
+        <EntityTypeShape EntityType="OwnAgentModel.BillCapitalizationTypes" Width="1.5" PointX="3" PointY="14.125" />
+        <EntityTypeShape EntityType="OwnAgentModel.Spend" Width="1.5" PointX="7.5" PointY="13.125" />
+        <EntityTypeShape EntityType="OwnAgentModel.SpendBills" Width="1.5" PointX="5.25" PointY="10.375" />
+        <EntityTypeShape EntityType="OwnAgentModel.SpendBillTypes" Width="1.5" PointX="3" PointY="17" />
+        <EntityTypeShape EntityType="OwnAgentModel.SpendCategory" Width="1.5" PointX="5.25" PointY="19.25" />
+        <EntityTypeShape EntityType="OwnAgentModel.SpendVector" Width="1.5" PointX="5.25" PointY="16" />
         <EntityTypeShape EntityType="OwnAgentModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="0.75" />
         <AssociationConnector Association="OwnAgentModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="OwnAgentModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
         <AssociationConnector Association="OwnAgentModel.FK_Spend_AspNetUsers" />
+        <AssociationConnector Association="OwnAgentModel.FK_SpendBills_AspNetUsers" />
         <AssociationConnector Association="OwnAgentModel.FK_SpendCategory_AspNetUsers" />
+        <AssociationConnector Association="OwnAgentModel.FK_SpendBills_BillCapitalizationTypes" />
         <AssociationConnector Association="OwnAgentModel.FK_dbo_Spend_dbo_SpendCategory_CategoryId" />
         <AssociationConnector Association="OwnAgentModel.FK_dbo_Spend_dbo_SpendVector_VectorId" />
+        <AssociationConnector Association="OwnAgentModel.FK_Spend_SpendBills" />
+        <AssociationConnector Association="OwnAgentModel.FK_SpendBills_SpendBillTypes" />
         <AssociationConnector Association="OwnAgentModel.AspNetUserRoles" />
       </Diagram>
     </edmx:Diagrams>

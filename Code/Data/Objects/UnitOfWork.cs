@@ -23,8 +23,21 @@ namespace Data.Objects
         private IRepository<SpendCategory> _spendCategories;
         private IRepository<SpendVector> _spendVectors;
         private IRepository<AspNetUsers> _aspNetUsers;
+        private IRepository<SpendBills> _spendBills;
 
-        
+        public IRepository<SpendBills> SpendBills
+        {
+            get
+            {
+                if (_spendBills == null)
+                {
+                    _spendBills = new Repository<SpendBills>(DbContext);
+
+                }
+                return _spendBills;
+            }
+        }
+
         public IRepository<Spend> Spends
         {
             get
