@@ -58,7 +58,7 @@
 {
     <script>
             $(function () {
-                $('#newCat').click(newModal);
+                $('#newBill').click(newModal);
                 $('.category-remove').click(removeSpend);
                 $('.category-order-up').click(catOrderUp);
                 $('.category-order-down').click(catOrderDown);
@@ -100,7 +100,7 @@
                     alert('Необходимо выбрать 2 или более категорий');
                     return false;
                 }
-                var $cont = $('#categoryModal');
+                var $cont = $('#billModal');
                 $.ajax({
                     url: '@Url.Action("Merge")',
                     success: function (data) {
@@ -166,15 +166,27 @@
                 $chkList.prop('checked', chacked);
             }
             function newModal() {
-                var $cont = $('#categoryModal');
+                var $cont = $('#billModal');
                 $.ajax({
                     url: '@Url.Action("New")',
                     success: function (data) {
                         $cont.html(data);
                         $cont.modal();
                         setTimeout(function () {
-                            $('#catName').focus();
-                            $('#catCreate').click(catCreate);
+                            $('#billName').focus();
+                            $('#billCreate').click(billCreate);
+                            $('#startDate').datepicker({
+                                format: 'dd.mm.yyyy',
+                                language: "ru",
+                                todayHighlight: true,
+                                autoclose: true
+                            });
+                            $('#endDate').datepicker({
+                                format: 'dd.mm.yyyy',
+                                language: "ru",
+                                todayHighlight: true,
+                                autoclose: true
+                            });
                         }, 500);
                     },
                     error: function (data) {
@@ -184,10 +196,10 @@
                 return false;
             }
 
-            function catCreate() {
-                var name = $('#catName').val();
+        function billCreate() {
+            var name = $('#billName').val();
                 if (name == null || name == '') {
-                    alert('Введите название категории!');
+                    alert('Введите название счета!');
                     return;
                 }
                 $.ajax({
@@ -195,7 +207,7 @@
                     method: 'POST',
                     data: { Name: name },
                     success: function () {
-                        $('#categoryModal').modal('hide');
+                        $('#billModal').modal('hide');
                         location.reload();
                     },
                     error: function (data) {
@@ -205,7 +217,7 @@
             }
             function editModal() {
                 var id = $(this).closest('.cat-item').attr('cid');
-                var $cont = $('#categoryModal');
+                var $cont = $('#billModal');
                 $.ajax({
                     url: '@Url.Action("Edit")',
                     data: { id},
@@ -237,7 +249,7 @@
                     method: 'POST',
                     data: { CategoryId: id, Name: name },
                     success: function () {
-                        $('#categoryModal').modal('hide');
+                        $('#billModal').modal('hide');
                         location.reload();
                     },
                     error: function (data) {

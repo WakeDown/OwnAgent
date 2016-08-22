@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Data.Models;
 using Data.Services;
 using OwnAgent.Objects;
 
@@ -48,14 +49,14 @@ namespace OwnAgent.Controllers
         [HttpGet]
         public ActionResult New()
         {
-
-            return Json(new { });
+            var model = new SpendBills();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult Create()
+        public ActionResult Create(SpendBills model)
         {
-
+            SpendService.Instance(UserSid).SpendBillCreate(model);
             return Json(new { });
         }
 

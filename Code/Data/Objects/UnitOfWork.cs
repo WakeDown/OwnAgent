@@ -24,6 +24,34 @@ namespace Data.Objects
         private IRepository<SpendVector> _spendVectors;
         private IRepository<AspNetUsers> _aspNetUsers;
         private IRepository<SpendBills> _spendBills;
+        private IRepository<SpendBillTypes> _spendBillTypes;
+        private IRepository<BillCapitalizationTypes> _billCapitalizationTypes;
+
+        public IRepository<BillCapitalizationTypes> BillCapitalizationTypes
+        {
+            get
+            {
+                if (_billCapitalizationTypes == null)
+                {
+                    _billCapitalizationTypes = new Repository<BillCapitalizationTypes>(DbContext);
+
+                }
+                return _billCapitalizationTypes;
+            }
+        }
+
+        public IRepository<SpendBillTypes> SpendBillTypes
+        {
+            get
+            {
+                if (_spendBillTypes == null)
+                {
+                    _spendBillTypes = new Repository<SpendBillTypes>(DbContext);
+
+                }
+                return _spendBillTypes;
+            }
+        }
 
         public IRepository<SpendBills> SpendBills
         {

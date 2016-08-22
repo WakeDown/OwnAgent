@@ -666,6 +666,24 @@ namespace Data.Services
             return model;
         }
 
+        public void SpendBillCreate(SpendBills model)
+        {
+            if (String.IsNullOrEmpty(model.Name)) throw new ArgumentException("Необходимо заполнить название счета!");
+            var bill = Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid && x.Name == model.Name);
+            if (bill.Any()) throw new ArgumentException("Такое название счета уже существует!");
+            model.Enabled = true;
+            model.UserSid = UserSid;
+            model.OrderNum = 500;
+            Uow.SpendBills.Insert(model);
+            Uow.Commit();
+        }
+
+        public IEnumerable<SpendBillTypes> SpendBillTypeGetList()
+        {
+            var list = Uow.SpendBillTypes.GetAll(null, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
+            return list;
+        }
+
         //public static IEnumerable<SpendStatItem> GetVectorMonthlyReport(string clientId, int year, int month)
         //{		
         //    var list = new List<SpendStatItem>();		
