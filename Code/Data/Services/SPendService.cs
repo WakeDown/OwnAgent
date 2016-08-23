@@ -558,7 +558,7 @@ namespace Data.Services
         public void SpendCategoryDelete(int id)
         {
             var cat = Uow.SpendCategories.GetOne(x => x.CategoryId == id, x => x.Spend);
-            if (cat.Spend.Any(x => x.Enabled)) throw new ArgumentException("Нельзя удалить категорию пока она содержит записи трат! Удалите или переместите записи в другую категорию и посторите попытку!");
+            if (cat.Spend.Any(x => x.Enabled)) throw new ArgumentException("Нельзя удалить категорию пока она содержит записи доходов/расходов! Удалите или переместите записи в другую категорию и повторите попытку!");
             cat.Enabled = false;
             Uow.Commit();
         }
@@ -656,7 +656,7 @@ namespace Data.Services
 
         public IEnumerable<SpendBills> SpendBillGetList()
         {
-            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
+            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
             return model;
         }
 
@@ -674,6 +674,7 @@ namespace Data.Services
             model.Enabled = true;
             model.UserSid = UserSid;
             model.OrderNum = 500;
+            model.CreateDate = DateTime.Now;
             Uow.SpendBills.Insert(model);
             Uow.Commit();
         }
@@ -682,6 +683,14 @@ namespace Data.Services
         {
             var list = Uow.SpendBillTypes.GetAll(null, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
             return list;
+        }
+
+        public void SpendBillDelete(int id)
+        {
+            var bill = Uow.SpendBills.GetOne(x => x.Id == id, x => x.Spend);
+            if (bill.Spend.Any(x => x.Enabled)) throw new ArgumentException("Нельзя удалить счет пока он содержит записи доходов/расходов! Удалите или переместите записи на другой счет и повторите попытку!");
+            bill.Enabled = false;
+            Uow.Commit();
         }
 
         //public static IEnumerable<SpendStatItem> GetVectorMonthlyReport(string clientId, int year, int month)

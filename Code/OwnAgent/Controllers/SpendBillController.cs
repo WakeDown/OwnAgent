@@ -14,7 +14,13 @@ namespace OwnAgent.Controllers
         // GET: SpendBill
         public ActionResult Index()
         {
+            return View();
+        }
+
+        public ActionResult BillList()
+        {
             var list = SpendService.Instance(UserSid).SpendBillGetList();
+
             return View(list);
         }
 
@@ -60,17 +66,16 @@ namespace OwnAgent.Controllers
             return Json(new { });
         }
 
-        [HttpPost]
-        public ActionResult Edit()
+        public ActionResult Edit(int id)
         {
-
-            return Json(new { });
+            var model = SpendService.Instance(UserSid).SpendBillGet(id);
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult Delete()
+        public ActionResult Delete(int id)
         {
-
+            SpendService.Instance(UserSid).SpendBillDelete(id);
             return Json(new { });
         }
     }

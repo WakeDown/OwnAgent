@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Data.Models.SpendBills>
+@{
+    Layout = null;
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <input id="bill-all" type="checkbox" title="все" />
+                <label for="bill-all"></label>
+            </th>
+            <th></th>
+            <th></th>
+            <th>Название счета</th>
+            <th>Кол-во записей</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr class="bill-item" bid="@item.Id">
+                <td>
+                    <input id="bill-@item.Id" value="@item.Id" bname="@item.Name" type="checkbox" />
+                    <label for="bill-@item.Id"></label>
+                </td>
+                <td>
+                    <a class="bill-order-up text-muted" href="#" title="вверх"><i class="fa fa-long-arrow-up"></i></a>
+                    <a class="bill-order-down text-muted" href="#" title="вниз"><i class="fa fa-long-arrow-down"></i></a>
+                </td>
+                <td>
+                    <a class="bill-edit text-muted" href="#" title="изменить"><i class="fa fa-edit"></i></a>
+                </td>
+                <td>@item.Name</td>
+                <td>@item.Spend.Count(x => x.Enabled)</td>
+                <td>
+                    <a class="bill-remove text-muted" href="#" title="удалить"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </thead>
+</table>
