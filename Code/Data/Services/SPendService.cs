@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,12 +28,12 @@ namespace Data.Services
                 var cat = new SpendCategory();
                 cat.Enabled = true;
                 cat.UserSid = UserSid;
-                cat.Name = "Еда/Бытовое";
+                cat.Name = "Еда/Бытовые товары";
                 cat.OrderNum = 10;
                 Uow.SpendCategories.Insert(cat);
                 Uow.Commit();
 
-                cat.Name = "Услуги";
+                cat.Name = "Ьытовые услуги";
                 cat.OrderNum = 20;
                 Uow.SpendCategories.Insert(cat);
                 Uow.Commit();
@@ -118,7 +119,7 @@ namespace Data.Services
             && (!dateEnd.HasValue || (dateEnd.HasValue && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(dateEnd)))
             && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
             && (!vectorId.HasValue || (vectorId.HasValue && x.VectorId == vectorId))
-            , x => x.OrderByDescending(y => y.Date).ThenByDescending(y => y.Id), x => x.SpendCategory, x => x.SpendVector);
+            , x => x.OrderByDescending(y => y.Date).ThenByDescending(y => y.Id), x => x.SpendCategory, x => x.SpendVector, x=>x.SpendBills);
             return list;
         }
 
@@ -676,6 +677,22 @@ namespace Data.Services
             model.OrderNum = 500;
             model.CreateDate = DateTime.Now;
             Uow.SpendBills.Insert(model);
+            Uow.Commit();
+        }
+
+        public void SpendBillEdit(SpendBills model)
+        {
+            if (String.IsNullOrEmpty(model.Name)) throw new ArgumentException("Необходимо заполнить название счета!");
+            var exists = Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid && x.Name == model.Name);
+            if (exists.Any()) throw new ArgumentException("Такое название счета уже существует!");
+            var bill = Uow.SpendBills.GetOne(x => x.Id == model.Id);
+            bill.Name = model.Name;
+            bill.TypeId = model.TypeId;
+            bill.StartAmount = model.StartAmount;
+            bill.StartDate = model.StartDate;
+            bill.EndDate = model.EndDate;
+            bill.Comment = model.Comment;
+            Uow.SpendBills.Update(bill);
             Uow.Commit();
         }
 

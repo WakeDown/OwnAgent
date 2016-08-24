@@ -14,8 +14,10 @@
 
                     <div class="@(spend.SpendVectorSysName == "EXP" ? "text-danger" : "text-success")">
                         <a href="#" class="last-add-remove text-muted"><i class="fa fa-remove"></i></a>
-                        <div>
-                            <small class="text-muted">@spend.Date.ToString("D")</small>
+                        <div class="text-muted">
+                            <small>@spend.Date.ToString("D")</small>
+                            <br/>
+                            <small>@spend.BillName</small>
                         </div>
                         <i class="@spend.SpendVectorIconName"></i>
                         <small>

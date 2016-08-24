@@ -11,7 +11,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Редактирование счета</h4>
         </div>
-        @using (Ajax.BeginForm("Create", new AjaxOptions() { OnSuccess = "createBillSuccess" }))
+        @using (Ajax.BeginForm("Update", new AjaxOptions() { OnSuccess = "editBillSuccess" }))
         {
             <div class="modal-body">
                 @Html.HiddenFor(m=>m.Id)

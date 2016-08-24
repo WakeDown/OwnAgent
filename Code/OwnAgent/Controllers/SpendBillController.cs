@@ -73,6 +73,13 @@ namespace OwnAgent.Controllers
         }
 
         [HttpPost]
+        public ActionResult Update(SpendBills model)
+        {
+            SpendService.Instance(UserSid).SpendBillEdit(model);
+            return Json(new { });
+        }
+
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             SpendService.Instance(UserSid).SpendBillDelete(id);

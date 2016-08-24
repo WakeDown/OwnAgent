@@ -21,6 +21,7 @@ namespace Models.Mappers
             model.SpendVectorIconName = spend.SpendVector.IconName;
             model.SpendVectorSysName = spend.SpendVector.SysName;
             model.Date = spend.Date;
+            model.BillName = spend.SpendBills!= null ? spend.SpendBills.Name:"Счет не указан";
             return model;
         }
 

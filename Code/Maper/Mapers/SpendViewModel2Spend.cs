@@ -18,6 +18,7 @@ namespace Models.Mappers
             spend.VectorId = model.VectorId;
             spend.CategoryId = model.CategoryId;
             spend.Date = model.Date;
+            spend.BillId = model.BillId;
             return spend;
         }
     }

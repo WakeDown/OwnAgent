@@ -14,6 +14,7 @@ namespace Models.ViewModels
         public int CategoryId { get; set; }
         public double Sum { get; set; }
         public string Comment { get; set; }
+        public int BillId { get; set; }
     }
 
     public class SpendTopViewModel
@@ -40,6 +41,7 @@ namespace Models.ViewModels
         public string SpendVectorBgColorClass { get; set; }
         public string SpendVectorIconName { get; set; }
         public string SpendVectorSysName { get; set; }
+        public string BillName { get; set; }
     }
 
     public class SpendStatViewModel

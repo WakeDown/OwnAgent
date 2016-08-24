@@ -10,11 +10,11 @@ namespace OwnAgent
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery.unobtrusive-ajax.min.js",
-                        "~/Scripts/jquery.validate.unobtrusive.min.js",
-                        "~/Scripts/jquery-dateformat.js",
                         "~/Scripts/bootstrap-datepicker.js",
-                        "~/Scripts/bootstrap-datepicker.ru.js"
+                        "~/Scripts/bootstrap-datepicker.ru.js",
+                        "~/Scripts/jquery.unobtrusive-ajax.min.js",
+                        //"~/Scripts/jquery.validate.unobtrusive.min.js",
+                        "~/Scripts/jquery-dateformat.js"
                         //"~/Scripts/jquery.canvasjs.min.js"
                         ));
 

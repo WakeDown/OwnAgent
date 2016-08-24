@@ -89,26 +89,6 @@
             });
         }
 
-        function billCreate() {
-            var name = $('#billName').val();
-            if (name == null || name == '') {
-                alert('Введите название счета!');
-                return;
-            }
-            $.ajax({
-                url: '@Url.Action("Create")',
-                method: 'POST',
-                data: { Name: name },
-                success: function () {
-                    $('#billModal').modal('hide');
-                    location.reload();
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            });
-        }
-
         function editModal() {
             var id = $(this).closest('.bill-item').attr('bid');
             var $cont = $('#billModal');
@@ -129,25 +109,10 @@
             });
             return false;
         }
-        function billEdit() {
-            var name = $('#catName').val();
-            if (name == null || name == '') {
-                alert('Введите название категории!');
-                return;
-            }
-            var id = $('#catEdit').attr('cid');
-            $.ajax({
-                url: '@Url.Action("Edit")',
-                method: 'POST',
-                data: { CategoryId: id, Name: name },
-                success: function () {
-                    $('#billModal').modal('hide');
-                    location.reload();
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            });
+        
+        function editBillSuccess() {
+            $('#billModal').modal('hide');
+            loadBillList();
         }
 
         function billRemove() {
