@@ -18,10 +18,11 @@ namespace OwnAgent.Objects
             ViewBag.UserSid = UserSid;
 
             //Создание категорий для нового пользователя
-            if (!String.IsNullOrEmpty(UserSid) && (Session["HasCategories"] == null || !Convert.ToBoolean(Session["HasCategories"])))
+            if (!String.IsNullOrEmpty(UserSid) && (Session["HasDefaultValues"] == null || !Convert.ToBoolean(Session["HasDefaultValues"])))
             {
+                SpendService.Instance(UserSid).CreateDefaultBills();
                 SpendService.Instance(UserSid).CreateDefaultCategories();
-                Session["HasCategories"] = true;
+                Session["HasDefaultValues"] = true;
             }
 
             base.OnActionExecuting(filterContext);

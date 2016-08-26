@@ -21,6 +21,32 @@ namespace Data.Services
             return new SpendService(userSid);
         }
 
+        public void CreateDefaultBills()
+        {
+            if (!Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid).Any())
+            {
+                var bill = new SpendBills();
+                bill.Name = "Мой кошелек";
+                bill.TypeId = Uow.SpendBillTypes.GetOne(x => x.SysName == "STANDART").Id;
+                SpendBillCreate(bill);
+
+                bill = new SpendBills();
+                bill.Name = "Коплю на отпуск";
+                bill.TypeId = Uow.SpendBillTypes.GetOne(x => x.SysName == "SAVING").Id;
+                SpendBillCreate(bill);
+
+                bill = new SpendBills();
+                bill.Name = "Коплю на квартиру";
+                bill.TypeId = Uow.SpendBillTypes.GetOne(x => x.SysName == "SAVING").Id;
+                SpendBillCreate(bill);
+
+                bill = new SpendBills();
+                bill.Name = "Кредит за машину";
+                bill.TypeId = Uow.SpendBillTypes.GetOne(x => x.SysName == "CREDIT").Id;
+                SpendBillCreate(bill);
+            }
+        }
+
         public void CreateDefaultCategories()
         {
             if (!Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid).Any())
@@ -33,7 +59,7 @@ namespace Data.Services
                 Uow.SpendCategories.Insert(cat);
                 Uow.Commit();
 
-                cat.Name = "Ьытовые услуги";
+                cat.Name = "Бытовые услуги";
                 cat.OrderNum = 20;
                 Uow.SpendCategories.Insert(cat);
                 Uow.Commit();
@@ -577,7 +603,15 @@ namespace Data.Services
             if (cat.Any()) throw new ArgumentException("Такое название категории уже существует!");
             model.Enabled = true;
             model.UserSid = UserSid;
-            model.OrderNum = 500;
+
+            int orderNum = 1;
+            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid);
+            if (cats.Any())
+            {
+                orderNum = cats.Max(x => x.OrderNum) + 1;
+            }
+
+            model.OrderNum = orderNum;
             Uow.SpendCategories.Insert(model);
             Uow.Commit();
         }
@@ -655,9 +689,55 @@ namespace Data.Services
             Uow.Commit();
         }
 
+        public void SpendBillOrderUp(int id)
+        {
+            var bill = Uow.SpendBills.GetOne(x => x.Id == id);
+
+            var bills = Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid && x.Id != id && x.OrderNum < bill.OrderNum);
+
+            if (bills.Any())
+            {
+                var upperBill = bills.OrderByDescending(x => x.OrderNum).First();
+                int oldOrder = bill.OrderNum;
+                bill.OrderNum = upperBill.OrderNum;
+                upperBill.OrderNum = oldOrder;
+                Uow.SpendBills.Update(upperBill);
+            }
+            else
+            {
+                bill.OrderNum--;
+            }
+
+            Uow.SpendBills.Update(bill);
+            Uow.Commit();
+        }
+
+        public void SpendBillOrderDown(int id)
+        {
+            var bill = Uow.SpendBills.GetOne(x => x.Id == id);
+
+            var bills = Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid && x.Id != id && x.OrderNum > bill.OrderNum);
+
+            if (bills.Any())
+            {
+                var upperBill = bills.OrderBy(x => x.OrderNum).First();
+                int oldOrder = bill.OrderNum;
+                bill.OrderNum = upperBill.OrderNum;
+                upperBill.OrderNum = oldOrder;
+                Uow.SpendBills.Update(upperBill);
+            }
+            else
+            {
+                bill.OrderNum++;
+            }
+
+            Uow.SpendBills.Update(bill);
+            Uow.Commit();
+        }
+
         public IEnumerable<SpendBills> SpendBillGetList()
         {
-            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
+            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name), x=>x.SpendBillTypes);
             return model;
         }
 
@@ -674,7 +754,15 @@ namespace Data.Services
             if (bill.Any()) throw new ArgumentException("Такое название счета уже существует!");
             model.Enabled = true;
             model.UserSid = UserSid;
-            model.OrderNum = 500;
+
+            int orderNum = 1;
+            var bills = Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid);
+            if (bills.Any())
+            {
+                orderNum = bills.Max(x => x.OrderNum) + 1;
+            }
+
+            model.OrderNum = orderNum;
             model.CreateDate = DateTime.Now;
             Uow.SpendBills.Insert(model);
             Uow.Commit();
@@ -707,6 +795,21 @@ namespace Data.Services
             var bill = Uow.SpendBills.GetOne(x => x.Id == id, x => x.Spend);
             if (bill.Spend.Any(x => x.Enabled)) throw new ArgumentException("Нельзя удалить счет пока он содержит записи доходов/расходов! Удалите или переместите записи на другой счет и повторите попытку!");
             bill.Enabled = false;
+            Uow.Commit();
+        }
+        public void SpendBillMerge(int[] billIds, int billNameId)
+        {
+            var list = Uow.Spends.GetAll(x => x.Enabled && x.UserSid == UserSid && billIds.Contains(x.CategoryId));
+            foreach (var item in list)
+            {
+                item.CategoryId = billNameId;
+            }
+            var oldBills = Uow.SpendBills.GetAll(
+                x => x.Enabled && x.UserSid == UserSid && billIds.Contains(x.Id) && x.Id != billNameId);
+            foreach (var bill in oldBills)
+            {
+                bill.Enabled = false;
+            }
             Uow.Commit();
         }
 

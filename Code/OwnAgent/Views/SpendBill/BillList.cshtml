@@ -13,6 +13,7 @@
             <th></th>
             <th></th>
             <th>Название счета</th>
+            <th>Тип счета</th>
             <th>Кол-во записей</th>
             <th></th>
         </tr>
@@ -31,6 +32,7 @@
                     <a class="bill-edit text-muted" href="#" title="изменить"><i class="fa fa-edit"></i></a>
                 </td>
                 <td>@item.Name</td>
+                <td>@item.SpendBillTypes.Name</td>
                 <td>@item.Spend.Count(x => x.Enabled)</td>
                 <td>
                     <a class="bill-remove text-muted" href="#" title="удалить"><i class="fa fa-trash"></i></a>

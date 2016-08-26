@@ -25,7 +25,7 @@
         $(function () {
             loadBillList();
             $('#newBill').click(newModal);
-            $('#billMergeModal').click(catMergeModal);
+            $('#billMergeModal').click(billMergeModal);
         });
 
         function checkAll() {
@@ -79,8 +79,8 @@
                     $cont.html(data);
                     $('#bill-all').change(checkAll);
                     $('.bill-remove').click(billRemove);
-                    $('.bill-order-up').click(catOrderUp);
-                    $('.bill-order-down').click(catOrderDown);
+                    $('.bill-order-up').click(billOrderUp);
+                    $('.bill-order-down').click(billOrderDown);
                     $('.bill-edit').click(editModal);
                 },
                 error: function (data) {
@@ -137,38 +137,38 @@
             });
         }
 
-        function catOrderDown() {
-            var id = $(this).closest('.cat-item').attr('cid');
+        function billOrderDown() {
+            var id = $(this).closest('.bill-item').attr('bid');
             $.ajax({
                 url: '@Url.Action("SpendBillOrderDown")',
                 method: 'POST',
                 data: { id: id },
                 success: function (data) {
-                    location.reload();
+                    loadBillList();
                 },
                 error: function (data) {
                     console.error(data);
                 }
             });
         }
-        function catOrderUp() {
-            var id = $(this).closest('.cat-item').attr('cid');
+        function billOrderUp() {
+            var id = $(this).closest('.bill-item').attr('bid');
             $.ajax({
                 url: '@Url.Action("SpendBillOrderUp")',
                 method: 'POST',
                 data: { id: id },
                 success: function (data) {
-                    location.reload();
+                    loadBillList();
                 },
                 error: function (data) {
                     console.error(data);
                 }
             });
         }
-        function catMergeModal() {
-            var $chkList = $('[id^=cat-]:checked').not('#cat-all');
+        function billMergeModal() {
+            var $chkList = $('[id^=bill-]:checked').not('#bill-all');
             if ($chkList.length <= 1) {
-                alert('Необходимо выбрать 2 или более категорий');
+                alert('Необходимо выбрать 2 или более счета');
                 return false;
             }
             var $cont = $('#billModal');
@@ -178,9 +178,9 @@
                     $cont.html(data);
                     $cont.modal();
                     setTimeout(function () {
-                        $('#catName').focus();
-                        $('#catMerge').click(catMerge);
-                        loadCatMergeNameList();
+                        $('#billName').focus();
+                        $('#billMerge').click(billMerge);
+                        loadBillMergeNameList();
                     }, 500);
 
                 },
@@ -190,39 +190,39 @@
             });
             return false;
         }
-        function loadCatMergeNameList() {
-            var $select = $('#catMergeName');
+        function loadBillMergeNameList() {
+            var $select = $('#billMergeName');
             $select.empty();
-            var $chkList = $('[id^=cat-]:checked').not('#cat-all');
+            var $chkList = $('[id^=bill-]:checked').not('#bill-all');
             for (var i = 0; i < $chkList.length; i++) {
                 var $item = $($chkList[i]);
-                var name = $item.attr('cname');
+                var name = $item.attr('bname');
                 var id = $item.val();
                 $select.append('<option value="' + id + '">' + name + '</option>');
             }
 
         }
-        function catMerge() {
-            var cats = [];
-            var $chkList = $('[id^=cat-]:checked').not('#cat-all');
+        function billMerge() {
+            var bills = [];
+            var $chkList = $('[id^=bill-]:checked').not('#bill-all');
             if ($chkList.length <= 1) {
-                alert('Необходимо выбрать 2 или более категорий');
+                alert('Необходимо выбрать 2 или более счета');
                 return;
             }
-            if (!confirm('Подтвердите слияние всех записей по выбранным категориям. После слияния нельзя будет разделить записи обратно!')) return;
+            if (!confirm('Подтвердите слияние всех записей по выбранным счетам. После слияния нельзя будет разделить записи обратно!')) return;
             for (var i = 0; i < $chkList.length; i++) {
                 var $item = $($chkList[i]);
-                cats.push($item.val());
+                bills.push($item.val());
             }
-            var nameId = $('#catMergeName').val();
+            var nameId = $('#billMergeName').val();
             if (nameId == '' || nameId == null) {
-                alert('Укажите название объединенной категории!');
+                alert('Укажите название объединенного счета!');
                 return;
             }
             $.ajax({
                 url: '@Url.Action("BillMerge")',
                 method: 'POST',
-                data: { cats, nameId},
+                data: { bills, nameId},
                         success: function (data) {
                     location.reload();
                 },

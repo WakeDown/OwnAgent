@@ -25,30 +25,30 @@ namespace OwnAgent.Controllers
         }
 
         [HttpPost]
-        public ActionResult SpendBillOrderDown()
+        public ActionResult SpendBillOrderDown(int id)
         {
-
+            SpendService.Instance(UserSid).SpendBillOrderDown(id);
             return Json(new {});
         }
 
         [HttpPost]
-        public ActionResult SpendBillOrderUp()
+        public ActionResult SpendBillOrderUp(int id)
         {
-
+            SpendService.Instance(UserSid).SpendBillOrderUp(id);
             return Json(new { });
         }
 
         [HttpGet]
         public ActionResult Merge()
         {
-
-            return Json(new { });
+            
+            return View();
         }
 
         [HttpPost]
-        public ActionResult BillMerge()
+        public ActionResult BillMerge(int[] bills, int nameId)
         {
-
+            SpendService.Instance(UserSid).SpendBillMerge(bills, nameId);
             return Json(new { });
         }
 
