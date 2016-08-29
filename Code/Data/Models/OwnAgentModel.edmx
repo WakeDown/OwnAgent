@@ -119,6 +119,7 @@
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SysName" Type="nvarchar" MaxLength="50" />
           <Property Name="OrderNum" Type="int" Nullable="false" />
+          <Property Name="IconName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="SpendCategory">
           <Key>
@@ -557,6 +558,7 @@
           <Property Name="SysName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OrderNum" Type="Int32" Nullable="false" />
           <NavigationProperty Name="SpendBills" Relationship="OwnAgentModel.FK_SpendBills_SpendBillTypes" FromRole="SpendBillTypes" ToRole="SpendBills" />
+          <Property Name="IconName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SpendCategory">
           <Key>
@@ -836,6 +838,7 @@
           <EntitySetMapping Name="SpendBillTypes">
             <EntityTypeMapping TypeName="OwnAgentModel.SpendBillTypes">
               <MappingFragment StoreEntitySet="SpendBillTypes">
+                <ScalarProperty Name="IconName" ColumnName="IconName" />
                 <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
                 <ScalarProperty Name="SysName" ColumnName="SysName" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

@@ -18,6 +18,13 @@ namespace OwnAgent.Controllers
     public class BalanceController:BaseController
     {
         [HttpGet]
+        public ActionResult Index()
+        {
+
+            return View();
+        }
+
+        [HttpGet]
         public ActionResult New()
         {
             var spend = new SpendNewViewModel() {Date = DateTime.Now};
@@ -156,6 +163,31 @@ namespace OwnAgent.Controllers
             //   return RedirectToAction("Stat", new {y = DateTime.Now.Year, m = DateTime.Now.Month});
 
             return View();
+        }
+
+        public ActionResult SpendBillReport(string filter, int? year, int? month, int? quarter = null)
+        {
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendBillReport", new { filter = "month", year = year, month = month, quarter = quarter });
+            if (!year.HasValue) return RedirectToAction("SpendBillReport", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
+            if (!month.HasValue) return RedirectToAction("SpendBillReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            if (!quarter.HasValue)
+            {
+                var quarterD = (double)month / 3;
+                if (quarterD < 1) quarter = 1;
+                else if (quarterD > 1 && quarterD < 2) quarter = 2;
+                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 3 && quarterD < 4) quarter = 4;
+                return RedirectToAction("SpendBillReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
+            }
+
+            IEnumerable<SpendStatBillViewModel> list = new List<SpendStatBillViewModel>();
+            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyBilleport(year.Value, month.Value);
+            //if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, quarter.Value);
+            //if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value);
+            //if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value);
+            //if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport();
+
+            return View("SpendBillReport", list);
         }
 
         public ActionResult SpendCategoryReport(string filter, int? year, int? month, int? quarter = null)

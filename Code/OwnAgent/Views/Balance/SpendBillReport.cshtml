@@ -1,32 +1,28 @@
-﻿@model IEnumerable<Models.ViewModels.SpendStatViewModel>
+﻿@model IEnumerable<Models.ViewModels.SpendStatBillViewModel>
 
 @{
     Layout = null;
-    double totalInc = Model.Where(x => x.SpendVectorSysName == "INC").Sum(x => x.Sum);
-    double totalExp = Model.Where(x => x.SpendVectorSysName == "EXP").Sum(x => x.Sum);
-    double totalSum = totalInc - totalExp;
-
-    double totalIncPercent = Math.Round(totalSum / totalInc * 100, 1);
 }
 
 @if (Model != null)
 {
     <p>
         <div class="panel panel-default">
-            <div class="panel-body text-lg">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                        <small class="text-muted pull-left">@totalIncPercent%</small>
-                        ИТОГО
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                        @*@(totalSum > 0 ? "+" : totalSum == 0 ? "" : "-")*@
-                        <span class="pull-right @(totalSum > 0 ? "text-success" : "text-danger")">@(String.Format("{0:N0} р.", Math.Abs(totalSum))) <i class="fa @(totalSum > 0 ? "fa-plus-circle" : totalSum == 0 ? "" : "fa-minus-circle")"></i></span>
+            @foreach (var item in Model)
+            {
+                <div class="panel-body text-lg">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            @item.SpendBillName
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            <span class="pull-right @(item.Sum > 0 ? "text-success" : "text-danger")">@(String.Format("{0:N0} р.", Math.Abs(item.Sum))) <i class="fa @(item.Sum > 0 ? "fa-plus-circle" : item.Sum == 0 ? "" : "fa-minus-circle")"></i></span>
+                        </div>
                     </div>
                 </div>
-                <hr class="no-margin no-padding" style="border-color: #@(totalSum < 0 ? "a94442" : "3c763d"); border-width: 3px; width: @Math.Ceiling(Math.Abs(totalIncPercent))%;" />
-            </div>
-            <div class="panel-body bg-success text-success text-lg">
+            }
+            
+            @*<div class="panel-body bg-success text-success text-lg">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
                         <i class="fa fa-come"></i>ДОХОД
@@ -45,10 +41,10 @@
                         <span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalExp))) <i class="fa fa-minus-circle"></i></span>
                     </div>
                 </div>
-            </div>
+            </div>*@
         </div>
     </p>
-    <p>
+    @*<p>
         <div class="panel panel-default">
             <ul class="list-group">
                 @foreach (var item in Model)
@@ -72,5 +68,5 @@
                 }
             </ul>
     </div>
-    </p>
+    </p>*@
 }

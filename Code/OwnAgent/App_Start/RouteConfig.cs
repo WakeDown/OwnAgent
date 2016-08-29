@@ -16,7 +16,7 @@ namespace OwnAgent
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Balance", action = "Stat", id = UrlParameter.Optional }
+                defaults: new { controller = "Balance", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

@@ -1,0 +1,345 @@
+﻿@using System.Globalization
+@using Data.Models
+@using Helpers
+@using OwnAgent.Models
+@using OwnAgent.Objects
+@using WebGrease
+
+@{
+    ViewBag.Title = "Главная";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = Convert.ToInt32(Request.QueryString["year"]);
+    int month = Convert.ToInt32(Request.QueryString["month"]);
+    int quarter = Convert.ToInt32(Request.QueryString["quarter"]);
+
+    string url2Modify = Url.Action("Stat") + "?" + Request.QueryString;
+}
+@section head{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+}
+
+<div class="clearfix"></div>
+<p>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="btn-group btn-full">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @if (Request.QueryString["filter"] == "month")
+                            {
+                                <span>Месяц</span>
+                            }
+                            else if (Request.QueryString["filter"] == "quarter")
+                            {
+                                <span>Квартал</span>
+                            }
+                            else if (Request.QueryString["filter"] == "year")
+                            {
+                                <span>Год</span>
+                            }
+                            else if (Request.QueryString["filter"] == "5year")
+                            {
+                                <span>5 лет</span>
+                            }
+                            else if (Request.QueryString["filter"] == "alltime")
+                            {
+                                <span>Все время</span>
+                            }
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">Месяц</a>
+                            </li>
+                            <li>
+                                <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">Квартал</a>
+                            </li>
+                            <li>
+                                <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">Год</a>
+                            </li>
+                            @*<li>
+                                    <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
+                                </li>*@
+                            <li>
+                                <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">Все время</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                @if (Request.QueryString["filter"] == "month")
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+                        <div class="btn-group btn-full">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (month > 0 && month <= 12)
+                                {
+                                    @DateTimeFormatInfo.CurrentInfo.GetMonthName(month)
+                                }
+                                else
+                                {
+                                    @:error
+                                }
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"month", i}})">@DateTimeFormatInfo.CurrentInfo.GetMonthName(i)</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+                else if (Request.QueryString["filter"] == "quarter")
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="btn-group btn-full">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (quarter == 1)
+                                {
+                                    @:I
+                                }
+                                else if (quarter == 2)
+                                {
+                                    @:II
+                                }
+                                else if (quarter == 3)
+                                {
+                                    @:III
+                                }
+                                else if (quarter == 4)
+                                {
+                                    @:IV
+                                }
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 1}})">I</a></li>
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 2}})">II</a></li>
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 3}})">III</a></li>
+                                <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"quarter", 4}})">IV</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (Request.QueryString["filter"] == "month" || Request.QueryString["filter"] == "quarter" || Request.QueryString["filter"] == "year")
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+
+                        <div class="btn-group btn-full">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @year <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @for (int i = 2014; i <= DateTime.Now.Year; i++)
+                                {
+                                    <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@i</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (Request.QueryString["filter"] == "5year")
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="btn-group btn-full">
+                            <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @String.Format("{0}-{1}", year, year + 5) <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @for (int i = 2010; i <= DateTime.Now.Year; i += 5)
+                                {
+                                    <li><a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"year", i}})">@String.Format("{0}-{1}", i, i + 5)</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-12" id="billContainer">
+                    <div class="loader"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-12" id="categoryContainer">
+                    <div class="loader"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div id="incPieChartContainer"></div>
+            <div id="expPieChartContainer"></div>
+            <div id="totalChartContainer"></div>
+            <div id="calendarChartContainer"></div>
+        </div>
+    </div>
+</p>
+<script type="text/javascript">
+    $(function () {
+        //$('#mthYear li a').click(selYm);
+        //$('#mthMonth li a').click(selYm);
+        loadCategoryReport();
+        loadBillReport();
+    });
+    function loadBillReport() {
+        var $cont = $('#billContainer');
+        $.get('@Url.Action("SpendBillReport")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]', function (data) {
+            $cont.html(data);
+        });
+    }
+    function loadCategoryReport() {
+        var $cont = $('#categoryContainer');
+        $.get('@Url.Action("SpendCategoryReport")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]', function (data) {
+            $cont.html(data);
+            //loadTotalChart();
+        });
+    }
+    google.charts.load("current", { packages: ['corechart',"calendar"] });
+    //google.charts.setOnLoadCallback(loadTotalChart);
+    google.charts.setOnLoadCallback(loadPieChart);
+    //google.charts.setOnLoadCallback(loadCalendarChart);
+    function loadCalendarChart() {
+        $.ajax({
+            url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=',
+            method: 'POST',
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    //dataPoints.push(['Категория', 'Сумма', 'ID']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([new Date(item.Year, item.Month-1, item.Day), item.Sum]);
+                    }
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn({ type: 'date', id: 'Date' });
+                    dataTable.addColumn({ type: 'number', id: 'Sum' });
+                    dataTable.addRows(dataPoints);
+
+                    var chart = new google.visualization.Calendar(document.getElementById('calendarChartContainer'));
+
+                    var options = {
+                        title: "График",
+                        height: 900,
+                        noDataPattern: {
+                            backgroundColor: '#ddd',
+                            color: '#ccc'
+                        }
+                    };
+
+                    chart.draw(dataTable, options);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+    function loadPieChart() {
+
+        $.ajax({
+            url: '@Url.Action("SpendCategoryReportData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
+            method: 'POST',
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    dataPoints.push(['Категория', 'Сумма']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([item.SpendCategoryName, item.Sum]);
+                    }
+                    var chartData = google.visualization.arrayToDataTable(dataPoints);
+
+                    var options = {
+                        title: 'Расход',
+                        //is3D: true,
+                        height: 400,
+                        //enableInteractivity: true,
+                        pieHole: 0.4
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('expPieChartContainer'));
+                    function selectHandler() {
+                        var selectedItem = chart.getSelection()[0];
+                        console.log(selectedItem);
+                        if (selectedItem) {
+                            var topping = chartData.getValue(selectedItem.row, 0);
+                            console.log(topping);
+                        }
+                    }
+                    google.visualization.events.addListener(chart, 'select', selectHandler);
+
+                    chart.draw(chartData, options);
+
+
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("SpendCategoryReportData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=INC',
+            method: 'POST',
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    dataPoints.push(['Категория', 'Сумма']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([item.SpendCategoryName, item.Sum]);
+                    }
+                    var chartData = google.visualization.arrayToDataTable(dataPoints);
+
+                    var options = {
+                        title: 'Доход',
+                        //is3D: true,
+                        height: 400,
+                        pieHole: 0.4
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('incPieChartContainer'));
+
+                    chart.draw(chartData, options);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function loadTotalChart() {
+        $.ajax({
+            url: '@Url.Action("GetCumulativeTotalChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]',
+            method: 'POST',
+            success: function (data) {
+                if (data.length > 0) {
+                    var dataPoints = [];
+                    dataPoints.push(['Дата', 'Сумма']);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        dataPoints.push([item.DateStr, item.CumulativeTotal]);
+                    }
+                    var chartData = google.visualization.arrayToDataTable(dataPoints);
+
+                    var options = {
+                        title: 'Состояние счета',
+                        hAxis: { title: 'Дата', titleTextStyle: { color: '#333' } },
+                        vAxis: { minValue: 0 }
+                    };
+
+                    var chart = new google.visualization.SteppedAreaChart(document.getElementById('totalChartContainer'));
+                    chart.draw(chartData, options);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+</script>

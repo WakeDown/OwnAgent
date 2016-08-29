@@ -57,6 +57,15 @@ namespace Models.ViewModels
         public double Percent { get; set; }
     }
 
+    public class SpendStatBillViewModel
+    {
+        public string SpendBillName { get; set; }
+        public int SpendBillId { get; set; }
+        public double Sum { get; set; }
+        public string BillTypeIconName { get; set; }
+        public double Percent { get; set; }
+    }
+
     public class SpendChartViewModel
     {
         private DateTime date;
