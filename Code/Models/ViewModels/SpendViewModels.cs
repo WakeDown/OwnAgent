@@ -64,6 +64,8 @@ namespace Models.ViewModels
         public double Sum { get; set; }
         public string BillTypeIconName { get; set; }
         public double Percent { get; set; }
+        public double IncSum { get; set; }
+        public double ExpSum { get; set; }
     }
 
     public class SpendChartViewModel

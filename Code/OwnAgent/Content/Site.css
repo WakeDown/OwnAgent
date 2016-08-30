@@ -172,3 +172,15 @@ nav a {
     content: "\002a";
     color: red;
 }
+
+.text-sm {
+    font-size: 0.8em;
+}
+
+.text-xs {
+    font-size: 0.6em;
+}
+
+.text-middle {
+    vertical-align: middle;
+}

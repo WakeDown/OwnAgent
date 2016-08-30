@@ -184,6 +184,53 @@ namespace Data.Services
             return GetPeriodBillReport(startDate, endDate, vectorSysName);
         }
 
+        public IEnumerable<SpendStatBillViewModel> GetQuarterBillReport(int year, int quarter, string vectorSysName = null)
+        {
+            //var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            //var startMonth = endDate.AddMonths(-3).Month;
+            //var startYear = endDate.AddMonths(-3).Year;
+            //var startDate = new DateTime(startYear, startMonth, 1);
+            int month = quarter * 3;
+            var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+            var startMonth = endDate.AddMonths(-2).Month;
+            var startYear = endDate.AddMonths(-2).Year;
+            var startDate = new DateTime(startYear, startMonth, 1);
+
+            return GetPeriodBillReport(startDate, endDate, vectorSysName);
+        }
+
+        //public IEnumerable<SpendStatViewModel> GetYearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        public IEnumerable<SpendStatBillViewModel> GetYearlyBillReport(int year, string vectorSysName = null)
+        {
+            var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
+            var startMonth = endDate.AddMonths(-11).Month;
+            var startYear = endDate.AddMonths(-11).Year;
+            var startDate = new DateTime(startYear, startMonth, 1);
+
+            return GetPeriodBillReport(startDate, endDate, vectorSysName);
+        }
+
+        //public IEnumerable<SpendStatViewModel> Get5YearlyCategoryReport(int endYear, int endMonth, string vectorSysName = null)
+        public IEnumerable<SpendStatBillViewModel> Get5YearlyBillReport(int year, string vectorSysName = null)
+        {
+            var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
+            var startMonth = endDate.AddMonths(-59).Month;
+            var startYear = endDate.AddMonths(-59).Year;
+            var startDate = new DateTime(startYear, startMonth, 1);
+
+            return GetPeriodBillReport(startDate, endDate, vectorSysName);
+        }
+
+        public IEnumerable<SpendStatBillViewModel> GetAllTimeBillReport(string vectorSysName = null)
+        {
+            int endYear = DateTime.Now.Year + 100;
+            int endMonth = DateTime.Now.Month;
+            var endDate = new DateTime(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
+            var startDate = new DateTime(1900, 1, 1);
+
+            return GetPeriodBillReport(startDate, endDate, vectorSysName);
+        }
+
         public IEnumerable<SpendStatBillViewModel> GetPeriodBillReport(DateTime startDate, DateTime endDate, string vectorSysName = null)
         {
             if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньше даты начала!");
@@ -206,6 +253,8 @@ namespace Data.Services
                              BillTypeIconName = gs.Key.SpendBills.SpendBillTypes.IconName,
                              SpendBillName = gs.Key.SpendBills.Name,
                              Sum = gs.Sum(x => x.SpendVector.SysName=="INC" ? x.Sum : -x.Sum),
+                             IncSum = gs.Sum(x=> x.SpendVector.SysName == "INC" ? x.Sum : 0),
+                             ExpSum = gs.Sum(x => x.SpendVector.SysName == "EXP" ? x.Sum : 0),
                              SpendBillId = gs.Key.SpendBills.Id,
                          };
             list = report.AsEnumerable().Select(x => new SpendStatBillViewModel
@@ -213,6 +262,8 @@ namespace Data.Services
                 BillTypeIconName = x.BillTypeIconName,
                 SpendBillName = x.SpendBillName,
                 Sum = x.Sum,
+                IncSum = x.IncSum,
+                ExpSum = x.ExpSum,
                 SpendBillId = x.SpendBillId,
             }).OrderBy(x => x.SpendBillName).ThenByDescending(x => x.Sum).ToList();
 

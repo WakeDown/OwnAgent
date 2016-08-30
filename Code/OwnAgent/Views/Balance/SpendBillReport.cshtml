@@ -12,61 +12,74 @@
             {
                 <div class="panel-body text-lg">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right text-middle">
                             @item.SpendBillName
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                            <span class="pull-right @(item.Sum > 0 ? "text-success" : "text-danger")">@(String.Format("{0:N0} р.", Math.Abs(item.Sum))) <i class="fa @(item.Sum > 0 ? "fa-plus-circle" : item.Sum == 0 ? "" : "fa-minus-circle")"></i></span>
+                            <div>
+                                <span class="pull-right @(item.Sum > 0 ? "text-success" : "text-danger")">
+                                    @(String.Format("{0:N0} р.", Math.Abs(item.Sum))) <i class="fa @(item.Sum > 0 ? "fa-plus-circle" : item.Sum == 0 ? "" : "fa-minus-circle")"></i>
+                                </span>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div>
+                                <small class="text-muted text-sm">
+                                    + @(String.Format("{0:N0} р.", Math.Abs(item.IncSum)))
+                                </small>
+                                <small class="text-muted text-sm">
+                                    - @(String.Format("{0:N0} р.", Math.Abs(item.ExpSum)))
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
             }
-            
+
             @*<div class="panel-body bg-success text-success text-lg">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                        <i class="fa fa-come"></i>ДОХОД
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                        <span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalInc))) <i class="fa fa-plus-circle"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body bg-danger text-danger text-lg">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                        РАСХОД
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                        <span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalExp))) <i class="fa fa-minus-circle"></i></span>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            <i class="fa fa-come"></i>ДОХОД
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            <span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalInc))) <i class="fa fa-plus-circle"></i></span>
+                        </div>
                     </div>
                 </div>
-            </div>*@
+                <div class="panel-body bg-danger text-danger text-lg">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            РАСХОД
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                            <span class="pull-right">@(String.Format("{0:N0} р.", Math.Abs(totalExp))) <i class="fa fa-minus-circle"></i></span>
+                        </div>
+                    </div>
+                </div>*@
         </div>
     </p>
     @*<p>
-        <div class="panel panel-default">
-            <ul class="list-group">
-                @foreach (var item in Model)
-                {
-                    double itemPercent = Math.Round(item.Sum / (item.SpendVectorSysName == "EXP"? totalExp:totalInc) * 100, 1);
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    @foreach (var item in Model)
+                    {
+                        double itemPercent = Math.Round(item.Sum / (item.SpendVectorSysName == "EXP"? totalExp:totalInc) * 100, 1);
 
-                    <li class="list-group-item">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                                <small class="text-muted pull-left">@itemPercent%</small>
-                                <a href="@Url.Action("List", new {filter = Request.QueryString["filter"], year = Request.QueryString["year"], month = Request.QueryString["month"], categoryId = item.SpendCategoryId, vectorId = item.SpendVectorId})" target="_blank" class="text-black">
-                                    <span class="">@item.SpendCategoryName</span> <i class="fa fa-external-link"></i>
-                                </a>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                                    <small class="text-muted pull-left">@itemPercent%</small>
+                                    <a href="@Url.Action("List", new {filter = Request.QueryString["filter"], year = Request.QueryString["year"], month = Request.QueryString["month"], categoryId = item.SpendCategoryId, vectorId = item.SpendVectorId})" target="_blank" class="text-black">
+                                        <span class="">@item.SpendCategoryName</span> <i class="fa fa-external-link"></i>
+                                    </a>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                                    <span class="pull-right @(item.SpendVectorSysName == "EXP" ? "text-danger" : "text-success")">@(String.Format("{0:N0} р.", item.Sum)) <i class="@item.SpendVectorIconName"></i></span>
+                                </div>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                                <span class="pull-right @(item.SpendVectorSysName == "EXP" ? "text-danger" : "text-success")">@(String.Format("{0:N0} р.", item.Sum)) <i class="@item.SpendVectorIconName"></i></span>
-                            </div>
-                        </div>
-                        <hr class="no-margin no-padding" style="border-color: #@(item.SpendVectorSysName == "EXP" ? "a94442" : "3c763d"); border-width: 3px; width: @Math.Ceiling(itemPercent)%;" />
-                    </li>
-                }
-            </ul>
-    </div>
-    </p>*@
+                            <hr class="no-margin no-padding" style="border-color: #@(item.SpendVectorSysName == "EXP" ? "a94442" : "3c763d"); border-width: 3px; width: @Math.Ceiling(itemPercent)%;" />
+                        </li>
+                    }
+                </ul>
+        </div>
+        </p>*@
 }
