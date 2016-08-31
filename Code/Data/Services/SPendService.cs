@@ -660,6 +660,78 @@ namespace Data.Services
             return data;
         }
 
+        public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetYearlyCategoryChartDataGroupByMonthes(int year, string vectorSysName)
+        {
+            var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
+            var startMonth = endDate.AddMonths(-11).Month;
+            var startYear = endDate.AddMonths(-11).Year;
+            var startDate = new DateTime(startYear, startMonth, 1);
+
+            return GetCategoryChartDataGroupByMonthes(startDate, endDate, vectorSysName);
+        }
+
+        public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetCategoryChartDataGroupByMonthes(DateTime startDate, DateTime endDate, string vectorSysName, bool calcCumulativeTotal = false)
+        {
+            var list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
+
+            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid);
+
+            foreach (var cat in cats)
+            {
+                var data = GetChartDataByCategoryGroupByMonthes(startDate, endDate, cat.CategoryId, vectorSysName, calcCumulativeTotal);
+                var item = new KeyValuePair<string, IEnumerable<SpendChartViewModel>>(cat.Name, data);
+                list.Add(item);
+            }
+
+            return list;
+        }
+
+        public IEnumerable<SpendChartViewModel> GetChartDataByCategoryGroupByMonthes(DateTime startDate, DateTime endDate, int categoryId, string vectorSysName, bool calcCumulativeTotal = false)
+        {
+            if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньшще даты начала!");
+
+            var sDate = startDate.Date;
+            var eDate = endDate.Date;
+
+
+            double currentTotal = 0;
+            if (calcCumulativeTotal)
+            {
+                currentTotal = Uow.Spends.GetAllQuery(
+                  x =>
+                      x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+                      (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName)) &&
+                      DbFunctions.TruncateTime(x.Date) < DbFunctions.TruncateTime(sDate))
+                  .Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum);
+            }
+
+            var data = Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+                                                   (String.IsNullOrEmpty(vectorSysName) ||
+                                                    (!String.IsNullOrEmpty(vectorSysName) &&
+                                                     x.SpendVector.SysName == vectorSysName))
+                                                   &&
+                                                   DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate) &&
+                                                   DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(eDate),
+                x => x.OrderBy((y => y.Date)), x => x.SpendVector).AsEnumerable()
+                  .Select(x =>
+                  {
+                      return new SpendChartViewModel() { Date = x.Date, Sum = x.Sum };
+                  });
+
+            var result = from t in data
+                group t by new {t.Year, t.Month}
+                into g
+                select new SpendChartViewModel()
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Sum = g.Sum(x=>x.Sum)
+                };
+
+
+            return result;
+        }
+
         public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetYearlyCumulativeCategoryChartData(int year, string vectorSysName)
         {
             var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));

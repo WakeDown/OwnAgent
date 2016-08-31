@@ -329,7 +329,7 @@ namespace OwnAgent.Controllers
         public ActionResult GetCumulativeCategoryChartData(string filter, int? year, int? quarter = null, string vectorSysName = null)
         {
             IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCumulativeCategoryChartData(year.Value, vectorSysName);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryChartDataGroupByMonthes(year.Value, vectorSysName);
             //if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value);
             //if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData();
 
