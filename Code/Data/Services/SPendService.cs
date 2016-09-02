@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Models;
@@ -235,37 +236,77 @@ namespace Data.Services
         {
             if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньше даты начала!");
 
-            var list = new List<SpendStatBillViewModel>();
 
             var sDate = startDate.Date;
             var eDate = endDate.Date;
 
-            var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+            var list = Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid, x=>x.OrderBy(y=>y.BillCapitalizationTypes.OrderNum).ThenBy(y=>y.Name), x=>x.SpendBillTypes).Select(x=>new
+            SpendStatBillViewModel
+            {
+                BillTypeIconName = x.SpendBillTypes.IconName,
+                SpendBillName = x.Name,
+                Sum = 0,
+                IncSum = 0,
+                ExpSum = 0,
+                SpendBillId = x.Id,
+            });
+
+            foreach (var item in list)
+            {
+                var itemReport = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.BillId==item.SpendBillId && x.Date >= sDate && x.Date <= eDate
                          && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
                          )
-                         group s by new
-                         {
-                             s.SpendBills
-                         }
+                             group s by new
+                             {
+                                 s.SpendBills
+                             }
                          into gs
-                         select new
-                         {
-                             BillTypeIconName = gs.Key.SpendBills.SpendBillTypes.IconName,
-                             SpendBillName = gs.Key.SpendBills.Name,
-                             Sum = gs.Sum(x => x.SpendVector.SysName=="INC" ? x.Sum : -x.Sum),
-                             IncSum = gs.Sum(x=> x.SpendVector.SysName == "INC" ? x.Sum : 0),
-                             ExpSum = gs.Sum(x => x.SpendVector.SysName == "EXP" ? x.Sum : 0),
-                             SpendBillId = gs.Key.SpendBills.Id,
-                         };
-            list = report.AsEnumerable().Select(x => new SpendStatBillViewModel
-            {
-                BillTypeIconName = x.BillTypeIconName,
-                SpendBillName = x.SpendBillName,
-                Sum = x.Sum,
-                IncSum = x.IncSum,
-                ExpSum = x.ExpSum,
-                SpendBillId = x.SpendBillId,
-            }).OrderBy(x => x.SpendBillName).ThenByDescending(x => x.Sum).ToList();
+                             select new
+                             {
+                                 BillTypeIconName = gs.Key.SpendBills.SpendBillTypes.IconName,
+                                 SpendBillName = gs.Key.SpendBills.Name,
+                                 Sum = gs.Sum(x => x.SpendVector.SysName == "INC" ? x.Sum : -x.Sum),
+                                 IncSum = gs.Sum(x => x.SpendVector.SysName == "INC" ? x.Sum : 0),
+                                 ExpSum = gs.Sum(x => x.SpendVector.SysName == "EXP" ? x.Sum : 0),
+                                 SpendBillId = gs.Key.SpendBills.Id,
+                             };
+                if (itemReport.Any())
+                {
+                    var repItem = itemReport.ToList()[0];
+                    item.Sum = repItem.Sum;
+                    item.ExpSum = repItem.ExpSum;
+                    item.IncSum = repItem.IncSum;
+                }
+            }
+
+
+            //var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+            //             && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
+            //             )
+            //             group s by new
+            //             {
+            //                 s.SpendBills
+            //             }
+            //             into gs
+            //             select new
+            //             {
+            //                 BillTypeIconName = gs.Key.SpendBills.SpendBillTypes.IconName,
+            //                 SpendBillName = gs.Key.SpendBills.Name,
+            //                 Sum = gs.Sum(x => x.SpendVector.SysName == "INC" ? x.Sum : -x.Sum),
+            //                 IncSum = gs.Sum(x => x.SpendVector.SysName == "INC" ? x.Sum : 0),
+            //                 ExpSum = gs.Sum(x => x.SpendVector.SysName == "EXP" ? x.Sum : 0),
+            //                 SpendBillId = gs.Key.SpendBills.Id,
+            //             };
+
+            //list = report.AsEnumerable().Select(x => new SpendStatBillViewModel
+            //{
+            //    BillTypeIconName = x.BillTypeIconName,
+            //    SpendBillName = x.SpendBillName,
+            //    Sum = x.Sum,
+            //    IncSum = x.IncSum,
+            //    ExpSum = x.ExpSum,
+            //    SpendBillId = x.SpendBillId,
+            //}).OrderBy(x => x.SpendBillName).ThenByDescending(x => x.Sum).ToList();
 
 
             return list;
