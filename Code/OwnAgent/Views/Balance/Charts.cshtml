@@ -172,7 +172,7 @@
         function loadCategoryChart() {
 
             $.ajax({
-                url: '@Url.Action("GetCumulativeCategoryChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
+                url: '@Url.Action("GetCategoryChartDataGroupByMonthes")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
                 method: 'POST',
                 success: function (data) {
                     if (data.length > 0) {

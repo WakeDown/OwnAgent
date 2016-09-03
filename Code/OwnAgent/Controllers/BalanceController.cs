@@ -326,7 +326,7 @@ namespace OwnAgent.Controllers
             return Json(list);
         }
 
-        public ActionResult GetCumulativeCategoryChartData(string filter, int? year, int? quarter = null, string vectorSysName = null)
+        public ActionResult GetCategoryChartDataGroupByMonthes(string filter, int? year, int? quarter = null, string vectorSysName = null)
         {
             IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
             if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryChartDataGroupByMonthes(year.Value, vectorSysName);

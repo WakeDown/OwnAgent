@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Models;
@@ -234,6 +235,7 @@ namespace Data.Services
         public IEnumerable<SpendStatBillViewModel> GetPeriodBillReport(DateTime startDate, DateTime endDate, string vectorSysName = null)
         {
             if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньше даты начала!");
+
 
             var sDate = startDate.Date;
             var eDate = endDate.Date;

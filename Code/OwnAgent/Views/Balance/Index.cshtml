@@ -13,7 +13,7 @@
     int month = Convert.ToInt32(Request.QueryString["month"]);
     int quarter = Convert.ToInt32(Request.QueryString["quarter"]);
 
-    string url2Modify = Url.Action("Stat") + "?" + Request.QueryString;
+    string url2Modify = Url.Action("Index") + "?" + Request.QueryString;
 }
 @section head{
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
