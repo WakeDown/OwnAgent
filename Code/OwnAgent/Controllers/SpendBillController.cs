@@ -85,5 +85,14 @@ namespace OwnAgent.Controllers
             SpendService.Instance(UserSid).SpendBillDelete(id);
             return Json(new { });
         }
+
+        public ActionResult Stat(int? id)
+        {
+            if (!id.HasValue) return HttpNotFound();
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+            var stat = SpendService.Instance(UserSid).GetMonthlyBilleport(year, month, billId:id).First();
+            return View(stat);
+        }
     }
 }

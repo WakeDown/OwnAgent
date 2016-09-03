@@ -68,6 +68,14 @@ namespace Models.ViewModels
         public double ExpSum { get; set; }
     }
 
+    public class SpendStatCategoryViewModel
+    {
+        public string SpendCategoryName { get; set; }
+        public int SpendCategoryId { get; set; }
+        public double IncSum { get; set; }
+        public double ExpSum { get; set; }
+    }
+
     public class SpendChartViewModel
     {
         private DateTime date;

@@ -177,12 +177,12 @@ namespace Data.Services
             return list;
         }
 
-        public IEnumerable<SpendStatBillViewModel> GetMonthlyBilleport(int year, int month, string vectorSysName = null)
+        public IEnumerable<SpendStatBillViewModel> GetMonthlyBilleport(int year, int month, string vectorSysName = null, int? billId = null)
         {
             var startDate = new DateTime(year, month, 1);
             var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
 
-            return GetPeriodBillReport(startDate, endDate, vectorSysName);
+            return GetPeriodBillReport(startDate, endDate, vectorSysName, billId);
         }
 
         public IEnumerable<SpendStatBillViewModel> GetQuarterBillReport(int year, int quarter, string vectorSysName = null)
@@ -232,7 +232,7 @@ namespace Data.Services
             return GetPeriodBillReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatBillViewModel> GetPeriodBillReport(DateTime startDate, DateTime endDate, string vectorSysName = null)
+        public IEnumerable<SpendStatBillViewModel> GetPeriodBillReport(DateTime startDate, DateTime endDate, string vectorSysName = null, int? billId = null)
         {
             if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньше даты начала!");
 
@@ -241,7 +241,9 @@ namespace Data.Services
             var eDate = endDate.Date;
 
             var list =
-                Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid,
+                Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid
+                && (!billId.HasValue || (billId.HasValue &&x.Id==billId))
+                ,
                     x => x.OrderBy(y => y.SpendBillTypes.OrderNum).ThenBy(y => y.Name))
                     .Select(x => new SpendStatBillViewModel
                     {
@@ -280,12 +282,65 @@ namespace Data.Services
             return list;
         }
 
-        public IEnumerable<SpendStatViewModel> GetMonthlyCategoryReport(int year, int month, string vectorSysName = null)
+        public IEnumerable<SpendStatCategoryViewModel> GetMonthlyCategoryStatReport(int year, int month, int? categoryId = null)
         {
             var startDate = new DateTime(year, month, 1);
             var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
 
-            return GetPeriodCategoryReport(startDate, endDate, vectorSysName);
+            return GetPeriodCategoryStatReport(startDate, endDate, categoryId);
+        }
+
+        public IEnumerable<SpendStatCategoryViewModel> GetPeriodCategoryStatReport(DateTime startDate, DateTime endDate, int? categoryId = null)
+        {
+            if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньшще даты начала!");
+
+
+            var sDate = startDate.Date;
+            var eDate = endDate.Date;
+
+            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid
+                                                       &&
+                                                       (!categoryId.HasValue ||
+                                                        (categoryId.HasValue && x.CategoryId == categoryId)),
+                                                        x=>x.OrderBy(y=>y.Name)
+                ).Select(x=> new SpendStatCategoryViewModel
+                {
+                    SpendCategoryName =x.Name,
+                    SpendCategoryId = x.CategoryId,
+                });
+
+            foreach (var cat in list)
+            {
+                var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+                         && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
+                         )
+                             group s by new
+                             {
+                                 s.SpendCategory
+                             }
+                         into gs
+                             select new 
+                             {
+                                 IncSum = gs.Sum(x => x.SpendVector.SysName=="INC" ? x.Sum : 0),
+                                 ExpSum = gs.Sum(x => x.SpendVector.SysName == "EXP" ? x.Sum : 0)
+                             };
+                if (report.Any())
+                {
+                    var rItem = report.First();
+                    cat.IncSum = rItem.IncSum;
+                    cat.ExpSum = rItem.ExpSum;
+                }
+            }
+
+            return list;
+        }
+
+        public IEnumerable<SpendStatViewModel> GetMonthlyCategoryReport(int year, int month, string vectorSysName = null, int? categoryId = null)
+        {
+            var startDate = new DateTime(year, month, 1);
+            var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+
+            return GetPeriodCategoryReport(startDate, endDate, vectorSysName, categoryId);
         }
 
         //public IEnumerable<SpendStatViewModel> GetQuarterCategoryReport(int endYear, int endMonth, string vectorSysName = null)
@@ -336,7 +391,7 @@ namespace Data.Services
             return GetPeriodCategoryReport(startDate, endDate, vectorSysName);
         }
 
-        public IEnumerable<SpendStatViewModel> GetPeriodCategoryReport(DateTime startDate, DateTime endDate, string vectorSysName = null)
+        public IEnumerable<SpendStatViewModel> GetPeriodCategoryReport(DateTime startDate, DateTime endDate, string vectorSysName = null, int? categoryId = null)
         {
             if (startDate > endDate) throw new ArgumentException("Дата окончания не может быть меньшще даты начала!");
 
@@ -347,6 +402,7 @@ namespace Data.Services
 
             var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
                          && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
+                         && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId==categoryId))
                          )
                          group s by new
                          {

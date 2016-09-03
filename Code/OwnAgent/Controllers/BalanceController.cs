@@ -388,5 +388,14 @@ namespace OwnAgent.Controllers
 
             return View();
         }
+
+        public ActionResult CategoryStat(int? id)
+        {
+            if (!id.HasValue) return HttpNotFound();
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+            var stat = SpendService.Instance(UserSid).GetMonthlyCategoryStatReport(year, month, categoryId: id).First();
+            return View(stat);
+        }
     }
 }

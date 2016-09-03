@@ -1,0 +1,11 @@
+﻿@model Models.ViewModels.SpendStatCategoryViewModel
+@{
+    Layout = null;
+}
+
+<small class="text-muted text-sm">
+    + @(String.Format("{0:N0} р.", Math.Abs(Model.IncSum)))
+</small>
+<small class="text-muted text-sm">
+    - @(String.Format("{0:N0} р.", Math.Abs(Model.ExpSum)))
+</small>
