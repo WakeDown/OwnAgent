@@ -59,18 +59,18 @@
                         @*<li>
                                 <a class="@(Request.QueryString["filter"] == "month" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "month"}})">Месяц</a>
                             </li>*@
-                        <li>
+                        @*<li>
                             <a class=" @(Request.QueryString["filter"] == "quarter" ? "disabled" : null) " href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "quarter"}})">Квартал</a>
-                        </li>
+                        </li>*@
                         <li>
                             <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">Год</a>
                         </li>
                         @*<li>
                                     <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
                                 </li>*@
-                        <li>
+                        @*<li>
                             <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">Все время</a>
-                        </li>
+                        </li>*@
                     </ul>
                 </div>
             </div>
