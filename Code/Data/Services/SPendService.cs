@@ -156,13 +156,14 @@ namespace Data.Services
             Uow.Commit();
         }
 
-        public IEnumerable<Spend> GetSpendList(out int totalCount, int? page = null, int? psize = null, DateTime? dateStart = null, DateTime? dateEnd = null, int? categoryId = null, int? vectorId = null)
+        public IEnumerable<Spend> GetSpendList(out int totalCount, int? page = null, int? psize = null, DateTime? dateStart = null, DateTime? dateEnd = null, int? categoryId = null, int? vectorId = null, int? billId = null)
         {
             var list = Uow.Spends.GetAllWithTotalCount(out totalCount, page, psize, x => x.UserSid == UserSid && x.Enabled
             && (!dateStart.HasValue || (dateStart.HasValue && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(dateStart)))
             && (!dateEnd.HasValue || (dateEnd.HasValue && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(dateEnd)))
             && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
             && (!vectorId.HasValue || (vectorId.HasValue && x.VectorId == vectorId))
+            && (!billId.HasValue || (billId.HasValue && x.BillId == billId))
             , x => x.OrderByDescending(y => y.Date).ThenByDescending(y => y.Id), x => x.SpendCategory, x => x.SpendVector, x => x.SpendBills);
             return list;
         }
@@ -261,11 +262,13 @@ namespace Data.Services
                 Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid
                 && (!billId.HasValue || (billId.HasValue &&x.Id==billId))
                 ,
-                    x => x.OrderBy(y => y.SpendBillTypes.OrderNum).ThenBy(y => y.Name))
+                    x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x=>x.SpendBillTypes)
                     .Select(x => new SpendStatBillViewModel
                     {
                         SpendBillName = x.Name,
-                        SpendBillId = x.Id
+                        SpendBillId = x.Id,
+                        BillTypeName = x.SpendBillTypes.Name,
+                        BillTypeIconName = x.SpendBillTypes.IconName
                     }).ToList();
 
             foreach (var item in list)
@@ -987,7 +990,7 @@ namespace Data.Services
 
         public IEnumerable<SpendBills> SpendBillGetList()
         {
-            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.SpendBillTypes);
+            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.SpendBillTypes, x=>x.Spend);
             return model;
         }
 

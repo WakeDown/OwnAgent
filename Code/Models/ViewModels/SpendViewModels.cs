@@ -63,6 +63,7 @@ namespace Models.ViewModels
         public int SpendBillId { get; set; }
         public double Sum { get; set; }
         public string BillTypeIconName { get; set; }
+        public string BillTypeName { get; set; }
         public double Percent { get; set; }
         public double IncSum { get; set; }
         public double ExpSum { get; set; }

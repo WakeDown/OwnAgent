@@ -92,7 +92,7 @@ namespace OwnAgent.Controllers
         }
 
         [HttpGet]
-        public ActionResult List(string filter = null, int? year = null, int? month = null, int? quarter = null, int? categoryId = null, int? vectorId = null)
+        public ActionResult List(string filter = null, int? year = null, int? month = null, int? quarter = null, int? categoryId = null, int? vectorId = null, int? billId = null)
         {
             DateTime? dateStart = null;
             DateTime? dateEnd = null;
@@ -127,7 +127,7 @@ namespace OwnAgent.Controllers
 
             //var list =Spend.GetList(ClientId);
             int totalCount;
-            var list = SpendService.Instance(UserSid).GetSpendList(out totalCount, dateStart: dateStart, dateEnd: dateEnd, categoryId: categoryId, vectorId: vectorId);
+            var list = SpendService.Instance(UserSid).GetSpendList(out totalCount, dateStart: dateStart, dateEnd: dateEnd, categoryId: categoryId, vectorId: vectorId, billId: billId);
             return View(list);
         }
 
