@@ -28,7 +28,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("Index", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -166,7 +166,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("Stat", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -187,7 +187,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("SpendBillReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -212,7 +212,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -237,7 +237,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -262,7 +262,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("GetSpendListChartData", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -311,7 +311,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }
@@ -354,7 +354,7 @@ namespace OwnAgent.Controllers
                 var quarterD = (double)month / 3;
                 if (quarterD < 1) quarter = 1;
                 else if (quarterD > 1 && quarterD < 2) quarter = 2;
-                else if (quarterD > 2 && quarterD < 3) quarter = 3;
+                else if (quarterD > 2 && quarterD <= 3) quarter = 3;
                 else if (quarterD > 3 && quarterD < 4) quarter = 4;
                 return RedirectToAction("Charts", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             }

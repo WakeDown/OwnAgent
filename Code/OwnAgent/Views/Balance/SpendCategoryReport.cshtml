@@ -6,7 +6,7 @@
     double totalExp = Model.Where(x => x.SpendVectorSysName == "EXP").Sum(x => x.Sum);
     double totalSum = totalInc - totalExp;
 
-    double totalIncPercent = Math.Round(totalSum / totalInc * 100, 1);
+    double totalIncPercent = totalInc > 0 ? Math.Round(totalSum / totalInc * 100, 1) : 0;
 }
 
 @if (Model != null)
