@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using Data.Services
 @using Helpers
 
 @{
@@ -7,8 +8,14 @@
     int year = Convert.ToInt32(Request.QueryString["year"]);
     int month = Convert.ToInt32(Request.QueryString["month"]);
     int quarter = Convert.ToInt32(Request.QueryString["quarter"]);
+    int? cat = null;
+    if (Request.QueryString["cat"] != null)
+    {
+        cat = Convert.ToInt32(Request.QueryString["cat"]);
+    }
 
     string url2Modify = Url.Action("Charts") + "?" + Request.QueryString;
+    List<KeyValuePair<int, string>> categories = SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList();
 }
 @section head{
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -53,8 +60,8 @@
                                 <a class="@(Request.QueryString["filter"] == "year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "year"}})">Год</a>
                             </li>
                             @*<li>
-                            <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
-                        </li>*@
+                                    <a class="@(Request.QueryString["filter"] == "5year" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "5year"}})">5 лет</a>
+                                </li>*@
                             <li>
                                 <a class="@(Request.QueryString["filter"] == "alltime" ? "disabled" : null)" href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"filter", "alltime"}})">Все время</a>
                             </li>
@@ -153,6 +160,38 @@
                 }
             </div>
         </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+            @*@Html.DropDownList("Categories", new SelectList(categories, "Key", "Value"), "--все категории--", new {@class="form-control"})*@
+            <div class="btn-group btn-full">
+                <button type="button" class="btn btn-default dropdown-toggle btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @if (month > 0 && month <= 12)
+                    {
+                        if (cat.HasValue)
+                        {
+                                @categories.Single(x => x.Key == cat).Value
+                        }
+                        else
+                        {
+                            @:--все категории--
+                        }
+                    }
+                    else
+                    {
+                        @:error
+                    }
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (var item in categories)
+                    {
+                        <li>
+                            <a href="@Url.ModifyQueryString(url2Modify, new Dictionary<string, object> {{"cat", item.Key}})">@item.Value</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
     </div>
     <div class="row">
         <div class="col l12">
@@ -172,20 +211,35 @@
         function loadCategoryChart() {
 
             $.ajax({
-                url: '@Url.Action("GetCategoryChartDataGroupByMonthes")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
+                url: '@Url.Action("GetCategoryChartDataGroupByMonthes")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&cat=@Request.QueryString["cat"]&vectorSysName=EXP',
                 method: 'POST',
-                success: function (data) {
+                success: function(data) {
                     if (data.length > 0) {
                         var dataT = new google.visualization.DataTable();
-                        dataT.addColumn('number', 'x');
-                        dataT.addColumn('number', 'values');
-                        var dataPoints = [];
+                        dataT.addColumn('number', 'Месяц');
                         for (var i = 0; i < data.length; i++) {
-                            var item = data[i];
-                            dataT.addColumn('number', item.Key);
-                            dataPoints.push([item.DateStr, item.CumulativeTotal]);
+                            dataT.addColumn('number', data[i].Key);
                         }
-                        var chartData = google.visualization.arrayToDataTable(dataPoints);
+                        var dataPoints = [];
+
+                        for (var i = 0; i < 12; i++) {
+                            var pItem = [];
+                            pItem.push(i + 1);
+                            for (var j = 0; j < data.length; j++) {
+                                var hasVal = false;
+                                for (var k = 0; k < data[j].Value.length; k++) {
+                                    var valItem = data[j].Value[k];
+                                    if (valItem && valItem.Month == i + 1) {
+                                        pItem.push(valItem.Sum);
+                                        hasVal = true;
+                                        break;
+                                    }
+                                }
+                                if (!hasVal) pItem.push(0);
+                            }
+                            dataPoints.push(pItem);
+                        }
+                        dataT.addRows(dataPoints);
 
                         var options = {
                             title: 'Состояние счета',
@@ -193,53 +247,53 @@
                             vAxis: { minValue: 0 }
                         };
 
-                        var chart = new google.visualization.SteppedAreaChart(document.getElementById('totalChartContainer'));
-                        chart.draw(chartData, options);
+                        var chart = new google.visualization.LineChart(document.getElementById('caregoryChartContainer'));
+                        chart.draw(dataT, options);
                     }
                 },
-                error: function (data) {
+                error: function(data) {
                     console.log(data);
                 }
             });
 
-            var data = new google.visualization.DataTable();
-            data.addColumn('number', 'x');
-            data.addColumn('number', 'values');
-            data.addColumn({ id: 'i0', type: 'number', role: 'interval' });
-            data.addColumn({ id: 'i1', type: 'number', role: 'interval' });
-            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
-            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
-            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
-            data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            //var data = new google.visualization.DataTable();
+            //data.addColumn('number', 'x');
+            //data.addColumn('number', 'values');
+            //data.addColumn({ id: 'i0', type: 'number', role: 'interval' });
+            //data.addColumn({ id: 'i1', type: 'number', role: 'interval' });
+            //data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            //data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            //data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
+            //data.addColumn({ id: 'i2', type: 'number', role: 'interval' });
 
-            data.addRows([
-                [1, 100, 90, 110, 85, 96, 104, 120],
-                [2, 120, 95, 130, 90, 113, 124, 140],
-                [3, 130, 105, 140, 100, 117, 133, 139],
-                [4, 90, 85, 95, 85, 88, 92, 95],
-                [5, 70, 74, 63, 67, 69, 70, 72],
-                [6, 30, 39, 22, 21, 28, 34, 40],
-                [7, 80, 77, 83, 70, 77, 85, 90],
-                [8, 100, 90, 110, 85, 95, 102, 110]]);
+            //data.addRows([
+            //    [1, 100, 90, 110, 85, 96, 104, 120],
+            //    [2, 120, 95, 130, 90, 113, 124, 140],
+            //    [3, 130, 105, 140, 100, 117, 133, 139],
+            //    [4, 90, 85, 95, 85, 88, 92, 95],
+            //    [5, 70, 74, 63, 67, 69, 70, 72],
+            //    [6, 30, 39, 22, 21, 28, 34, 40],
+            //    [7, 80, 77, 83, 70, 77, 85, 90],
+            //    [8, 100, 90, 110, 85, 95, 102, 110]]);
 
-            // The intervals data as narrow lines (useful for showing raw source data)
-            var options_lines = {
-                title: 'Line intervals, default',
-                curveType: 'function',
-                lineWidth: 4,
-                intervals: { 'style': 'line' },
-                legend: 'none'
-            };
+            //// The intervals data as narrow lines (useful for showing raw source data)
+            //var options_lines = {
+            //    title: 'Line intervals, default',
+            //    curveType: 'function',
+            //    lineWidth: 4,
+            //    intervals: { 'style': 'line' },
+            //    legend: 'none'
+            //};
 
-            var chart_lines = new google.visualization.LineChart(document.getElementById('caregoryChartContainer'));
-            chart_lines.draw(data, options_lines);
+            //var chart_lines = new google.visualization.LineChart(document.getElementById('caregoryChartContainer'));
+            //chart_lines.draw(data, options_lines);
         }
 
         function loadTotalChart() {
             $.ajax({
                 url: '@Url.Action("GetCumulativeTotalChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]',
                 method: 'POST',
-                success: function (data) {
+                success: function(data) {
                     if (data.length > 0) {
                         var dataPoints = [];
                         dataPoints.push(['Дата', 'Сумма']);
@@ -259,7 +313,7 @@
                         chart.draw(chartData, options);
                     }
                 },
-                error: function (data) {
+                error: function(data) {
                     console.log(data);
                 }
             });
@@ -269,13 +323,13 @@
             $.ajax({
                 url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=',
                 method: 'POST',
-                success: function (data) {
+                success: function(data) {
                     if (data.length > 0) {
                         var dataPoints = [];
                         //dataPoints.push(['Категория', 'Сумма', 'ID']);
                         for (var i = 0; i < data.length; i++) {
                             var item = data[i];
-                            dataPoints.push([new Date(item.Year, item.Month-1, item.Day), item.Sum]);
+                            dataPoints.push([new Date(item.Year, item.Month - 1, item.Day), item.Sum]);
                         }
                         var dataTable = new google.visualization.DataTable();
                         dataTable.addColumn({ type: 'date', id: 'Date' });
@@ -296,12 +350,12 @@
                         chart.draw(dataTable, options);
                     }
                 },
-                error: function (data) {
+                error: function(data) {
                     console.log(data);
                 }
             });
 
-        @*$.ajax({
+            @*$.ajax({
             url: '@Url.Action("GetSpendListChartData")?filter=@Request.QueryString["filter"]&year=@Request.QueryString["year"]&month=@Request.QueryString["month"]&quarter=@Request.QueryString["quarter"]&vectorSysName=EXP',
             method: 'POST',
             async: false,

@@ -146,7 +146,7 @@ namespace Data.Services
             && (!dateEnd.HasValue || (dateEnd.HasValue && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(dateEnd)))
             && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
             && (!vectorId.HasValue || (vectorId.HasValue && x.VectorId == vectorId))
-            , x => x.OrderByDescending(y => y.Date).ThenByDescending(y => y.Id), x => x.SpendCategory, x => x.SpendVector, x=>x.SpendBills);
+            , x => x.OrderByDescending(y => y.Date).ThenByDescending(y => y.Id), x => x.SpendCategory, x => x.SpendVector, x => x.SpendBills);
             return list;
         }
 
@@ -245,13 +245,13 @@ namespace Data.Services
                     x => x.OrderBy(y => y.SpendBillTypes.OrderNum).ThenBy(y => y.Name))
                     .Select(x => new SpendStatBillViewModel
                     {
-                        SpendBillName=x.Name,
-                        SpendBillId=x.Id
+                        SpendBillName = x.Name,
+                        SpendBillId = x.Id
                     });
 
             foreach (var item in list)
             {
-                var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled &&x.BillId==item.SpendBillId && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+                var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.BillId == item.SpendBillId && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
                          && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
                          )
                              group s by new
@@ -274,7 +274,7 @@ namespace Data.Services
                     item.IncSum = rItem.IncSum;
                     item.ExpSum = rItem.ExpSum;
                 }
-                
+
             }
 
             return list;
@@ -594,8 +594,8 @@ namespace Data.Services
             {
                 currentTotal = Uow.Spends.GetAllQuery(
                   x =>
-                      x.Enabled && x.UserSid == UserSid && x.CategoryId== categoryId && 
-                      (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName==vectorSysName)) &&
+                      x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+                      (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName)) &&
                       DbFunctions.TruncateTime(x.Date) < DbFunctions.TruncateTime(sDate))
                   .Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum);
             }
@@ -640,26 +640,26 @@ namespace Data.Services
                                                 && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate) &&
                                                 DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(eDate),
                         x => x.OrderBy((y => y.Date)), x => x.SpendVector)
-                    group m by new
-                    {
-                        Year = m.Date.Year,
-                        Month = m.Date.Month
-                    }
+                 group m by new
+                 {
+                     Year = m.Date.Year,
+                     Month = m.Date.Month
+                 }
                     into g
-                    select new
-                    {
-                        Year = g.Key.Year,
-                        Month = g.Key.Month,
-                        Total = g.Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum)
-                    }).AsEnumerable().Select(x =>
-                    {
-                        return new SpendChartViewModel() { Date = new DateTime(x.Year, x.Month, 1), Sum = x.Total };
-                    });
-        //               .AsEnumerable()
-        //.Select(g => new {
-        //    Period = g.Year + "-" + g.Month,
-        //    Total = g.Total,
-        //});
+                 select new
+                 {
+                     Year = g.Key.Year,
+                     Month = g.Key.Month,
+                     Total = g.Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum)
+                 }).AsEnumerable().Select(x =>
+                 {
+                     return new SpendChartViewModel() { Date = new DateTime(x.Year, x.Month, 1), Sum = x.Total };
+                 });
+            //               .AsEnumerable()
+            //.Select(g => new {
+            //    Period = g.Year + "-" + g.Month,
+            //    Total = g.Total,
+            //});
             //.Select(x =>
             //{
             //    currentTotal = x.SpendVector.SysName == "INC" ? currentTotal + x.Sum : currentTotal - x.Sum;
@@ -669,21 +669,22 @@ namespace Data.Services
             return data;
         }
 
-        public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetYearlyCategoryChartDataGroupByMonthes(int year, string vectorSysName)
+        public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetYearlyCategoryChartDataGroupByMonthes(int year, string vectorSysName, int? categoryId = null)
         {
             var endDate = new DateTime(year, 12, DateTime.DaysInMonth(year, 12));
             var startMonth = endDate.AddMonths(-11).Month;
             var startYear = endDate.AddMonths(-11).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
 
-            return GetCategoryChartDataGroupByMonthes(startDate, endDate, vectorSysName);
+            return GetCategoryChartDataGroupByMonthes(startDate, endDate, vectorSysName, categoryId:categoryId);
         }
 
-        public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetCategoryChartDataGroupByMonthes(DateTime startDate, DateTime endDate, string vectorSysName, bool calcCumulativeTotal = false)
+        public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetCategoryChartDataGroupByMonthes(DateTime startDate, DateTime endDate, string vectorSysName, bool calcCumulativeTotal = false, int? categoryId = null)
         {
             var list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
 
-            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid);
+            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid &&
+            (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId)));
 
             foreach (var cat in cats)
             {
@@ -728,14 +729,14 @@ namespace Data.Services
                   });
 
             var result = from t in data
-                group t by new {t.Year, t.Month}
+                         group t by new { t.Year, t.Month }
                 into g
-                select new SpendChartViewModel()
-                {
-                    Year = g.Key.Year,
-                    Month = g.Key.Month,
-                    Sum = g.Sum(x=>x.Sum)
-                };
+                         select new SpendChartViewModel()
+                         {
+                             Year = g.Key.Year,
+                             Month = g.Key.Month,
+                             Sum = g.Sum(x => x.Sum)
+                         };
 
 
             return result;
@@ -747,7 +748,7 @@ namespace Data.Services
             var startMonth = endDate.AddMonths(-11).Month;
             var startYear = endDate.AddMonths(-11).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
-            
+
             return GetCumulativeCategoryChartData(startDate, endDate, vectorSysName);
         }
 
@@ -913,7 +914,7 @@ namespace Data.Services
 
         public IEnumerable<SpendBills> SpendBillGetList()
         {
-            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name), x=>x.SpendBillTypes);
+            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.SpendBillTypes);
             return model;
         }
 
@@ -962,7 +963,7 @@ namespace Data.Services
 
         public IEnumerable<SpendBillTypes> SpendBillTypeGetList()
         {
-            var list = Uow.SpendBillTypes.GetAll(null, x=>x.OrderBy(y=>y.OrderNum).ThenBy(y=>y.Name));
+            var list = Uow.SpendBillTypes.GetAll(null, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name));
             return list;
         }
 

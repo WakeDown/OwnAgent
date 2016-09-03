@@ -90,4 +90,34 @@ namespace Models.ViewModels
         public double Sum { get; set; }
         public double CumulativeTotal { get; set; }
     }
+
+    public class SpendChartGroupByViewModel
+    {
+
+        public int GroupId { get; set; }
+        public string GroupTitle { get; set; }
+
+        public IEnumerable<SpendChartViewModel> Values { get; set; } 
+
+        
+        //private DateTime date;
+        //public DateTime Date
+        //{
+        //    get { return date; }
+        //    set
+        //    {
+        //        date = value;
+        //        Year = date.Year;
+        //        Month = date.Month;
+        //        Day = date.Day;
+        //        DateStr = Date.ToString("dd.MM.yyyy");
+        //    }
+        //}
+        //public string DateStr { get; set; }
+        //public int Year { get; set; }
+        //public int Month { get; set; }
+        //public int Day { get; set; }
+        //public double Sum { get; set; }
+        //public double CumulativeTotal { get; set; }
+    }
 }

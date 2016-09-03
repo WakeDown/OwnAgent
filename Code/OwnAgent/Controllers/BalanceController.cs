@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,7 +16,7 @@ using OwnAgent.Objects;
 namespace OwnAgent.Controllers
 {
     [Authorize]
-    public class BalanceController:BaseController
+    public class BalanceController : BaseController
     {
         [HttpGet]
         public ActionResult Index(string filter, int? year, int? month, int? quarter = null)
@@ -39,7 +40,7 @@ namespace OwnAgent.Controllers
         [HttpGet]
         public ActionResult New()
         {
-            var spend = new SpendNewViewModel() {Date = DateTime.Now};
+            var spend = new SpendNewViewModel() { Date = DateTime.Now };
             return View(spend);
         }
         //[HttpPost]
@@ -129,7 +130,7 @@ namespace OwnAgent.Controllers
             var list = SpendService.Instance(UserSid).GetSpendList(out totalCount, dateStart: dateStart, dateEnd: dateEnd, categoryId: categoryId, vectorId: vectorId);
             return View(list);
         }
-        
+
         [HttpPost]
         public JsonResult GetTop()
         {
@@ -139,7 +140,7 @@ namespace OwnAgent.Controllers
             return Json(models);
         }
 
-        
+
 
         [HttpPost]
         public JsonResult GetLastadd()
@@ -204,7 +205,7 @@ namespace OwnAgent.Controllers
 
         public ActionResult SpendCategoryReport(string filter, int? year, int? month, int? quarter = null)
         {
-            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month", year= year, month= month,quarter=quarter });
+            if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month", year = year, month = month, quarter = quarter });
             if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
             if (!month.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = year, month = DateTime.Now.Month, quarter = quarter });
             if (!quarter.HasValue)
@@ -218,7 +219,7 @@ namespace OwnAgent.Controllers
             }
 
             IEnumerable<SpendStatViewModel> list = new List<SpendStatViewModel>();
-            if (filter=="month")list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value);
+            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value);
             if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, quarter.Value);
             if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value);
             if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value);
@@ -326,12 +327,38 @@ namespace OwnAgent.Controllers
             return Json(list);
         }
 
-        public ActionResult GetCategoryChartDataGroupByMonthes(string filter, int? year, int? quarter = null, string vectorSysName = null)
+        public ActionResult GetCategoryChartDataGroupByMonthes(string filter, int? year, int? quarter = null, string vectorSysName = null, int? cat = null)
         {
             IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryChartDataGroupByMonthes(year.Value, vectorSysName);
+            if (filter == "year")
+                list = SpendService.Instance(UserSid)
+                    .GetYearlyCategoryChartDataGroupByMonthes(year.Value, vectorSysName, cat);
+            //.Where(x=>x.Key.Contains("Бензин"));
             //if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value);
             //if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData();
+
+            //var viewList = new List<SpendChartGroupByViewModel>();
+
+            //for (int i = 0; i < 12; i++)
+            //{
+
+            //    foreach (var item in list)
+            //    {
+
+            //        var listItem = new SpendChartGroupByViewModel()
+            //        {
+            //            CategoryName = item.Key,
+            //        };
+            //        var values = new List<SpendChartViewModel>();
+
+            //        var value = new SpendChartViewModel();
+
+
+
+            //    }
+            //    listItem.Values = values;
+            //    viewList.Add(listItem);
+            //}
 
             return Json(list);
         }
@@ -341,7 +368,7 @@ namespace OwnAgent.Controllers
             if (!id.HasValue) return HttpNotFound();
             SpendService.Instance(UserSid).SpendDelete(id.Value);
 
-            return Json(new {});
+            return Json(new { });
         }
 
         public ActionResult Charts(string filter, int? year, int? month, int? quarter = null)
