@@ -249,7 +249,7 @@ namespace Data.Services
                     {
                         SpendBillName = x.Name,
                         SpendBillId = x.Id
-                    });
+                    }).ToList();
 
             foreach (var item in list)
             {
@@ -307,7 +307,7 @@ namespace Data.Services
                 {
                     SpendCategoryName =x.Name,
                     SpendCategoryId = x.CategoryId,
-                });
+                }).ToList();
 
             foreach (var cat in list)
             {
