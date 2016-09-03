@@ -228,7 +228,7 @@ namespace OwnAgent.Controllers
             return View("SpendCategoryReport", list);
         }
 
-        public ActionResult SpendCategoryReportData(string filter, int? year, int? month, int? quarter = null, string vectorSysName = null)
+        public ActionResult SpendCategoryReportData(string filter, int? year, int? month, int? quarter = null, string vectorSysName = null, int? cat = null, int? bill = null)
         {
             if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReportData", new { filter = "month", year = year, month = month, quarter = quarter });
             if (!year.HasValue) return RedirectToAction("SpendCategoryReportData", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
@@ -244,11 +244,11 @@ namespace OwnAgent.Controllers
             }
 
             IEnumerable<SpendStatViewModel> list = new List<SpendStatViewModel>();
-            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value, vectorSysName);
-            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, quarter.Value, vectorSysName);
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value, vectorSysName);
-            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value, vectorSysName);
-            if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport(vectorSysName);
+            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCategoryReport(year.Value, month.Value, vectorSysName, cat, bill);
+            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCategoryReport(year.Value, quarter.Value, vectorSysName, cat, bill);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCategoryReport(year.Value, vectorSysName, cat, bill);
+            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCategoryReport(year.Value, vectorSysName, cat, bill);
+            if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCategoryReport(vectorSysName, cat, bill);
 
             return Json(list);
         }
@@ -302,7 +302,7 @@ namespace OwnAgent.Controllers
             return Json(list);
         }
 
-        public ActionResult GetCumulativeTotalChartData(string filter, int? year, int? month, int? quarter = null)
+        public ActionResult GetCumulativeTotalChartData(string filter, int? year, int? month, int? quarter = null, int? cat = null, int? bill = null)
         {
             if (String.IsNullOrEmpty(filter)) return RedirectToAction("SpendCategoryReport", new { filter = "month" });
             if (!year.HasValue) return RedirectToAction("SpendCategoryReport", new { filter = filter, year = DateTime.Now.Year, month = month });
@@ -318,21 +318,21 @@ namespace OwnAgent.Controllers
             }
 
             IEnumerable<SpendChartViewModel> list = new List<SpendChartViewModel>();
-            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCumulativeTotalChartData(year.Value, month.Value);
-            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCumulativeTotalChartData(year.Value, quarter.Value);
-            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCumulativeTotalChartData(year.Value);
-            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value, month.Value);
-            if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData();
+            if (filter == "month") list = SpendService.Instance(UserSid).GetMonthlyCumulativeTotalChartData(year.Value, month.Value, cat, bill);
+            if (filter == "quarter") list = SpendService.Instance(UserSid).GetQuarterCumulativeTotalChartData(year.Value, quarter.Value, cat, bill);
+            if (filter == "year") list = SpendService.Instance(UserSid).GetYearlyCumulativeTotalChartData(year.Value, cat, bill);
+            if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value, month.Value, cat, bill);
+            if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData(cat, bill);
 
             return Json(list);
         }
 
-        public ActionResult GetCategoryChartDataGroupByMonthes(string filter, int? year, int? quarter = null, string vectorSysName = null, int? cat = null)
+        public ActionResult GetCategoryChartDataGroupByMonthes(string filter, int? year, int? quarter = null, string vectorSysName = null, int? cat = null, int? bill = null)
         {
             IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
             if (filter == "year")
                 list = SpendService.Instance(UserSid)
-                    .GetYearlyCategoryChartDataGroupByMonthes(year.Value, vectorSysName, cat);
+                    .GetYearlyCategoryChartDataGroupByMonthes(year.Value, vectorSysName, cat, bill);
             //.Where(x=>x.Key.Contains("Бензин"));
             //if (filter == "5year") list = SpendService.Instance(UserSid).Get5YearlyCumulativeTotalChartData(year.Value);
             //if (filter == "alltime") list = SpendService.Instance(UserSid).GetAllTimeCumulativeTotalChartData();
@@ -371,7 +371,7 @@ namespace OwnAgent.Controllers
             return Json(new { });
         }
 
-        public ActionResult Charts(string filter, int? year, int? month, int? quarter = null)
+        public ActionResult Charts(string filter, int? year, int? month, int? quarter = null, int? bill = null, int? cat = null)
         {
             if (String.IsNullOrEmpty(filter)) return RedirectToAction("Charts", new { filter = "year", year = year, month = month, quarter = quarter });
             if (!year.HasValue) return RedirectToAction("Charts", new { filter = filter, year = DateTime.Now.Year, month = month, quarter = quarter });
