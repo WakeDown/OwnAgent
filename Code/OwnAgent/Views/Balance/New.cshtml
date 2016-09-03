@@ -26,7 +26,7 @@
                 </div>
                 <div class="form-group">
                     <label for="category" class="control-label">Категория</label> <span id="catStatContainer"></span>
-                    @Html.DropDownListFor(m => m.CategoryId, new SelectList(SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList(), "Key", "Value"), new {required = "required", id = "category", @class = "form-control"})
+                    @Html.DropDownListFor(m => m.CategoryId, new SelectList(SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList4NewSpend(), "Key", "Value"), new {required = "required", id = "category", @class = "form-control"})
                 </div>
                 <div class="form-group">
                     <label for="date" class="control-label">Дата</label>
@@ -80,8 +80,8 @@
         $(function () {
             //$("#showTop").sideNav();
             //$("#showTop").click(loadTop);
-            $('#BillId').change(loadBillState);
-            $('#CategoryId').change(loadCatState);
+            $('#bill').change(loadBillState);
+            $('#category').change(loadCatState);
             $('#inc').click(function () {
                 save('@Url.Action("SpendIncome", "Balance")', this);
             });

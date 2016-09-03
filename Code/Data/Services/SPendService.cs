@@ -97,6 +97,23 @@ namespace Data.Services
             }
         }
 
+        public IEnumerable<KeyValuePair<int, string>> GetCategorySelectionList4NewSpend()
+        {
+            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name)).Take(3);
+            var result = new List<KeyValuePair<int, string>>();
+            foreach (var category in list)
+            {
+                result.Add(new KeyValuePair<int, string>(category.CategoryId, category.Name));
+            }
+
+            var listOrdered = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.Name));
+            foreach (var category in listOrdered)
+            {
+                result.Add(new KeyValuePair<int, string>(category.CategoryId, category.Name));
+            }
+
+            return result;
+        }
 
         public IEnumerable<KeyValuePair<int, string>> GetCategorySelectionList()
         {
