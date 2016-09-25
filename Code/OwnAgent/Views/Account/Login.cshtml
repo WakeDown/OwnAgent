@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 input-field">
                         @Html.LabelFor(m => m.Email)
-                        @Html.TextBoxFor(m => m.Email, "", new {@class = "form-control"})
+                        @Html.TextBoxFor(m => m.Email, "", new {@class = "form-control", @type="email"})
                         @Html.ValidationMessageFor(m => m.Email, "", new {@class = "red-text"})
                     </div>
                 </div>

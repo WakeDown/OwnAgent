@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -41,10 +42,15 @@
                             <li><a href="@Url.Action("Index", "SpendCategories")">Категории</a></li>
                         </ul>
                     </li>
+                    <li class="hidden-lg hidden-md hidden-sm">
+                        <a href="@Url.Action("Index", "Manage")"><i class="fa fa-user"></i> Профиль</a>
+                        @*@Html.ActionLink("Мой профиль", "Index", "Manage", routeValues: null, htmlAttributes: new {title = "Управление профилем"})*@
+                    </li>
+                    <li class="hidden-lg hidden-md hidden-sm">
+                        <a href="javascript:document.getElementById('logoutForm').submit()" title="Выйти"><i class="fa fa-sign-out"></i> Выйти</a>
+                    </li>
                 </ul>
-
                 @Html.Partial("_LoginPartial")
-
             </div>
         </div>
     </div>
