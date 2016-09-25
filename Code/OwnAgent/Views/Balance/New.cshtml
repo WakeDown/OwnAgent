@@ -11,39 +11,103 @@
 }
 
 <p>
-    
+
     <div class="row">
         <div class="col-sm-7 col-md-4 col-lg-4">
-
-            <div class="">
-                <div class="form-group">
-                    <label for="bill" class="control-label">Счет</label> <span id="billStatContainer"></span>
-                    @Html.DropDownListFor(m => m.BillId, new SelectList(billList, "Id", "Name"), new { @class = "form-control", required = "required", id = "bill" })
+            <div class="panel panel-default no-border">
+                <div style="position: relative; height: 50px">
+                    <ul class="nav nav-tabs no-border" role="tablist" style="position: absolute; bottom: 0; width: 100%;">
+                        <li role="presentation" class="active tab tab-bg-danger text-center" style="width: 33%;"><a href="#expTab" class="" aria-controls="expTab" role="tab" data-toggle="tab"><i class="fa fa-minus-circle text-danger"></i> Расход</a></li>
+                        <li role="presentation" class="tab tab-bg-success text-center" style="width: 34%;"><a href="#incTab" aria-controls="incTab" role="tab" data-toggle="tab"><i class="fa fa-plus-circle text-success"></i> Доход</a></li>
+                        <li role="presentation" class="tab tab-bg-warning text-center" style="width: 33%;"><a href="#transTab" aria-controls="transTab" role="tab" data-toggle="tab" style="margin-right: 0"><i class="fa fa-mail-forward text-warning"></i> Перевод</a></li>
+                    </ul>
                 </div>
-                <div class="form-group">
-                    <label for="sum" class="control-label">Сумма</label>
-                    @Html.TextBoxFor(m => m.Sum, "{0:N0}", new {@class = "form-control", required = "required", id = "sum", placeholder = "Сумма", type = "number"})
-                </div>
-                <div class="form-group">
-                    <label for="category" class="control-label">Категория</label> <span id="catStatContainer"></span>
-                    @Html.DropDownListFor(m => m.CategoryId, new SelectList(SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList4NewSpend(), "Key", "Value"), new {required = "required", id = "category", @class = "form-control"})
-                </div>
-                <div class="form-group">
-                    <label for="date" class="control-label">Дата</label>
-                    @Html.TextBoxFor(m => m.Date, "{0:d}", new {@id = "date", @class = "form-control", required = "required", placeholder = "Дата"})
-                </div>
-                <div class="form-group">
-                    <label for="comment" class="control-label">Комментарий</label>
-                    @Html.TextAreaFor(m => m.Comment, new {id = "comment", @class = "form-control", placeholder = "Комментарий"})
-                </div>
-                <div class="form-group">
-                    <div class="btn-group btn-group-lg btn-full" role="group" aria-label="...">
-                        <button id="inc" type="button" class="btn btn-success" style="width: 50%"><i class="fa fa-plus-circle"></i> Зачислить</button>
-                        <button id="exp" type="button" class="btn btn-danger" style="width: 50%"><i class="fa fa-minus-circle"></i> Списать</button>
+                <div class="panel-body tab-pane-panel-body">
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active tab-pane-danger" id="expTab">
+                            <div class="form-group">
+                                <label for="bill" class="control-label">Со счета</label> <span id="billStatContainer"></span>
+                                @Html.DropDownListFor(m => m.BillId, new SelectList(billList, "Id", "Name"), new {@class = "form-control", required = "required", id = "bill"})
+                            </div>
+                            <div class="form-group">
+                                <label for="sum" class="control-label">Сумма</label>
+                                @Html.TextBoxFor(m => m.Sum, "{0:N0}", new {@class = "form-control select-onfocus-js", required = "required", id = "sum", placeholder = "Сумма", type = "number"})
+                            </div>
+                            <div class="form-group">
+                                <label for="category" class="control-label">Категория</label> <span id="catStatContainer"></span>
+                                @Html.DropDownListFor(m => m.CategoryId, new SelectList(SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList4NewSpend(), "Key", "Value"), new {required = "required", id = "category", @class = "form-control"})
+                            </div>
+                            <div class="form-group">
+                                <label for="date" class="control-label">Дата</label>
+                                @Html.TextBoxFor(m => m.Date, "{0:d}", new {@id = "date", @class = "form-control", required = "required", placeholder = "Дата"})
+                            </div>
+                            <div class="form-group">
+                                <label for="comment" class="control-label">Комментарий</label>
+                                @Html.TextAreaFor(m => m.Comment, new {id = "comment", @class = "form-control", placeholder = "Комментарий"})
+                            </div>
+                            <div class="form-group">
+                                <button id="exp" type="button" class="btn btn-danger btn-lg btn-block"><i class="fa fa-minus-circle"></i> Списать</button>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane tab-pane-success" id="incTab">
+                            <div class="form-group">
+                                <label for="bill" class="control-label">На счет</label> <span id="billStatContainer"></span>
+                                @Html.DropDownListFor(m => m.BillId, new SelectList(billList, "Id", "Name"), new {@class = "form-control", required = "required", id = "bill"})
+                            </div>
+                            <div class="form-group">
+                                <label for="sum" class="control-label">Сумма</label>
+                                @Html.TextBoxFor(m => m.Sum, "{0:N0}", new {@class = "form-control select-onfocus-js", required = "required", id = "sum", placeholder = "Сумма", type = "number"})
+                            </div>
+                            <div class="form-group">
+                                <label for="category" class="control-label">Категория</label> <span id="catStatContainer"></span>
+                                @Html.DropDownListFor(m => m.CategoryId, new SelectList(SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList4NewSpend(), "Key", "Value"), new {required = "required", id = "category", @class = "form-control"})
+                            </div>
+                            <div class="form-group">
+                                <label for="date" class="control-label">Дата</label>
+                                @Html.TextBoxFor(m => m.Date, "{0:d}", new {@id = "date", @class = "form-control", required = "required", placeholder = "Дата"})
+                            </div>
+                            <div class="form-group">
+                                <label for="comment" class="control-label">Комментарий</label>
+                                @Html.TextAreaFor(m => m.Comment, new {id = "comment", @class = "form-control", placeholder = "Комментарий"})
+                            </div>
+                            <div class="form-group">
+                                <button id="inc" type="button" class="btn btn-success btn-lg btn-block"><i class="fa fa-plus-circle"></i> Зачислить</button>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane tab-pane-warning" id="transTab">
+                            <div class="form-group">
+                                <label for="billFrom" class="control-label">Со счета</label> <span id="billStatContainer"></span>
+                                @Html.DropDownListFor(m => m.BillId, new SelectList(billList, "Id", "Name"), new { @class = "form-control", required = "required", id = "billFrom" })
+                            </div>
+                            <div class="form-group">
+                                <label for="billTo" class="control-label">На счет</label> <span id="catStatContainer"></span>
+                                @Html.DropDownListFor(m => m.BillId, new SelectList(billList, "Id", "Name"), new {@class = "form-control", required = "required", id = "billTo"})
+                            </div>
+                            <div class="form-group">
+                                <label for="sum" class="control-label">Сумма</label>
+                                @Html.TextBoxFor(m => m.Sum, "{0:N0}", new {@class = "form-control select-onfocus-js", required = "required", id = "sum", placeholder = "Сумма", type = "number"})
+                            </div>
+                            @*<div class="form-group">
+                                <label for="category" class="control-label">Категория</label> <span id="catStatContainer"></span>
+                                @Html.DropDownListFor(m => m.CategoryId, new SelectList(SpendService.Instance(ViewBag.UserSid).GetCategorySelectionList4NewSpend(), "Key", "Value"), new {required = "required", id = "category", @class = "form-control"})
+                            </div>*@
+                            <div class="form-group">
+                                <label for="date" class="control-label">Дата</label>
+                                @Html.TextBoxFor(m => m.Date, "{0:d}", new {@id = "date", @class = "form-control", required = "required", placeholder = "Дата"})
+                            </div>
+                            <div class="form-group">
+                                <label for="comment" class="control-label">Комментарий</label>
+                                @Html.TextAreaFor(m => m.Comment, new {id = "comment", @class = "form-control", placeholder = "Комментарий"})
+                            </div>
+                            <div class="form-group">
+                                <button id="trans" type="button" class="btn btn-warning btn-lg btn-block"><i class="fa fa-mail-forward"></i> Перевести</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
+            
+            
             @*<div class="row">
                     <div class="col s12">
                         <label for="vector">Вектор</label>
@@ -51,7 +115,7 @@
 
                     </div>
                 </div>*@
-            
+
         </div>
         <div class="col-sm-5 col-md-4 col-lg-3">
             <h5>Предыдущие записи</h5>
@@ -59,35 +123,37 @@
                 <div class="loader"></div>
             </div>
             @*<h6>Быстрый выбор</h6>
-            <div id="spendTopContainer">@Html.Partial("Loader")</div>*@
+                <div id="spendTopContainer">@Html.Partial("Loader")</div>*@
         </div>
     </div>
 </p>
 @*<p>
-    <div class="row">
-        <div class="col s12 m8 l6">
-            <h5>Недавно добавлено</h5>
-            <div id="lastAddContainer">
-                @Html.Partial("Loader")
+        <div class="row">
+            <div class="col s12 m8 l6">
+                <h5>Недавно добавлено</h5>
+                <div id="lastAddContainer">
+                    @Html.Partial("Loader")
+                </div>
             </div>
         </div>
-    </div>
-</p>*@
+    </p>*@
 
 @section scripts
 {
     <script type="text/javascript">
         $(function () {
+            setPanelBodyBorder();
+            $('.tab').click(function() {
+                setTimeout(setPanelBodyBorder, 100);
+            });
             //$("#showTop").sideNav();
             //$("#showTop").click(loadTop);
             $('#bill').change(loadBillState);
             $('#category').change(loadCatState);
-            $('#inc').click(function () {
-                save('@Url.Action("SpendIncome", "Balance")', this);
-            });
-            $('#exp').click(function () {
-                save('@Url.Action("SpendExpense", "Balance")', this);
-            });
+            $('#inc').click(saveInc);
+            $('#exp').click(saveExp);
+            $('#trans').click(saveTrans);
+            $('.select-onfocus-js').focus(function() { $(this).select(); });
             //$('#date').pickadate({
             //    selectMonths: true, // Creates a dropdown to control month
             //    selectYears: 15, // Creates a dropdown of 15 years to control year
@@ -120,6 +186,108 @@
             loadCatState();
             //loadSpendTop();
         });
+
+        function saveTrans() {
+            var $pnl = $('#transTab');
+            var sum = $('#sum', $pnl).val().replace('.', ',');
+
+            if (sum == '' || sum == '0') {
+                alert('Необходимо указать сумму!');
+                $('#sum', $pnl).focus();
+                return;
+            }
+
+            var billToId = $('#billTo', $pnl).val();
+            var billFromId = $('#billFrom', $pnl).val();
+
+            if (billToId == billFromId) {
+                alert('Необходимо выбрать разные счета!');
+                return;
+            }
+
+            var $this = $(this);
+            $this.enabled = false;
+            $.ajax({
+                url: '@Url.Action("SpendTransfer", "Balance")',
+                method: 'POST',
+                data: { Date: $('#date', $pnl).val(), Sum: sum, BillToId: billToId, Comment: $('#comment', $pnl).val(), BillFromId: billFromId },
+                success: function () {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                    $this.enabled = true;
+                }
+            });
+        }
+
+        function saveExp() {
+            var $pnl = $('#expTab');
+            var sum = $('#sum', $pnl).val().replace('.', ',');
+
+            if (sum == '' || sum == '0') {
+                alert('Необходимо указать сумму!');
+                $('#sum', $pnl).focus();
+                return;
+            }
+
+            var $this = $(this);
+            $this.enabled = false;
+            $.ajax({
+                url: '@Url.Action("SpendExpense", "Balance")',
+                method: 'POST',
+                data: { Date: $('#date', $pnl).val(), Sum: sum, CategoryId: $('#category', $pnl).val(), Comment: $('#comment', $pnl).val(), BillId: $('#bill', $pnl).val() },
+                success: function () {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                    $this.enabled = true;
+                }
+            });
+        }
+
+        function saveInc() {
+            var $pnl = $('#incTab');
+            var sum = $('#sum', $pnl).val().replace('.', ',');
+
+            if (sum == '' || sum == '0') {
+                alert('Необходимо указать сумму!');
+                $('#sum', $pnl).focus();
+                return;
+            }
+
+            var $this = $(this);
+            $this.enabled = false;
+            $.ajax({
+                url: '@Url.Action("SpendIncome", "Balance")',
+                method: 'POST',
+                data: { Date: $('#date', $pnl).val(), Sum: sum, CategoryId: $('#category', $pnl).val(), Comment: $('#comment', $pnl).val(), BillId: $('#bill', $pnl).val() },
+                success: function () {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                    $this.enabled = true;
+                }
+            });
+        }
+        function setPanelBodyBorder() {
+
+            var $tb = $('.tab-pane-panel-body');
+            var $tp = $('.tab-pane.active');
+            $tb.removeClass(function (index, css) {
+                return (css.match(/\btab-pane-panel-body-bd-\S+/g) || []).join(' ');
+            });
+            if ($tp.is('.tab-pane-danger')) {
+                $tb.addClass('tab-pane-panel-body-bd-danger');
+            }
+            else if ($tp.is('.tab-pane-success')) {
+                $tb.addClass('tab-pane-panel-body-bd-success');
+            } else if ($tp.is('.tab-pane-warning')) {
+                $tb.addClass('tab-pane-panel-body-bd-warning');
+            }
+        }
         function loadBillState() {
             var id = $('#bill').val();
             $.ajax({
@@ -128,7 +296,7 @@
                 success: function (data) {
                     $('#billStatContainer').html(data);
                 },
-                error: function(data) {
+                error: function (data) {
                     console.error(data);
                 }
             });
@@ -168,37 +336,12 @@
                 url: '@Url.Action("SpendDelete")',
                 method: 'POST',
                 data: { id: sid },
-                success: function() {
+                success: function () {
                     $card.remove();
                     loadLastadd();
                 },
-                error: function(data) {
-                    console.error(data);
-                }
-            });
-        }
-
-        function save(url, obj) {
-            var sum = $('#sum').val().replace('.', ',');
-
-            if (sum == '' || sum == '0') {
-                alert('Необходимо указать сумму!');
-                $('#sum').focus();
-                return;
-            }
-
-            var $this = $(obj);
-            $this.enabled = false;
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: { Date: $('#date').val(), Sum: sum, CategoryId: $('#category').val(), Comment: $('#comment').val(), BillId:$('#bill').val() },
-                success: function () {
-                    window.location.reload();
-                },
                 error: function (data) {
-                    console.log(data);
-                    $this.enabled = true;
+                    console.error(data);
                 }
             });
         }

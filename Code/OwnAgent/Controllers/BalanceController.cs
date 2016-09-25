@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using AutoMapper;
 using Data.Models;
 using Data.Services;
 using Microsoft.AspNet.Identity;
@@ -71,6 +72,15 @@ namespace OwnAgent.Controllers
             //model.Save(ClientId);
             return Json(new { });
             //return RedirectToAction("New");
+        }
+
+        [HttpPost]
+        public JsonResult SpendTransfer(SpendTransferViewModel model)
+        {
+            Mapper.Initialize(cfg => cfg.CreateMap<SpendTransferViewModel, SpendTransfer>());
+            SpendTransfer trans = Mapper.Map<SpendTransferViewModel, SpendTransfer>(model);
+            SpendService.Instance(UserSid).CreateTransfer(trans);
+            return Json(new { });
         }
 
         [HttpGet]

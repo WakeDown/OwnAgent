@@ -26,6 +26,20 @@ namespace Data.Objects
         private IRepository<SpendBills> _spendBills;
         private IRepository<SpendBillTypes> _spendBillTypes;
         private IRepository<BillCapitalizationTypes> _billCapitalizationTypes;
+        private IRepository<SpendTransfer> _spendTransfer;
+
+        public IRepository<SpendTransfer> SpendTransfer
+        {
+            get
+            {
+                if (_spendTransfer == null)
+                {
+                    _spendTransfer = new Repository<SpendTransfer>(DbContext);
+
+                }
+                return _spendTransfer;
+            }
+        }
 
         public IRepository<BillCapitalizationTypes> BillCapitalizationTypes
         {

@@ -66,9 +66,6 @@
     <Compile Include="Models\BillCapitalizationTypes.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\C__MigrationHistory.cs">
-      <DependentUpon>OwnAgentModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\OwnAgentModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,6 +91,9 @@
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpendCategory.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SpendTransfer.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SpendVector.cs">

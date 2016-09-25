@@ -18,6 +18,8 @@ namespace Data.Models
         public SpendBills()
         {
             this.Spend = new HashSet<Spend>();
+            this.SpendTransfer = new HashSet<SpendTransfer>();
+            this.SpendTransfer1 = new HashSet<SpendTransfer>();
         }
     
         public int Id { get; set; }
@@ -40,5 +42,9 @@ namespace Data.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Spend> Spend { get; set; }
         public virtual SpendBillTypes SpendBillTypes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SpendTransfer> SpendTransfer { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SpendTransfer> SpendTransfer1 { get; set; }
     }
 }

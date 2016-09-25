@@ -12,25 +12,29 @@ namespace Data.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Spend
+    public partial class SpendTransfer
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public SpendTransfer()
+        {
+            this.Spend = new HashSet<Spend>();
+        }
+    
         public int Id { get; set; }
-        public System.DateTime Date { get; set; }
-        public int VectorId { get; set; }
-        public int CategoryId { get; set; }
+        public int BillFromId { get; set; }
+        public int BillToId { get; set; }
         public double Sum { get; set; }
-        public string Comment { get; set; }
-        public string UserSid { get; set; }
+        public System.DateTime Date { get; set; }
         public System.DateTime CreateDate { get; set; }
         public bool Enabled { get; set; }
+        public string Comment { get; set; }
+        public string UserSid { get; set; }
         public Nullable<System.DateTime> DeleteDate { get; set; }
-        public Nullable<int> BillId { get; set; }
-        public Nullable<int> TransferId { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
-        public virtual SpendCategory SpendCategory { get; set; }
-        public virtual SpendVector SpendVector { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Spend> Spend { get; set; }
         public virtual SpendBills SpendBills { get; set; }
-        public virtual SpendTransfer SpendTransfer { get; set; }
+        public virtual SpendBills SpendBills1 { get; set; }
     }
 }
