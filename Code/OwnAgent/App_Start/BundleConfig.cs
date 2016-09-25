@@ -34,6 +34,7 @@ namespace OwnAgent
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       //"~/Content/materialize/css/materialize.min.css",
                       "~/Content/bootstrap.min.css",
+                      "~/Content/bootstrap-social.css",
                       "~/Content/bootstrap-datepicker3.css",
                       "~/Content/font-awesome.min.css",
                       "~/Content/site.css"));

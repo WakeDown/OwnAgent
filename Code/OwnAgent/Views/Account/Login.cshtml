@@ -2,36 +2,37 @@
 @model LoginViewModel
 @{
     ViewBag.Title = "Вход";
+    Layout = "../Shared/_LayoutLogin.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Title</h3>
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+            <hr/>
+            @using (Html.BeginForm("Login", "Account", new {ReturnUrl = ViewBag.ReturnUrl}, FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
                 @*<h4>Use a local account to log in.</h4>*@
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.ValidationSummary(true, "", new {@class = "text-danger"})
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-12 input-field">
+                    <div class="col-lg-12 col-md-12 col-sm-12 input-field">
                         @Html.LabelFor(m => m.Email)
-                        @Html.TextBoxFor(m => m.Email, "", new { @class="form-control"})
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "red-text" })
+                        @Html.TextBoxFor(m => m.Email, "", new {@class = "form-control"})
+                        @Html.ValidationMessageFor(m => m.Email, "", new {@class = "red-text"})
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-12 input-field">
+                    <div class="col-lg-12 col-md-12 col-sm-12 input-field">
                         @Html.LabelFor(m => m.Password)
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "red-text" })
+                        @Html.PasswordFor(m => m.Password, new {@class = "form-control"})
+                        @Html.ValidationMessageFor(m => m.Password, "", new {@class = "red-text"})
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
                         @*@Html.CheckBoxFor(m => m.RememberMe, new {type="checkbox"})*@
-                        <input id="RememberMe" name="RememberMe" type="checkbox" value="@Model.RememberMe.ToString()" checked="checked" />
+                        <input id="RememberMe" name="RememberMe" type="checkbox" value="@Model.RememberMe.ToString()" checked="checked"/>
                         @*<input type="checkbox" name="Model.RememberMe" class="filled-in" checked="checked"  />*@
                         @*<div class="switch">
                             <label>
@@ -45,8 +46,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <input type="submit" value="Войти" class="btn btn-primary pull-right" />
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <input type="submit" value="Войти" class="btn btn-primary pull-right"/>
                     </div>
                 </div>
                 <p>
@@ -60,7 +61,9 @@
         </section>
 
     </div>
-    <div class="col-sm-12">
+</div>
+<div class="row">
+    <div class="col-sm-12 col-lg-12 col-md-12">
         <section id="socialLoginForm">
             @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
         </section>

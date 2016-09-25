@@ -1,4 +1,5 @@
 ﻿using System;
+using Duke.Owin.VkontakteMiddleware;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
@@ -55,15 +56,23 @@ namespace OwnAgent
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            app.UseFacebookAuthentication(
-               appId: "1489789608000333",
-               appSecret: "cbacb57262b96cf0148f9686818443b3");
-
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {
                 ClientId = "428725720980-3mgeoj4oetl1desr8hedgth7h9uljn84.apps.googleusercontent.com",
                 ClientSecret = "kPK5WcR66DgFc68_sqX7oK8K"
             });
+
+            app.UseVkontakteAuthentication(new VkAuthenticationOptions()
+            {
+                AppId = "5642624",
+                AppSecret = "FWwmNRTsoG5drxjehHc9"
+            });
+
+            app.UseFacebookAuthentication(
+               appId: "1489789608000333",
+               appSecret: "cbacb57262b96cf0148f9686818443b3");
+
+
         }
     }
 }
