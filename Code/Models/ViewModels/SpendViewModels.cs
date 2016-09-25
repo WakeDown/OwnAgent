@@ -17,6 +17,16 @@ namespace Models.ViewModels
         public int BillId { get; set; }
     }
 
+    public class SpendTransferViewModel
+    {
+        public int Id { get; set; }
+        public System.DateTime Date { get; set; }
+        public double Sum { get; set; }
+        public string Comment { get; set; }
+        public int BillFromId { get; set; }
+        public int BillToId { get; set; }
+    }
+
     public class SpendTopViewModel
     {
         public int Id { get; set; }

@@ -26,6 +26,8 @@ namespace Data.Models
         public bool Selected { get; set; }
         public bool Enabled { get; set; }
         public string UserSid { get; set; }
+        public bool IsSystem { get; set; }
+        public string SysName { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -57,41 +57,61 @@ namespace Data.Services
                 cat.UserSid = UserSid;
                 cat.Name = "Еда/Бытовые товары";
                 cat.OrderNum = 10;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Бытовые услуги";
                 cat.OrderNum = 20;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Ресторан";
                 cat.OrderNum = 30;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Транспорт/Бензин";
                 cat.OrderNum = 40;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Одежда";
                 cat.OrderNum = 50;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Зарплата";
                 cat.OrderNum = 60;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Подработка";
                 cat.OrderNum = 70;
+                cat.IsSystem = false;
                 Uow.SpendCategories.Insert(cat);
-                Uow.Commit();
 
                 cat.Name = "Другое";
                 cat.OrderNum = 80;
+                cat.IsSystem = false;
+                Uow.SpendCategories.Insert(cat);
+
+                cat.Name = "Перевод";
+                cat.OrderNum = 90;
+                cat.IsSystem = true;
+                cat.SysName = "TRANSFER";
+                Uow.SpendCategories.Insert(cat);
+                Uow.Commit();
+            }else if (
+                !Uow.SpendCategories.GetAll(
+                    x => x.Enabled && x.UserSid == UserSid && x.IsSystem && x.SysName == "TRANSFER").Any())
+            {
+                var cat = new SpendCategory();
+                cat.Enabled = true;
+                cat.UserSid = UserSid;
+                cat.Name = "Перевод";
+                cat.OrderNum = 90;
+                cat.IsSystem = true;
+                cat.SysName = "TRANSFER";
                 Uow.SpendCategories.Insert(cat);
                 Uow.Commit();
             }
@@ -99,14 +119,14 @@ namespace Data.Services
 
         public IEnumerable<KeyValuePair<int, string>> GetCategorySelectionList4NewSpend()
         {
-            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name)).Take(3);
+            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && !x.IsSystem, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name)).Take(3);
             var result = new List<KeyValuePair<int, string>>();
             foreach (var category in list)
             {
                 result.Add(new KeyValuePair<int, string>(category.CategoryId, category.Name));
             }
 
-            var listOrdered = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.Name));
+            var listOrdered = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && !x.IsSystem, x => x.OrderBy(y => y.Name));
             foreach (var category in listOrdered)
             {
                 result.Add(new KeyValuePair<int, string>(category.CategoryId, category.Name));
@@ -117,7 +137,7 @@ namespace Data.Services
 
         public IEnumerable<KeyValuePair<int, string>> GetCategorySelectionList()
         {
-            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name));
+            var list = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && !x.IsSystem, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name));
             var result = new List<KeyValuePair<int, string>>();
             foreach (var category in list)
             {
@@ -136,6 +156,37 @@ namespace Data.Services
         {
             spend.VectorId = Uow.SpendVectors.GetOne(x => x.SysName == "EXP").VectorId;
             CreateSpend(spend);
+        }
+
+        public void CreateTransfer(SpendTransfer model)
+        {
+            if (model.BillToId==model.BillFromId) throw new ArgumentException("Необходимо указать разные счета!");
+
+            model.CreateDate = DateTime.Now;
+            model.Enabled = true;
+            model.UserSid = UserSid;
+            Uow.SpendTransfer.Insert(model);
+            Uow.Commit();
+
+            var catId = Uow.SpendCategories.GetAll(x => x.IsSystem && x.SysName == "TRANSFER").Single().CategoryId;
+
+            Spend spendExp = new Spend();
+            spendExp.Sum = model.Sum;
+            spendExp.BillId = model.BillFromId;
+            spendExp.Comment = model.Comment;
+            spendExp.CategoryId = catId;
+            spendExp.Date = model.Date;
+            spendExp.TransferId = model.Id;
+            CreateExpense(spendExp);
+
+            Spend spendInc = new Spend();
+            spendInc.Sum = model.Sum;
+            spendInc.BillId = model.BillToId;
+            spendInc.Comment = model.Comment;
+            spendInc.CategoryId = catId;
+            spendInc.Date = model.Date;
+            spendExp.TransferId = model.Id;
+            CreateIncome(spendInc);
         }
 
         public void CreateSpend(Spend spend)
@@ -171,7 +222,7 @@ namespace Data.Services
         public IEnumerable<Spend> GetTop(int topRows)
         {
             var limitDate = DateTime.Now.AddMonths(-3).Date;
-            var list = (from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= limitDate)
+            var list = (from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.Date >= limitDate)
                         group s by new
                         {
                             s.SpendVector,
@@ -260,9 +311,9 @@ namespace Data.Services
 
             var list =
                 Uow.SpendBills.GetAll(x => x.Enabled && x.UserSid == UserSid
-                && (!billId.HasValue || (billId.HasValue &&x.Id==billId))
+                && (!billId.HasValue || (billId.HasValue && x.Id == billId))
                 ,
-                    x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x=>x.SpendBillTypes)
+                    x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.SpendBillTypes)
                     .Select(x => new SpendStatBillViewModel
                     {
                         SpendBillName = x.Name,
@@ -322,16 +373,16 @@ namespace Data.Services
                                                        &&
                                                        (!categoryId.HasValue ||
                                                         (categoryId.HasValue && x.CategoryId == categoryId)),
-                                                        x=>x.OrderBy(y=>y.Name)
-                ).Select(x=> new SpendStatCategoryViewModel
+                                                        x => x.OrderBy(y => y.Name)
+                ).Select(x => new SpendStatCategoryViewModel
                 {
-                    SpendCategoryName =x.Name,
+                    SpendCategoryName = x.Name,
                     SpendCategoryId = x.CategoryId,
                 }).ToList();
 
             foreach (var cat in list)
             {
-                var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+                var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.Date >= sDate && x.Date <= eDate
                          && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
                          )
                              group s by new
@@ -339,9 +390,9 @@ namespace Data.Services
                                  s.SpendCategory
                              }
                          into gs
-                             select new 
+                             select new
                              {
-                                 IncSum = gs.Sum(x => x.SpendVector.SysName=="INC" ? x.Sum : 0),
+                                 IncSum = gs.Sum(x => x.SpendVector.SysName == "INC" ? x.Sum : 0),
                                  ExpSum = gs.Sum(x => x.SpendVector.SysName == "EXP" ? x.Sum : 0)
                              };
                 if (report.Any())
@@ -420,9 +471,9 @@ namespace Data.Services
             var sDate = startDate.Date;
             var eDate = endDate.Date;
 
-            var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate
+            var report = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && !x.SpendCategory.IsSystem && x.TransferId == null && x.Date >= sDate && x.Date <= eDate
                          && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
-                         && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId==categoryId))
+                         && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
                          && (!billId.HasValue || (billId.HasValue && x.BillId == billId))
                          )
                          group s by new
@@ -524,6 +575,7 @@ namespace Data.Services
 
             var data =
                 Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid
+                 && x.TransferId == null
                 && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
                 && x.Date >= sDate && x.Date <= eDate,
                     x => x.OrderBy(y => y.Date)).Select(x => new SpendChartViewModel() { Date = x.Date, Sum = (x.SpendVector.SysName == "EXP" ? -x.Sum : x.Sum) });
@@ -546,7 +598,7 @@ namespace Data.Services
             var sDate = startDate.Date;
             var eDate = endDate.Date;
 
-            var list = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.Date >= sDate && x.Date <= eDate)
+            var list = from s in Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.Date >= sDate && x.Date <= eDate)
                        group s by new
                        {
                            s.Date
@@ -571,7 +623,7 @@ namespace Data.Services
             var startDate = new DateTime(year, month, 1);
             var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
 
-            return GetCumulativeTotalChartData(startDate, endDate, categoryId:categoryId, billId:billId);
+            return GetCumulativeTotalChartData(startDate, endDate, categoryId: categoryId, billId: billId);
         }
 
         public IEnumerable<SpendChartViewModel> GetQuarterCumulativeTotalChartData(int endYear, int endMonth, int? categoryId = null, int? billId = null)
@@ -629,16 +681,18 @@ namespace Data.Services
                 currentTotal = Uow.Spends.GetAllQuery(
                   x =>
                       x.Enabled && x.UserSid == UserSid
-                      && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId==categoryId))
+                       && x.TransferId == null
+                      && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
                       && (!billId.HasValue || (billId.HasValue && x.BillId == billId))
                       && DbFunctions.TruncateTime(x.Date) < DbFunctions.TruncateTime(sDate))
                   .Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum);
             }
 
             var data = Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid
+             && x.TransferId == null
             && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
                       && (!billId.HasValue || (billId.HasValue && x.BillId == billId))
-            && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate) 
+            && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate)
             && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(eDate)
             , x => x.OrderBy((y => y.Date)), x => x.SpendVector).AsEnumerable()
                   .Select(x =>
@@ -678,13 +732,13 @@ namespace Data.Services
             {
                 currentTotal = Uow.Spends.GetAllQuery(
                   x =>
-                      x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+                      x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.CategoryId == categoryId &&
                       (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName)) &&
                       DbFunctions.TruncateTime(x.Date) < DbFunctions.TruncateTime(sDate))
                   .Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum);
             }
 
-            var data = Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+            var data = Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.CategoryId == categoryId &&
                       (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
                     && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate) && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(eDate), x => x.OrderBy((y => y.Date)), x => x.SpendVector).AsEnumerable()
                   .Select(x =>
@@ -709,7 +763,7 @@ namespace Data.Services
             {
                 currentTotal = Uow.Spends.GetAllQuery(
                   x =>
-                      x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+                      x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.CategoryId == categoryId &&
                       (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName)) &&
                       DbFunctions.TruncateTime(x.Date) < DbFunctions.TruncateTime(sDate))
                   .Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum);
@@ -717,7 +771,7 @@ namespace Data.Services
 
             var data =
                 (from m in
-                    Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+                    Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.TransferId == null && x.CategoryId == categoryId &&
                                                 (String.IsNullOrEmpty(vectorSysName) ||
                                                  (!String.IsNullOrEmpty(vectorSysName) &&
                                                   x.SpendVector.SysName == vectorSysName))
@@ -760,21 +814,21 @@ namespace Data.Services
             var startYear = endDate.AddMonths(-11).Year;
             var startDate = new DateTime(startYear, startMonth, 1);
 
-            return GetCategoryChartDataGroupByMonthes(startDate, endDate, vectorSysName, categoryId:categoryId, billId: billId);
+            return GetCategoryChartDataGroupByMonthes(startDate, endDate, vectorSysName, categoryId: categoryId, billId: billId);
         }
 
         public IEnumerable<KeyValuePair<string, IEnumerable<SpendChartViewModel>>> GetCategoryChartDataGroupByMonthes(DateTime startDate, DateTime endDate, string vectorSysName, bool calcCumulativeTotal = false, int? categoryId = null, int? billId = null)
         {
             var list = new List<KeyValuePair<string, IEnumerable<SpendChartViewModel>>>();
 
-            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid 
+            var cats = Uow.SpendCategories.GetAll(x => x.Enabled && x.UserSid == UserSid && !x.IsSystem
             && (!categoryId.HasValue || (categoryId.HasValue && x.CategoryId == categoryId))
             //&& (!billId.HasValue || (billId.HasValue == billId))
             );
 
             foreach (var cat in cats)
             {
-                var data = GetChartDataByCategoryGroupByMonthes(startDate, endDate, cat.CategoryId, vectorSysName, calcCumulativeTotal, billId:billId);
+                var data = GetChartDataByCategoryGroupByMonthes(startDate, endDate, cat.CategoryId, vectorSysName, calcCumulativeTotal, billId: billId);
                 var item = new KeyValuePair<string, IEnumerable<SpendChartViewModel>>(cat.Name, data);
                 list.Add(item);
             }
@@ -795,19 +849,19 @@ namespace Data.Services
             {
                 currentTotal = Uow.Spends.GetAllQuery(
                   x =>
-                      x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId 
-                      && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName)) 
-                      && (!billId.HasValue || (billId.HasValue && x.BillId==billId)) 
+                      x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId && x.TransferId==null
+                      && (String.IsNullOrEmpty(vectorSysName) || (!String.IsNullOrEmpty(vectorSysName) && x.SpendVector.SysName == vectorSysName))
+                      && (!billId.HasValue || (billId.HasValue && x.BillId == billId))
                       && DbFunctions.TruncateTime(x.Date) < DbFunctions.TruncateTime(sDate))
                   .Sum(x => x.SpendVector.SysName == "INC" ? +x.Sum : -x.Sum);
             }
 
-            var data = Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId &&
+            var data = Uow.Spends.GetAllQuery(x => x.Enabled && x.UserSid == UserSid && x.CategoryId == categoryId && x.TransferId == null &&
                                                    (String.IsNullOrEmpty(vectorSysName) ||
                                                     (!String.IsNullOrEmpty(vectorSysName) &&
                                                      x.SpendVector.SysName == vectorSysName))
                                                    && (!billId.HasValue || (billId.HasValue && x.BillId == billId))
-                                                     && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate) 
+                                                     && DbFunctions.TruncateTime(x.Date) >= DbFunctions.TruncateTime(sDate)
                                                    && DbFunctions.TruncateTime(x.Date) <= DbFunctions.TruncateTime(eDate),
                 x => x.OrderBy((y => y.Date)), x => x.SpendVector).AsEnumerable()
                   .Select(x =>
@@ -1001,7 +1055,7 @@ namespace Data.Services
 
         public IEnumerable<SpendBills> SpendBillGetList()
         {
-            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.SpendBillTypes, x=>x.Spend);
+            var model = Uow.SpendBills.GetAll(x => x.UserSid == UserSid && x.Enabled, x => x.OrderBy(y => y.OrderNum).ThenBy(y => y.Name), x => x.SpendBillTypes, x => x.Spend);
             return model;
         }
 

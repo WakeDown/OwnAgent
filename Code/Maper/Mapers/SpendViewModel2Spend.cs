@@ -21,5 +21,17 @@ namespace Models.Mappers
             spend.BillId = model.BillId;
             return spend;
         }
+
+        //public static Spend Map(SpendNewViewModel model)
+        //{
+        //    var spend = new Spend();
+        //    spend.Sum = model.Sum;
+        //    spend.Comment = model.Comment;
+        //    spend.VectorId = model.VectorId;
+        //    spend.CategoryId = model.CategoryId;
+        //    spend.Date = model.Date;
+        //    spend.BillId = model.BillId;
+        //    return spend;
+        //}
     }
 }

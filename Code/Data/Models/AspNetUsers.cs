@@ -22,6 +22,7 @@ namespace Data.Models
             this.Spend = new HashSet<Spend>();
             this.SpendBills = new HashSet<SpendBills>();
             this.SpendCategory = new HashSet<SpendCategory>();
+            this.SpendTransfer = new HashSet<SpendTransfer>();
             this.AspNetRoles = new HashSet<AspNetRoles>();
         }
     
@@ -48,6 +49,8 @@ namespace Data.Models
         public virtual ICollection<SpendBills> SpendBills { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SpendCategory> SpendCategory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SpendTransfer> SpendTransfer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; }
     }

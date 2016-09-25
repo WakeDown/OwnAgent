@@ -25,7 +25,6 @@ namespace Data.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
@@ -35,6 +34,7 @@ namespace Data.Models
         public virtual DbSet<SpendBills> SpendBills { get; set; }
         public virtual DbSet<SpendBillTypes> SpendBillTypes { get; set; }
         public virtual DbSet<SpendCategory> SpendCategory { get; set; }
+        public virtual DbSet<SpendTransfer> SpendTransfer { get; set; }
         public virtual DbSet<SpendVector> SpendVector { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }

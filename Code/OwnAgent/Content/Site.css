@@ -15,7 +15,6 @@
 input,
 select,
 textarea {
-    
 }
 
 .navbar {
@@ -109,7 +108,7 @@ nav a {
 }
 
 .btn-block {
-    width: 100%;   
+    width: 100%;
 }
 
 .bold {
@@ -139,7 +138,7 @@ nav a {
 }
 
 .text-black {
-  color: #000000 !important;
+    color: #000000 !important;
 }
 
 .no-margin {
@@ -156,12 +155,17 @@ nav a {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .no-padding {
-  padding: 0 !important;
+    padding: 0 !important;
 }
 
 .form-label-text-right label {
@@ -190,44 +194,59 @@ nav a {
 }
 
 .tab-bg-danger a {
-  background-color: #f2dede;
-  border: 1px solid #a94442 !important;
+    color: #333333;
+    background-color: #f2dede;
+    border: 1px solid #a94442 !important;
 }
 
+    .tab-bg-danger:hover a, .tab-bg-danger a:hover {
+        background-color: #e4b9b9 !important;
+    }
+
 .tab-bg-danger.active a {
-    /*border: 1px solid #a94442 !important;*/
+    background-color: #ffffff !important;
     border-bottom: 0 !important;
 }
 
 .tab-bg-success a {
-  background-color: #dff0d8;
-  border: 1px solid #3c763d !important;
+    color: #333333;
+    background-color: #dff0d8;
+    border: 1px solid #3c763d !important;
 }
 
+    .tab-bg-success:hover a, .tab-bg-success a:hover {
+        background-color: #c1e2b3 !important;
+    }
+
 .tab-bg-success.active a {
-    /*border: 1px solid #3c763d !important;*/
+    background-color: #ffffff !important;
     border-bottom: 0 !important;
 }
 
 .tab-bg-warning a {
-  background-color: #fcf8e3;
-  border: 1px solid #8a6d3b !important;
+    color: #333333;
+    background-color: #fcf8e3;
+    border: 1px solid #8a6d3b !important;
 }
 
+    .tab-bg-warning:hover a, .tab-bg-warning a:hover {
+        background-color: #f7ecb5 !important;
+    }
+
 .tab-bg-warning.active a {
-    /*border: 1px solid #8a6d3b !important;*/
+    background-color: #ffffff !important;
     border-bottom: 0 !important;
 }
 
-.tab-pane-panel-body-bd-danger  {
+.tab-pane-panel-body-bd-danger {
     border: 1px solid #a94442 !important;
 }
 
-.tab-pane-panel-body-bd-success  {
+.tab-pane-panel-body-bd-success {
     border: 1px solid #3c763d !important;
 }
 
-.tab-pane-panel-body-bd-warning  {
+.tab-pane-panel-body-bd-warning {
     border: 1px solid #8a6d3b !important;
 }
 
