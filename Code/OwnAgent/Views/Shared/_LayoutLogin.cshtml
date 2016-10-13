@@ -6,31 +6,40 @@
     <title>@ViewBag.Title</title>
     @*<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">*@
     @Styles.Render("~/Content/css")
+    <style>
+        body {
+            background: url(@Url.Content("~/Content/images/login-bg.jpg")) no-repeat center center fixed;
+            -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        }
+    </style>
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/js")
     @RenderSection("head", required: false)
 </head>
-<body style="background: url(@Url.Content("~/Content/images/login-bg.jpg")) no-repeat center center fixed; -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover; background-size: cover;">
-<div class="navbar navbar-default navbar-fixed-top no-border" style="background-color: transparent !important">
-    <div class="container">
-        <div class="navbar-header">
-            @*<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainMenu" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>*@
-            <a href="@Url.Action("Index", "Balance")" class="navbar-brand">
-                <i class="fa fa-money fa-2x text-success" title="" style="padding-left: 22px;"></i>
-                <div class="h5 no-margin" style="padding-left: 15px; padding-top: 0px;">Бюджет</div>
-            </a>
+<body style="">
+    <div class="navbar navbar-default navbar-fixed-top no-border" style="background-color: transparent !important">
+        <div class="container">
+            <div class="navbar-header">
+                @*<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainMenu" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>*@
+                <a href="@Url.Action("Index", "Balance")" class="navbar-brand">
+                    <i class="fa fa-money fa-2x text-success" title="" style="padding-left: 22px;"></i>
+                    <div class="h5 no-margin" style="padding-left: 15px; padding-top: 0px;">Бюджет</div>
+                </a>
+            </div>
+            @*<div id="mainMenu" class="navbar-collapse collapse">
+                    @Html.Partial("_LoginPartial")
+                </div>*@
         </div>
-        @*<div id="mainMenu" class="navbar-collapse collapse">
-            @Html.Partial("_LoginPartial")
-        </div>*@
     </div>
-</div>
     <noscript>
         <blockquote class="alert alert-danger">Необходимо включить JavaScript в браузере!</blockquote>
     </noscript>
@@ -40,11 +49,11 @@
                 @RenderBody()
             </div>
         </div>
-        
+
         @*<hr />
-        <footer class="">
-            <p>&copy; @DateTime.Now.Year - Бюджет</p>
-        </footer>*@
+            <footer class="">
+                <p>&copy; @DateTime.Now.Year - Бюджет</p>
+            </footer>*@
     </div>
     @RenderSection("scripts", required: false)
 </body>

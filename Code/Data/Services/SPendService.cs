@@ -168,7 +168,7 @@ namespace Data.Services
             Uow.SpendTransfer.Insert(model);
             Uow.Commit();
 
-            var catId = Uow.SpendCategories.GetAll(x => x.IsSystem && x.SysName == "TRANSFER").Single().CategoryId;
+            var catId = Uow.SpendCategories.GetAll(x => x.UserSid==UserSid && x.IsSystem && x.SysName == "TRANSFER").Single().CategoryId;
 
             Spend spendExp = new Spend();
             spendExp.Sum = model.Sum;
