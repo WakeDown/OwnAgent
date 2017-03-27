@@ -192,6 +192,7 @@
     <Compile Include="Controllers\BalanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MarketController.cs" />
     <Compile Include="Controllers\SpendBillController.cs" />
     <Compile Include="Controllers\SpendCategoriesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -357,6 +358,7 @@
     <Content Include="Views\SpendBill\Stat.cshtml" />
     <Content Include="Views\Balance\CategoryStat.cshtml" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
+    <Content Include="Views\Market\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
