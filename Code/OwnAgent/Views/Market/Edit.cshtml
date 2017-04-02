@@ -2,7 +2,7 @@
 @model Data.Models.MarketServices
 
 @{
-    ViewBag.Title = "Новая запись";
+    ViewBag.Title = "Редакитрование услуги №" + Model.Id;
     var typesList = ViewBag.TypesList;
     var payFormsList = ViewBag.PayFormsList;
     var returnUrl = !String.IsNullOrEmpty(Request.QueryString["returnUrl"]) ? Request.QueryString["returnUrl"] : Url.Action("Index");
@@ -10,8 +10,9 @@
 
 <div class="pad-t-md">
     
-    @using (Html.BeginForm("New", "Market", FormMethod.Post, new {@class = "", role = "form"}))
+    @using (Html.BeginForm("Edit", "Market", FormMethod.Post, new {@class = "", role = "form"}))
     {
+        @Html.HiddenFor(m=>m.Id)
         <div class="form-horizontal">
             <div class="form-group">
                 <div class="col-sm-push-2 col-sm-10">

@@ -1,26 +1,48 @@
 ﻿@model Data.Models.MarketServices
 
 @{
+    var returnUrl = !String.IsNullOrEmpty(Request.QueryString["returnUrl"]) ? Request.QueryString["returnUrl"] : Url.Action("Index");
     ViewBag.Title = "Карточка услуги №" + Model.Id;
+    bool editable = Model.Enabled;
 }
 
+@Html.HiddenFor(m => m.Id, new { id = "ServiceId" })
+
 <div class="row pad-t-md">
+    
     <div class="col-md-8">
         <div class="row">
-            <div class="col-sm-push-3 col-sm-9">
+            <div class="col-sm-3">
+                @*<a class="" href="@returnUrl"><i class="fa fa-long-arrow-left"></i> Назад</a>*@
+                <a class="" href="@Url.Action("Index")"><i class="fa fa-long-arrow-left"></i> к списку</a>
+            </div>
+            <div class="col-sm-9">
                 <div class="btn-toolbar">
                     <div class="btn-group">
                         <h4 class="no-margin">@ViewBag.Title</h4>
                     </div>
-                    <a class="btn btn-xs btn-warning"><i class="fa fa-edit" title="изменить"></i></a>
-                    <a class="btn btn-xs btn-danger"><i class="fa fa-trash" title="удалить"></i></a>
+                    @if (editable)
+                    {
+                        <a class="btn btn-xs btn-warning" href="@Url.Action("Edit", new {id = Model.Id, returnUrl = Request.Url})"><i class="fa fa-edit" title="изменить"></i></a>
+                        <a class="btn btn-xs btn-danger" id="serviceDelete"><i class="fa fa-trash" title="удалить"></i></a>
+                    }
                 </div>
                 @*<h4 class="no-margin">@ViewBag.Title</h4>*@
             </div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Вектор</label>
-            <div class="col-sm-9">@Model.MarketServiceTypes.Name</div>
+            <div class="col-sm-9">
+                @if (Model.MarketServiceTypes.SysName == "IN")
+                {
+                    <i class="fa fa-download text-success"></i>
+                }
+                else if (Model.MarketServiceTypes.SysName == "OUT")
+                {
+                    <i class="fa fa-upload text-danger"></i>
+                }
+                @Model.MarketServiceTypes.Name
+            </div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Клиент</label>
@@ -44,19 +66,19 @@
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Дата конкурса</label>
-            <div class="col-sm-9">@Model.TenderDate</div>
+            <div class="col-sm-9">@(Model.TenderDate.HasValue ? Model.TenderDate.Value.ToString("dd.MM.yyyy") : "")</div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Сумма контракта</label>
-            <div class="col-sm-9">@Model.ContractSum</div>
+            <div class="col-sm-9">@(Model.ContractSum.HasValue ? Model.ContractSum.Value.ToString("N2") : "")</div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Бюджет закупки</label>
-            <div class="col-sm-9">@Model.BudgetSum</div>
+            <div class="col-sm-9">@(Model.BudgetSum.HasValue ? Model.BudgetSum.Value.ToString("N2") : "")</div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Сумма услуги</label>
-            <div class="col-sm-9">@Model.ServiceSum</div>
+            <div class="col-sm-9">@(Model.ServiceSum.HasValue ? Model.ServiceSum.Value.ToString("N2") : "")</div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Принцип начисления</label>
@@ -64,11 +86,28 @@
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Форма выплаты</label>
-            <div class="col-sm-9">@Model.MarketServicePayForms.Name</div>
+            <div class="col-sm-9">
+                @if (Model.ServicePayFormId.HasValue)
+                {
+                    if (Model.MarketServicePayForms.SysName == "CASH")
+                     {
+                         <i class="fa fa-money text-success"></i>
+                     }
+                     else if (Model.MarketServicePayForms.SysName == "CASHLESS")
+                     {
+                         <i class="fa fa-credit-card text-primary"></i>
+                     }
+                    @Model.MarketServicePayForms.Name
+                }
+            </div>
         </div>
         <div class="row">
             <label class="col-sm-3 text-right">Комментарий</label>
             <div class="col-sm-9">@Model.Comment</div>
+        </div>
+        <div class="pad-t-md">
+            <h4 class="no-margin">Платежи <a id="createPayment" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle"></i></a></h4>
+            <div id="paymentListContainer" class="pad-t-md"></div>
         </div>
     </div>
     <div class="col-md-4">
@@ -76,14 +115,183 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <div class="btn-toolbar">
-                        
+                        <div class="btn-group">
+                            <span class="text-muted text-sm">Состояние</span>
+                        </div>
+                        <div class="btn-group">
+                            @if (editable)
+                            {
+                                <a id="conditionChange" class="btn btn-xxs btn-warning">изменить</a>
+                            }
+                        </div>
                     </div>
+                    <div id="conditionContainer">
+                    </div>
+
                 </li>
             </ul>
             <div class="panel-heading">История</div>
-            <div class="panel-body">
-                Panel content
-            </div>
+            <ul id="historyContainer" class="list-group"></ul>
         </div>
     </div>
 </div>
+
+<div id="marketCardModal" class="modal fade" tabindex="-1" role="dialog"></div>
+
+@section scripts{
+    <script>
+        $(function () {
+            loadHistory();
+            loadCondition();
+            loadPaymentList();
+            $('#conditionChange').click(conditionChange);
+            $('#serviceDelete').click(serviceDelete);
+            $('#createPayment').click(createPayment);
+        });
+
+        function createPayment() {
+            var $cont = $('#marketCardModal');
+            $cont.addClass('disabledContent');
+            $cont.modal();
+            var id = $('#ServiceId').val();
+            $.ajax({
+                url: '@Url.Action("ConditionChange")',
+                data: { id },
+                success: function (data) {
+                    $cont.html(data);
+                    $cont.removeClass('disabledContent');
+                    $('#conditionChangeSave', $cont).click(conditionChangeSave);
+                },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
+
+        function loadPaymentList() {
+            var $cont = $('#paymentListContainer');
+            var id = $('#ServiceId').val();
+
+            $cont.addClass('disabledContent');
+            $.ajax({
+                url: '@Url.Action("PaymentList")?',
+                method: 'GET',
+                data: { id },
+                success: function (data) {
+                    $cont.html(data);
+                    $cont.removeClass('disabledContent');
+                },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
+
+        function serviceDelete() {
+            if (!confirm('Подтвердите удаление записи услуги!')) return;
+
+            var id = $('#ServiceId').val();
+            $.ajax({
+                url: '@Url.Action("Delete")',
+                method: 'POST',
+                data: { id },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        function conditionChange() {
+            var $cont = $('#marketCardModal');
+            $cont.addClass('disabledContent');
+            $cont.modal();
+            var id = $('#ServiceId').val();
+            $.ajax({
+                url: '@Url.Action("ConditionChange")',
+                data: { id },
+                        success: function (data) {
+                            $cont.html(data);
+                            $cont.removeClass('disabledContent');
+                            $('#conditionChangeSave', $cont).click(conditionChangeSave);
+                        },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
+
+        function conditionChangeSave() {
+            var $this = $(this);
+            var $cont = $('#marketCardModal');
+            var sid = $('#ServiceId').val();
+            var cid = $('#ConditionChangeId', $cont).val();
+            var comment = $('#ConditionChangeComment', $cont).val();
+            $cont.addClass('disabledContent');
+            showSpinnerAfterAndDisable($this);
+
+            $.ajax({
+                url: '@Url.Action("ConditionChangeSave")',
+                method: 'POST',
+                data: { sid, cid, comment },
+                        success: function (data) {
+                            loadHistory();
+                            loadCondition();
+                            $cont.modal('hide');
+                            $cont.removeClass('disabledContent');
+                            hideSpinnerAndEnable($this);
+                        },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                    hideSpinnerAndEnable($this);
+                }
+            });
+        }
+
+        function loadCondition() {
+            var $cont = $('#conditionContainer');
+            var id = $('#ServiceId').val();
+
+            $cont.addClass('disabledContent');
+            $.ajax({
+                url: '@Url.Action("Condition")',
+                method: 'POST',
+                data: { id },
+                        success: function (data) {
+                            $cont.html(data);
+                            $cont.removeClass('disabledContent');
+                        },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
+
+        function loadHistory() {
+            var $cont = $('#historyContainer');
+            var id = $('#ServiceId').val();
+
+            $cont.addClass('disabledContent');
+            $.ajax({
+                url: '@Url.Action("History")',
+                method: 'GET',
+                data: { id },
+                        success: function (data) {
+                            $cont.html(data);
+                            $cont.removeClass('disabledContent');
+                        },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
+    </script>
+}

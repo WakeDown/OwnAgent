@@ -28,7 +28,8 @@ namespace OwnAgent
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
                       //"~/Scripts/materialize/materialize.min.js"
-                      "~/Scripts/bootstrap.js"
+                      "~/Scripts/bootstrap.js",
+                      "~/Scripts/Site.js"
                       ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

@@ -12,10 +12,10 @@ namespace Data.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MarketServiceStates
+    public partial class MarketServiceConditions
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public MarketServiceStates()
+        public MarketServiceConditions()
         {
             this.MarketServices = new HashSet<MarketServices>();
         }

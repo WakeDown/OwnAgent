@@ -12,16 +12,16 @@ namespace Data.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MarketServiceStateHistory
+    public partial class MarketServiceHistory
     {
         public int Id { get; set; }
         public int ServiceId { get; set; }
-        public int StateId { get; set; }
+        public int ActionId { get; set; }
         public string Comment { get; set; }
         public System.DateTimeOffset CreateDate { get; set; }
         public string CreatorId { get; set; }
     
+        public virtual MarketServiceHistoryActions MarketServiceHistoryActions { get; set; }
         public virtual MarketServices MarketServices { get; set; }
-        public virtual MarketServiceStates MarketServiceStates { get; set; }
     }
 }

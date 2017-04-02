@@ -298,6 +298,7 @@
     <Content Include="Scripts\jquery.canvasjs.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\Site.js" />
     <Content Include="Views\Balance\ShortList.cshtml" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Content Include="Content\bootstrap-theme.css.map" />
@@ -362,6 +363,12 @@
     <Content Include="Views\Market\New.cshtml" />
     <Content Include="Views\Market\Card.cshtml" />
     <Content Include="Views\Market\List.cshtml" />
+    <Content Include="Views\Market\History.cshtml" />
+    <Content Include="Views\Market\ConditionChange.cshtml" />
+    <Content Include="Views\Market\Condition.cshtml" />
+    <Content Include="Views\Market\Edit.cshtml" />
+    <Content Include="Views\Market\PaymentList.cshtml" />
+    <Content Include="Views\Market\PaymentNew.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

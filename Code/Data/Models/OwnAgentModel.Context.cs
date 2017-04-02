@@ -42,6 +42,8 @@ namespace Data.Models
         public virtual DbSet<MarketServices> MarketServices { get; set; }
         public virtual DbSet<MarketServiceStates> MarketServiceStates { get; set; }
         public virtual DbSet<MarketServiceTypes> MarketServiceTypes { get; set; }
-        public virtual DbSet<MarketServiceStateHistory> MarketServiceStateHistory { get; set; }
+        public virtual DbSet<MarketServiceHistory> MarketServiceHistory { get; set; }
+        public virtual DbSet<MarketServiceHistoryActions> MarketServiceHistoryActions { get; set; }
+        public virtual DbSet<MarketServiceConditions> MarketServiceConditions { get; set; }
     }
 }

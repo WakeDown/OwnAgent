@@ -1,0 +1,14 @@
+﻿@model KeyValuePair<string, string>
+@{
+    Layout = null;
+}
+
+@if (!String.IsNullOrEmpty(Model.Key))
+{
+    <div>@Model.Key</div>
+    <div class="text-sm text-muted">@Model.Value</div>
+}
+else
+{
+    <span>Неопределено</span>
+}

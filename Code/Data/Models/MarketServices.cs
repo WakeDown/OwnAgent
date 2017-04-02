@@ -18,7 +18,7 @@ namespace Data.Models
         public MarketServices()
         {
             this.MarketServicePayments = new HashSet<MarketServicePayments>();
-            this.MarketServiceStateHistory = new HashSet<MarketServiceStateHistory>();
+            this.MarketServiceHistory = new HashSet<MarketServiceHistory>();
         }
     
         public int Id { get; set; }
@@ -41,6 +41,9 @@ namespace Data.Models
         public Nullable<System.DateTime> TenderDate { get; set; }
         public Nullable<decimal> BudgetSum { get; set; }
         public string Comment { get; set; }
+        public Nullable<int> ConditionId { get; set; }
+        public Nullable<System.DateTimeOffset> ConditionChangeDate { get; set; }
+        public string ConditionComment { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual MarketServicePayForms MarketServicePayForms { get; set; }
@@ -49,6 +52,7 @@ namespace Data.Models
         public virtual MarketServiceStates MarketServiceStates { get; set; }
         public virtual MarketServiceTypes MarketServiceTypes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MarketServiceStateHistory> MarketServiceStateHistory { get; set; }
+        public virtual ICollection<MarketServiceHistory> MarketServiceHistory { get; set; }
+        public virtual MarketServiceConditions MarketServiceConditions { get; set; }
     }
 }

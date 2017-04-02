@@ -43,10 +43,13 @@
         <AssociationConnector Association="OwnAgentModel.FK_MarketServicePayments_MarketServices" />
         <AssociationConnector Association="OwnAgentModel.FK_MarketServices_MarketServiceStates" />
         <AssociationConnector Association="OwnAgentModel.FK_MarketServices_MarketServiceTypes" />
-        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceStateHistory" Width="1.5" PointX="12.5" PointY="5.5" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceHistory" Width="1.5" PointX="12.5" PointY="13.875" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceHistoryActions" Width="1.5" PointX="10.25" PointY="16.25" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServiceHistory_MarketServiceHistoryActions" />
         <AssociationConnector Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" />
-        <AssociationConnector Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates" />
-      </Diagram>
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceConditions" Width="1.5" PointX="0.75" PointY="3.875" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServices_MarketServiceConditions" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

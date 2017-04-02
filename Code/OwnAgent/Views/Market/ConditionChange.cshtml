@@ -1,0 +1,40 @@
+﻿@model Data.Models.MarketServices
+@{
+    Layout = null;
+    var conditionsList = ViewBag.ConditionsList;
+}
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a>
+            <h4 class="modal-title">Изменение состояния</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="ConditionChangeId" class="col-sm-3 control-label">Состояние</label>
+                    <div class="col-sm-9">
+                        <select id="ConditionChangeId" class="form-control">
+                            @foreach (var item in conditionsList)
+                            {
+                                <option value="@item.Id" @(Model.ConditionId.HasValue && Model.ConditionId == item.Id ? "selected=selected" : "")>@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ConditionChangeComment" class="col-sm-3 control-label">Комментарий</label>
+                    <div class="col-sm-9">
+                        <textarea id="ConditionChangeComment" class="form-control" rows="3" placeholder="НЕ ОБЯЗАТЕЛЬНО"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="conditionChangeSave" class="btn btn-success">Сохранить</button>
+            <a class="btn btn-default" data-dismiss="modal">Отмена</a>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

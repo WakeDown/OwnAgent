@@ -12,12 +12,12 @@ namespace Data.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MarketServiceStates
+    public partial class MarketServiceHistoryActions
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public MarketServiceStates()
+        public MarketServiceHistoryActions()
         {
-            this.MarketServices = new HashSet<MarketServices>();
+            this.MarketServiceHistory = new HashSet<MarketServiceHistory>();
         }
     
         public int Id { get; set; }
@@ -25,6 +25,6 @@ namespace Data.Models
         public string SysName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MarketServices> MarketServices { get; set; }
+        public virtual ICollection<MarketServiceHistory> MarketServiceHistory { get; set; }
     }
 }

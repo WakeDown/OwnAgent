@@ -66,6 +66,33 @@
           <Property Name="DaysCount" Type="int" Nullable="false" />
           <Property Name="OrderNum" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="MarketServiceConditions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="SysName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MarketServiceHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ServiceId" Type="int" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetimeoffset" Precision="0" Nullable="false" />
+          <Property Name="CreatorId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MarketServiceHistoryActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="SysName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="MarketServicePayForms">
           <Key>
             <PropertyRef Name="Id" />
@@ -113,17 +140,9 @@
           <Property Name="Enabled" Type="bit" Nullable="false" />
           <Property Name="DeleteDate" Type="datetimeoffset" Precision="0" />
           <Property Name="DeleterId" Type="nvarchar" MaxLength="128" />
-        </EntityType>
-        <EntityType Name="MarketServiceStateHistory">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="ServiceId" Type="int" Nullable="false" />
-          <Property Name="StateId" Type="int" Nullable="false" />
-          <Property Name="Comment" Type="nvarchar(max)" />
-          <Property Name="CreateDate" Type="datetimeoffset" Precision="0" Nullable="false" />
-          <Property Name="CreatorId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ConditionId" Type="int" />
+          <Property Name="ConditionChangeDate" Type="datetimeoffset" Precision="0" />
+          <Property Name="ConditionComment" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="MarketServiceStates">
           <Key>
@@ -319,6 +338,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MarketServiceHistory_MarketServiceHistoryActions">
+          <End Role="MarketServiceHistoryActions" Type="Self.MarketServiceHistoryActions" Multiplicity="1" />
+          <End Role="MarketServiceHistory" Type="Self.MarketServiceHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceHistoryActions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServiceHistory">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MarketServicePayments_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="MarketServicePayments" Type="Self.MarketServicePayments" Multiplicity="*" />
@@ -352,6 +383,18 @@
             </Principal>
             <Dependent Role="MarketServices">
               <PropertyRef Name="CreatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServiceConditions">
+          <End Role="MarketServiceConditions" Type="Self.MarketServiceConditions" Multiplicity="0..1" />
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceConditions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="ConditionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -393,25 +436,13 @@
         </Association>
         <Association Name="FK_MarketServiceStateHistory_MarketServices">
           <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="1" />
-          <End Role="MarketServiceStateHistory" Type="Self.MarketServiceStateHistory" Multiplicity="*" />
+          <End Role="MarketServiceHistory" Type="Self.MarketServiceHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MarketServices">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="MarketServiceStateHistory">
+            <Dependent Role="MarketServiceHistory">
               <PropertyRef Name="ServiceId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MarketServiceStateHistory_MarketServiceStates">
-          <End Role="MarketServiceStates" Type="Self.MarketServiceStates" Multiplicity="1" />
-          <End Role="MarketServiceStateHistory" Type="Self.MarketServiceStateHistory" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MarketServiceStates">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="MarketServiceStateHistory">
-              <PropertyRef Name="StateId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -542,10 +573,12 @@
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BillCapitalizationTypes" EntityType="Self.BillCapitalizationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServiceConditions" EntityType="Self.MarketServiceConditions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServiceHistory" EntityType="Self.MarketServiceHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServiceHistoryActions" EntityType="Self.MarketServiceHistoryActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MarketServicePayForms" EntityType="Self.MarketServicePayForms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MarketServicePayments" EntityType="Self.MarketServicePayments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MarketServices" EntityType="Self.MarketServices" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="MarketServiceStateHistory" EntityType="Self.MarketServiceStateHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MarketServiceStates" EntityType="Self.MarketServiceStates" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MarketServiceTypes" EntityType="Self.MarketServiceTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Spend" EntityType="Self.Spend" Schema="dbo" store:Type="Tables" />
@@ -579,6 +612,10 @@
             <End Role="SpendVector" EntitySet="SpendVector" />
             <End Role="Spend" EntitySet="Spend" />
           </AssociationSet>
+          <AssociationSet Name="FK_MarketServiceHistory_MarketServiceHistoryActions" Association="Self.FK_MarketServiceHistory_MarketServiceHistoryActions">
+            <End Role="MarketServiceHistoryActions" EntitySet="MarketServiceHistoryActions" />
+            <End Role="MarketServiceHistory" EntitySet="MarketServiceHistory" />
+          </AssociationSet>
           <AssociationSet Name="FK_MarketServicePayments_AspNetUsers" Association="Self.FK_MarketServicePayments_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="MarketServicePayments" EntitySet="MarketServicePayments" />
@@ -589,6 +626,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_MarketServices_AspNetUsers" Association="Self.FK_MarketServices_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServiceConditions" Association="Self.FK_MarketServices_MarketServiceConditions">
+            <End Role="MarketServiceConditions" EntitySet="MarketServiceConditions" />
             <End Role="MarketServices" EntitySet="MarketServices" />
           </AssociationSet>
           <AssociationSet Name="FK_MarketServices_MarketServicePayForms" Association="Self.FK_MarketServices_MarketServicePayForms">
@@ -605,11 +646,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_MarketServiceStateHistory_MarketServices" Association="Self.FK_MarketServiceStateHistory_MarketServices">
             <End Role="MarketServices" EntitySet="MarketServices" />
-            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MarketServiceStateHistory_MarketServiceStates" Association="Self.FK_MarketServiceStateHistory_MarketServiceStates">
-            <End Role="MarketServiceStates" EntitySet="MarketServiceStates" />
-            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
+            <End Role="MarketServiceHistory" EntitySet="MarketServiceHistory" />
           </AssociationSet>
           <AssociationSet Name="FK_Spend_AspNetUsers" Association="Self.FK_Spend_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -758,16 +795,22 @@
             <End Role="MarketServiceTypes" EntitySet="MarketServiceTypes" />
             <End Role="MarketServices" EntitySet="MarketServices" />
           </AssociationSet>
-          <EntitySet Name="MarketServiceStateHistory" EntityType="OwnAgentModel.MarketServiceStateHistory" />
+          <EntitySet Name="MarketServiceHistory" EntityType="OwnAgentModel.MarketServiceHistory" />
+          <EntitySet Name="MarketServiceHistoryActions" EntityType="OwnAgentModel.MarketServiceHistoryActions" />
+          <AssociationSet Name="FK_MarketServiceHistory_MarketServiceHistoryActions" Association="OwnAgentModel.FK_MarketServiceHistory_MarketServiceHistoryActions">
+            <End Role="MarketServiceHistoryActions" EntitySet="MarketServiceHistoryActions" />
+            <End Role="MarketServiceHistory" EntitySet="MarketServiceHistory" />
+          </AssociationSet>
           <AssociationSet Name="FK_MarketServiceStateHistory_MarketServices" Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices">
             <End Role="MarketServices" EntitySet="MarketServices" />
-            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
+            <End Role="MarketServiceHistory" EntitySet="MarketServiceHistory" />
           </AssociationSet>
-          <AssociationSet Name="FK_MarketServiceStateHistory_MarketServiceStates" Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates">
-            <End Role="MarketServiceStates" EntitySet="MarketServiceStates" />
-            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
+          <EntitySet Name="MarketServiceConditions" EntityType="OwnAgentModel.MarketServiceConditions" />
+          <AssociationSet Name="FK_MarketServices_MarketServiceConditions" Association="OwnAgentModel.FK_MarketServices_MarketServiceConditions">
+            <End Role="MarketServiceConditions" EntitySet="MarketServiceConditions" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -1182,7 +1225,11 @@
           <Property Name="TenderDate" Type="DateTime" Precision="0" />
           <Property Name="BudgetSum" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MarketServiceStateHistory" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" FromRole="MarketServices" ToRole="MarketServiceStateHistory" />
+          <NavigationProperty Name="MarketServiceHistory" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" FromRole="MarketServices" ToRole="MarketServiceHistory" />
+          <Property Name="ConditionId" Type="Int32" />
+          <NavigationProperty Name="MarketServiceConditions" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceConditions" FromRole="MarketServices" ToRole="MarketServiceConditions" />
+          <Property Name="ConditionChangeDate" Type="DateTimeOffset" Precision="0" />
+          <Property Name="ConditionComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="MarketServiceStates">
           <Key>
@@ -1192,7 +1239,6 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="SysName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceStates" FromRole="MarketServiceStates" ToRole="MarketServices" />
-          <NavigationProperty Name="MarketServiceStateHistory" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates" FromRole="MarketServiceStates" ToRole="MarketServiceStateHistory" />
         </EntityType>
         <EntityType Name="MarketServiceTypes">
           <Key>
@@ -1275,40 +1321,70 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="MarketServiceStateHistory">
+        <EntityType Name="MarketServiceHistory">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ServiceId" Type="Int32" Nullable="false" />
-          <Property Name="StateId" Type="Int32" Nullable="false" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
           <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTimeOffset" Nullable="false" Precision="0" />
           <Property Name="CreatorId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" FromRole="MarketServiceStateHistory" ToRole="MarketServices" />
-          <NavigationProperty Name="MarketServiceStates" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates" FromRole="MarketServiceStateHistory" ToRole="MarketServiceStates" />
+          <NavigationProperty Name="MarketServiceHistoryActions" Relationship="OwnAgentModel.FK_MarketServiceHistory_MarketServiceHistoryActions" FromRole="MarketServiceHistory" ToRole="MarketServiceHistoryActions" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" FromRole="MarketServiceHistory" ToRole="MarketServices" />
         </EntityType>
+        <EntityType Name="MarketServiceHistoryActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SysName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServiceHistory" Relationship="OwnAgentModel.FK_MarketServiceHistory_MarketServiceHistoryActions" FromRole="MarketServiceHistoryActions" ToRole="MarketServiceHistory" />
+        </EntityType>
+        <Association Name="FK_MarketServiceHistory_MarketServiceHistoryActions">
+          <End Type="OwnAgentModel.MarketServiceHistoryActions" Role="MarketServiceHistoryActions" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServiceHistory" Role="MarketServiceHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceHistoryActions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServiceHistory">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MarketServiceStateHistory_MarketServices">
           <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="1" />
-          <End Type="OwnAgentModel.MarketServiceStateHistory" Role="MarketServiceStateHistory" Multiplicity="*" />
+          <End Type="OwnAgentModel.MarketServiceHistory" Role="MarketServiceHistory" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MarketServices">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="MarketServiceStateHistory">
+            <Dependent Role="MarketServiceHistory">
               <PropertyRef Name="ServiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MarketServiceStateHistory_MarketServiceStates">
-          <End Type="OwnAgentModel.MarketServiceStates" Role="MarketServiceStates" Multiplicity="1" />
-          <End Type="OwnAgentModel.MarketServiceStateHistory" Role="MarketServiceStateHistory" Multiplicity="*" />
+        <EntityType Name="MarketServiceConditions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SysName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceConditions" FromRole="MarketServiceConditions" ToRole="MarketServices" />
+        </EntityType>
+        <Association Name="FK_MarketServices_MarketServiceConditions">
+          <End Type="OwnAgentModel.MarketServiceConditions" Role="MarketServiceConditions" Multiplicity="0..1" />
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="MarketServiceStates">
+            <Principal Role="MarketServiceConditions">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="MarketServiceStateHistory">
-              <PropertyRef Name="StateId" />
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="ConditionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1511,6 +1587,9 @@
           <EntitySetMapping Name="MarketServices">
             <EntityTypeMapping TypeName="OwnAgentModel.MarketServices">
               <MappingFragment StoreEntitySet="MarketServices">
+                <ScalarProperty Name="ConditionComment" ColumnName="ConditionComment" />
+                <ScalarProperty Name="ConditionChangeDate" ColumnName="ConditionChangeDate" />
+                <ScalarProperty Name="ConditionId" ColumnName="ConditionId" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="BudgetSum" ColumnName="BudgetSum" />
                 <ScalarProperty Name="TenderDate" ColumnName="TenderDate" />
@@ -1552,14 +1631,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MarketServiceStateHistory">
-            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceStateHistory">
-              <MappingFragment StoreEntitySet="MarketServiceStateHistory">
+          <EntitySetMapping Name="MarketServiceHistory">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceHistory">
+              <MappingFragment StoreEntitySet="MarketServiceHistory">
                 <ScalarProperty Name="CreatorId" ColumnName="CreatorId" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
                 <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServiceHistoryActions">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceHistoryActions">
+              <MappingFragment StoreEntitySet="MarketServiceHistoryActions">
+                <ScalarProperty Name="SysName" ColumnName="SysName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServiceConditions">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceConditions">
+              <MappingFragment StoreEntitySet="MarketServiceConditions">
+                <ScalarProperty Name="SysName" ColumnName="SysName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

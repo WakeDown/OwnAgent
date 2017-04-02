@@ -1,28 +1,38 @@
 ﻿
 @{
-    
+    ViewBag.Title = "Список услуг";
+    var queryString = Request.Url.Query;
 }
 <div id="marketModal" class="modal fade" tabindex="-1" role="dialog"></div>
 <div class="pad-t-sm">
-    @*<div>
-        <a id="newModal" class="btn btn-primary">Новая запись</a>
-    </div>*@
+    <h4>@ViewBag.Title</h4>
+    <div id="serviceListContainer" data-query="@queryString"></div>
 </div>
+
 
 @section scripts{
     <script>
-        $(function() {
-            @*$('#newModal').click(function() {
-                $.ajax({
-                    url: '@Url.Action("New")',
-                    success: function(data) {
-                        var $cont = $('#marketModal');
-                        $cont.html(data);
-                        $cont.modal();
-                    }
-                });
-            });*@
+        $(function () {
+            loadServiceList();
         });
+
+        function loadServiceList() {
+            var $cont = $('#serviceListContainer');
+
+            $cont.addClass('disabledContent');
+            $.ajax({
+                url: '@Url.Action("List")?' + $cont.attr('data-query'),
+                method: 'GET',
+                success: function (data) {
+                    $cont.html(data);
+                    $cont.removeClass('disabledContent');
+                },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
     </script>
     
 }

@@ -66,6 +66,15 @@
     <Compile Include="Models\BillCapitalizationTypes.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MarketServiceConditions.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MarketServiceHistory.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MarketServiceHistoryActions.cs">
+      <DependentUpon>OwnAgentModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MarketServicePayForms.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
@@ -73,9 +82,6 @@
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MarketServices.cs">
-      <DependentUpon>OwnAgentModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MarketServiceStateHistory.cs">
       <DependentUpon>OwnAgentModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MarketServiceStates.cs">

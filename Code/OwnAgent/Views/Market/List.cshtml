@@ -1,17 +1,111 @@
-﻿
+﻿@model IEnumerable<Data.Models.MarketServices>
+
 @{
     Layout = null;
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>List</title>
-</head>
-<body>
-    <div> 
-    </div>
-</body>
-</html>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr class="bg-primary">
+            <th class="min-width">ID</th>
+            <th class="min-width">Вектор</th>
+            <th>Клиент</th>
+            <th></th>
+            <th class="min-width text-nowrap">Сумма договора</th>
+            <th class="min-width text-nowrap">Сумма услуги</th>
+            <th class="min-width">Состояние</th>
+            <th class="min-width">Создано</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    <a href="@Url.Action("Card", new {id = item.Id, returnUrl = Request.Url.ToString().Replace("List", "Index")})" class="">@item.Id</a>
+                </th>
+                <td class="text-nowrap">
+                    @if (item.MarketServiceTypes.SysName == "IN")
+                    {
+                        <i class="fa fa-download text-success"></i>
+                    }
+                    else if (item.MarketServiceTypes.SysName == "OUT")
+                    {
+                        <i class="fa fa-upload text-danger"></i>
+                    }
+                    @item.MarketServiceTypes.Name
+                </td>
+                <td>
+                    <div>@item.ClientName</div>
+                    <div>@item.RecipientName</div>
+                </td>
+                <td class="text-sm">
+                    <div class="row">
+                        <div class="col-sm-5 text-right">
+                            <strong>№ заявки СР:</strong>
+                        </div>
+                        <div class="col-sm-7">@item.ClaimNumber</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 text-right">
+                            <strong>№ конкурса:</strong>
+                        </div>
+                        <div class="col-sm-7">@item.TenderNumber</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 text-right">
+                            <strong>Дата конкурса:</strong>
+                        </div>
+                        <div class="col-sm-7">@(item.TenderDate.HasValue ? item.TenderDate.Value.ToString("dd.MM.yyyy") : "")</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 text-right">
+                            <strong>Менеджер:</strong>
+                        </div>
+                        <div class="col-sm-7">@item.ManagerName</div>
+                    </div>
+                </td>
+                <td class="text-right">@(item.ContractSum.HasValue ? item.ContractSum.Value.ToString("N2") : "")</td>
+                <td class="text-right">
+                    <div>@(item.ServiceSum.HasValue ? item.ServiceSum.Value.ToString("N2") : "")</div>
+                    @if (item.ServicePayFormId.HasValue)
+                    {
+                        <div>
+                            <span class="text-sm text-muted">
+                                @item.MarketServicePayForms.Name
+                            </span>
+                            @if (item.MarketServicePayForms.SysName == "CASH")
+                            {
+                                <i class="fa fa-money text-success"></i>
+                            }
+                            else if (item.MarketServicePayForms.SysName == "CASHLESS")
+                            {
+                                <i class="fa fa-credit-card text-primary"></i>
+                            }
+                        </div>
+                    }
+                    @if (!String.IsNullOrEmpty(item.ServiceComment))
+                    {
+                        <div>
+                            <span class="text-info text-sm text-nowrap text-dotted-info" title="@item.ServiceComment">принцип <i class="fa fa-question"></i></span>
+                        </div>
+                    }
+                </td>
+                <td>
+                    @if (item.ConditionId.HasValue)
+                    {
+                        <div>@(item.ConditionId.HasValue ? item.MarketServiceConditions.Name : "Неопределено")</div>
+                            <span class="text-nowrap text-sm text-muted">@(item.ConditionChangeDate.HasValue ? item.ConditionChangeDate.Value.ToString("dd.MM.yyyy HH:mm") : "Неизвестно")</span>
+                    }
+                    else
+                    {
+                        <span>Неопределено</span>
+                    }
+                </td>
+                <td>
+                    <span class="text-nowrap">@item.CreateDate.ToString("dd.MM.yyyy HH:mm")</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

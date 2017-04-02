@@ -261,3 +261,25 @@ nav a {
 .no-border {
     border: 0 !important;
 }
+
+.disabledContent {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.btn-xxs,
+.btn-group-xxs > .btn {
+    padding: 1px 3px;
+    font-size: 11px;
+    line-height: 1.3;
+    border-radius: 3px;
+}
+
+.border-info {
+    border-color: #31708f;
+}
+
+.text-dotted-info {
+    border-bottom: 1px dotted #31708f;
+    cursor: help;
+}

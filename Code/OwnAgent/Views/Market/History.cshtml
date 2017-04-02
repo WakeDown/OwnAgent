@@ -1,0 +1,52 @@
+﻿@using Helpers
+@model IEnumerable<Data.Models.MarketServiceHistory>
+@{
+    Layout = null;
+    int maxShortListItemsCount = 3;
+}
+@if (Model != null && Model.Any())
+{
+    int i = 1;
+    foreach (var item in Model)
+    {
+        <li class="list-group-item @(i > maxShortListItemsCount ? "long-history-item-js" : "short-history-item-js")" style="@(i > maxShortListItemsCount ? "display: none" : "")">
+            <div>
+                <span class="text-muted text-sm">@item.CreateDate.ToString("dd.MM.yyyy HH:mm")</span>
+            </div>
+            <div>
+                <strong>@item.MarketServiceHistoryActions.Name</strong>
+                <div class="text-sm">
+                    @Html.Raw(Html.Nl2Br(item.Comment))
+                </div>
+            </div>
+        </li>
+        i++;
+    }
+    if (Model.Count() > maxShortListItemsCount)
+    {
+        <li class="list-group-item">
+            <a id="showAllHistory" class="btn btn-default btn-xs">показать все</a>
+        </li>
+    }
+}
+else
+{
+    <li class="list-group-item">
+        пока нет
+    </li>
+}
+
+<script>
+    $(function() {
+        $('#showAllHistory').click(showAllHistory);
+    });
+    function showAllHistory() {
+        if ($('.long-history-item-js:hidden').length > 0) {
+            $('#showAllHistory').text('скрыть');
+            $('.long-history-item-js').show('fast');
+        } else {
+            $('#showAllHistory').text('показать все');
+            $('.long-history-item-js').hide('fast');
+        }
+    }
+</script>

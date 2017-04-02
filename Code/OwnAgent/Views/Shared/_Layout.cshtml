@@ -30,7 +30,7 @@
             </div>
             <div id="mainMenu" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-default">
-                    <li><a href="@Url.Action("New", "Market")"><i class="fa fa-plus-circle text-primary" title="Новое"></i> Новое</a></li>
+                    <li><a href="@Url.Action("New", "Market", new {returnUrl=Request.Url})"><i class="fa fa-plus-circle text-primary" title="Новое"></i> Новая</a></li>
                     <li><a href="@Url.Action("Index", "Market")"><i class="fa fa-list" title="Список"></i> Список</a></li>
                     @*<li><a href="@Url.Action("Charts", "Balance")"><i class="fa fa-bar-chart-o" title="Статистика"></i> Статистика</a></li>*@
                     @*<li><a href="@Url.Action("Stat", "Balance")"><i class="material-icons large" title="Статистика">insert_chart</i></a></li>*@

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Data.Models.MarketServicePayments>
+@{
+    Layout = null;
+}
+
+<table class="table table-bordered table-striped text-sm">
+    <thead>
+        <tr class="bg-primary">
+            <th class="min-width">ID</th>
+            <th class="min-width">Сумма</th>
+            <th class="min-width">Дата</th>
+            <th>Комментарий</th>
+            <th class="min-width">Создано</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <th>@item.Id</th>
+                    <td>@(item.Sum.HasValue ? item.Sum.Value.ToString("N2") : "")</td>
+                    <td>@(item.Date.HasValue ? item.Date.Value.ToString("dd.MM.yyyy") : "")</td>
+                    <td>@item.Comment</td>
+                    <td class="text-nowrap">@item.CreateDate.ToString("dd.MM.yyyy HH:mm")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">пока нет</td>
+            </tr>
+        }
+    </tbody>
+</table>
