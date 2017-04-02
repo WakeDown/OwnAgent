@@ -126,7 +126,10 @@ namespace OwnAgent.Controllers
         {
             if (!id.HasValue) return HttpNotFound();
             var service = MarketService.Instance(UserSid).ServiceGet(id.Value);
-            var model = new KeyValuePair<string, string>(service.MarketServiceConditions?.Name, service.ConditionComment);
+            //var model = new KeyValuePair<string, string>(service.MarketServiceConditions?.Name, service.ConditionComment);
+            var model = new MarketServiceConditionViewModel();
+            model.Name = service.MarketServiceConditions?.Name;
+            model.Comment = service.ConditionComment;
             return View("Condition", model: model);
         }
 

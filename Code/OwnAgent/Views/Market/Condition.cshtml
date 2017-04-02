@@ -1,12 +1,12 @@
-﻿@model KeyValuePair<string, string>
+﻿@model OwnAgent.ViewModels.MarketServiceConditionViewModel
 @{
     Layout = null;
 }
 
-@if (!String.IsNullOrEmpty(Model.Key))
+@if (!String.IsNullOrEmpty(Model.Name))
 {
-    <div>@Model.Key</div>
-    <div class="text-sm text-muted">@Model.Value</div>
+    <div>@Model.Name</div>
+    <div class="text-sm text-muted">@Model.Comment</div>
 }
 else
 {

@@ -209,6 +209,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="ViewModels\MarketServiceBalanceViewModel.cs" />
+    <Compile Include="ViewModels\MarketServiceConditionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datepicker3.css" />
@@ -313,6 +314,7 @@
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
+    <None Include="Properties\PublishProfiles\MarkterService-DEV.pubxml" />
     <None Include="Properties\PublishProfiles\OwnAgent.pubxml" />
     <None Include="Properties\PublishProfiles\PRODUCT-UIIS-1.pubxml" />
     <None Include="Properties\PublishProfiles\SmarterASP.pubxml" />
