@@ -44,6 +44,8 @@ namespace Data.Models
         public Nullable<int> ConditionId { get; set; }
         public Nullable<System.DateTimeOffset> ConditionChangeDate { get; set; }
         public string ConditionComment { get; set; }
+        public Nullable<decimal> BalanceSum { get; set; }
+        public Nullable<System.DateTimeOffset> BalanceSumChangeDate { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual MarketServicePayForms MarketServicePayForms { get; set; }

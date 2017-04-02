@@ -23,6 +23,7 @@ namespace Data.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string SysName { get; set; }
+        public bool IsFinish { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MarketServices> MarketServices { get; set; }

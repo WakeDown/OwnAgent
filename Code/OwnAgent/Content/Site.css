@@ -283,3 +283,7 @@ nav a {
     border-bottom: 1px dotted #31708f;
     cursor: help;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}

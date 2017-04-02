@@ -14,8 +14,9 @@ namespace OwnAgent
                         "~/Scripts/bootstrap-datepicker.ru.js",
                         "~/Scripts/jquery.unobtrusive-ajax.min.js",
                         //"~/Scripts/jquery.validate.unobtrusive.min.js",
-                        "~/Scripts/jquery-dateformat.js"
+                        "~/Scripts/jquery-dateformat.js",
                         //"~/Scripts/jquery.canvasjs.min.js"
+                        "~/Scripts/jquery-mask.min.js"
                         ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(

@@ -11,8 +11,7 @@
             <th class="min-width">Вектор</th>
             <th>Клиент</th>
             <th></th>
-            <th class="min-width text-nowrap">Сумма договора</th>
-            <th class="min-width text-nowrap">Сумма услуги</th>
+            <th></th>
             <th class="min-width">Состояние</th>
             <th class="min-width">Создано</th>
         </tr>
@@ -65,16 +64,62 @@
                         <div class="col-sm-7">@item.ManagerName</div>
                     </div>
                 </td>
-                <td class="text-right">@(item.ContractSum.HasValue ? item.ContractSum.Value.ToString("N2") : "")</td>
+                <td class="text-right text-sm">
+                    <div class="row">
+                        <div class="col-sm-6 text-right">
+                            <strong>Сумма договора:</strong>
+                        </div>
+                        <div class="col-sm-6">@(item.ContractSum.HasValue ? item.ContractSum.Value.ToString("N2") : "")</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 text-right">
+                            <strong>Сумма услуги:</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            @(item.ServiceSum.HasValue ? item.ServiceSum.Value.ToString("N2") : "")
+                            <div>
+                                @if (item.ServicePayFormId.HasValue)
+                                {
+
+                                    <span class="text-muted">
+                                        @item.MarketServicePayForms.Name
+                                    </span>
+                                    if (item.MarketServicePayForms.SysName == "CASH")
+                                    {
+                                        <i class="fa fa-money text-success"></i>
+                                    }
+                                    else if (item.MarketServicePayForms.SysName == "CASHLESS")
+                                    {
+                                        <i class="fa fa-credit-card text-primary"></i>
+                                    }
+
+                                }
+                                @if (!String.IsNullOrEmpty(item.ServiceComment))
+                                {
+
+                                    <span class="text-info text-nowrap text-dotted-info" title="@item.ServiceComment"><i class="fa fa-question"></i></span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 text-right">
+                            <strong>Остаток:</strong>
+                        </div>
+                        <div class="col-sm-6">@(item.BalanceSum.HasValue ? item.BalanceSum.Value.ToString("N2") : "Не определено")</div>
+                    </div>
+                </td>
+                @*<td class="text-right">@(item.ContractSum.HasValue ? item.ContractSum.Value.ToString("N2") : "")</td>
                 <td class="text-right">
                     <div>@(item.ServiceSum.HasValue ? item.ServiceSum.Value.ToString("N2") : "")</div>
-                    @if (item.ServicePayFormId.HasValue)
-                    {
-                        <div>
+                    <div>
+                        @if (item.ServicePayFormId.HasValue)
+                        {
+
                             <span class="text-sm text-muted">
                                 @item.MarketServicePayForms.Name
                             </span>
-                            @if (item.MarketServicePayForms.SysName == "CASH")
+                            if (item.MarketServicePayForms.SysName == "CASH")
                             {
                                 <i class="fa fa-money text-success"></i>
                             }
@@ -82,27 +127,28 @@
                             {
                                 <i class="fa fa-credit-card text-primary"></i>
                             }
-                        </div>
-                    }
-                    @if (!String.IsNullOrEmpty(item.ServiceComment))
-                    {
-                        <div>
-                            <span class="text-info text-sm text-nowrap text-dotted-info" title="@item.ServiceComment">принцип <i class="fa fa-question"></i></span>
-                        </div>
-                    }
-                </td>
+
+                        }
+                        @if (!String.IsNullOrEmpty(item.ServiceComment))
+                        {
+
+                            <span class="text-info text-sm text-nowrap text-dotted-info" title="@item.ServiceComment"><i class="fa fa-question"></i></span>
+                        }
+                    </div>
+                    <div>Остаток: @(item.BalanceSum.HasValue ? item.BalanceSum.Value.ToString("N2") : "Не определено")</div>
+                </td>*@
                 <td>
                     @if (item.ConditionId.HasValue)
                     {
-                        <div>@(item.ConditionId.HasValue ? item.MarketServiceConditions.Name : "Неопределено")</div>
-                            <span class="text-nowrap text-sm text-muted">@(item.ConditionChangeDate.HasValue ? item.ConditionChangeDate.Value.ToString("dd.MM.yyyy HH:mm") : "Неизвестно")</span>
+                        <div>@(item.ConditionId.HasValue ? item.MarketServiceConditions.Name : "Не определено")</div>
+                        <span class="text-nowrap text-sm text-muted">@(item.ConditionChangeDate.HasValue ? item.ConditionChangeDate.Value.ToString("dd.MM.yyyy HH:mm") : "Неизвестно")</span>
                     }
                     else
                     {
-                        <span>Неопределено</span>
+                        <span>Не определено</span>
                     }
                 </td>
-                <td>
+                <td class="text-sm">
                     <span class="text-nowrap">@item.CreateDate.ToString("dd.MM.yyyy HH:mm")</span>
                 </td>
             </tr>

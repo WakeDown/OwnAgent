@@ -22,10 +22,13 @@ namespace Data.Services
             return new MarketService(userSid);
         }
 
-        public IEnumerable<MarketServices> ServiceGetList()
+        public IEnumerable<MarketServices> ServiceGetList(bool? stateIsActive)
         {
             var list = Db.MarketServices
-                .Where(x=>x.Enabled)
+                .Where(
+                x=>x.Enabled
+                && (!stateIsActive.HasValue || (stateIsActive.HasValue && (stateIsActive.Value && x.MarketServiceStates.SysName=="ACTIVE") || (stateIsActive.HasValue && (!stateIsActive.Value && x.MarketServiceStates.SysName == "DISABLED"))))
+                )
                 .OrderByDescending(x => x.CreateDate);
             return list;
         }
@@ -41,7 +44,9 @@ namespace Data.Services
 
             Db.MarketServices.Add(model);
             Db.SaveChanges();
-            
+
+            ServiceBalanceCumCalculate(model.Id);
+
             ServiceSaveHistory(model.Id, "CREATED");
             return model.Id;
         }
@@ -64,6 +69,8 @@ namespace Data.Services
             model.ServicePayFormId = newModel.ServicePayFormId;
             model.Comment = newModel.Comment;
             Db.SaveChanges();
+
+            ServiceBalanceCumCalculate(model.Id);
 
             ServiceSaveHistory(model.Id, "CHANGED");
         }
@@ -105,20 +112,38 @@ namespace Data.Services
         public void ServiceSetConditionAndSaveHistory(int serviceId, int conditionId, string comment = null)
         {
             var service = ServiceGet(serviceId);
-            string changeComment = (service.ConditionId.HasValue ? service.MarketServiceConditions.Name : "Неопределено") + " -> ";
+            var condition = Db.MarketServiceConditions.Single(x => x.Id == conditionId);
+
+            string changeComment = (service.ConditionId.HasValue ? service.MarketServiceConditions.Name : "Не определено") + " -> ";
             service.ConditionId = conditionId;
             service.ConditionChangeDate = DateTimeOffset.Now;
             service.ConditionComment = comment;
             Db.SaveChanges();
 
             service = ServiceGet(serviceId);
-            changeComment += service.ConditionId.HasValue ? service.MarketServiceConditions.Name : "Неопределено";
+            changeComment += service.ConditionId.HasValue ? service.MarketServiceConditions.Name : "Не определено";
             if (!String.IsNullOrEmpty(comment))
             {
                 changeComment += "\r\nКомментарий: " + comment;
             }
 
+            if (condition.IsFinish && !service.MarketServiceConditions.IsFinish)
+            {
+                var state = Db.MarketServiceStates.Single(x => x.SysName == "ACTIVE");
+                service.StateId = state.Id;
+                Db.SaveChanges();
+                ServiceSaveHistory(serviceId, "REACTIVATE", changeComment);
+            }
+
             ServiceSaveHistory(serviceId, "CONDITIONCHANGED", changeComment);
+
+            if (!condition.IsFinish && service.MarketServiceConditions.IsFinish)
+            {
+                var state = Db.MarketServiceStates.Single(x => x.SysName == "DISABLED");
+                service.StateId = state.Id;
+                Db.SaveChanges();
+                ServiceSaveHistory(serviceId, "FINISH", changeComment);
+            }
         }
 
         public MarketServices ServiceGet(int id)
@@ -127,6 +152,7 @@ namespace Data.Services
                 .Include(x => x.MarketServiceTypes)
                 .Include(x=>x.MarketServicePayForms)
                 .Include(x => x.MarketServiceConditions)
+                .Include(x => x.MarketServicePayments)
                 .Single();
 
             return model;
@@ -166,6 +192,52 @@ namespace Data.Services
                 .OrderByDescending(x => x.Date);
 
             return list;
+        }
+
+        public void ServicePaymentCreate(MarketServicePayments model)
+        {
+            model.CreateDate = DateTimeOffset.Now;
+            model.CreatorId = UserSid;
+            model.Enabled = true;
+            Db.MarketServicePayments.Add(model);
+            Db.SaveChanges();
+
+            ServiceBalanceCumCalculate(model.ServiceId);
+
+            ServiceSaveHistory(model.ServiceId, "PAYMENTCREATED");
+        }
+
+        public void ServicePaymentDelete(int id)
+        {
+            var model = Db.MarketServicePayments.Single(x => x.Id == id);
+            model.DeleteDate = DateTimeOffset.Now;
+            model.DeleterId = UserSid;
+            model.Enabled = false;
+
+            Db.SaveChanges();
+
+            ServiceBalanceCumCalculate(model.ServiceId);
+
+            ServiceSaveHistory(model.ServiceId, "PAYMENTDELETED");
+        }
+
+        public void ServiceBalanceCumCalculate(int serviceId)
+        {
+            var service = Db.MarketServices.Single(x => x.Id == serviceId);
+
+            var payments = Db.MarketServicePayments.Where(x => x.Enabled && x.ServiceId == serviceId);
+
+            decimal? balanceSum = service.ServiceSum;
+
+            if (payments.Any())
+            {
+                balanceSum -= payments.Sum(x => x.Sum);
+            }
+
+            service.BalanceSum = balanceSum;
+            service.BalanceSumChangeDate = DateTimeOffset.Now;
+
+            Db.SaveChanges();
         }
     }
 }

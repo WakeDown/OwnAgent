@@ -1,0 +1,36 @@
+﻿@model OwnAgent.ViewModels.MarketServiceBalanceViewModel
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-sm-5 text-right">
+        Всего:
+    </div>
+    <div class="col-sm-7 text-right text-danger">
+        <strong>
+            @(Model.ServiceSum.HasValue ? Model.ServiceSum.Value.ToString("N2") : "")
+        </strong>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5 text-right">
+        Выплачено:
+    </div>
+    <div class="col-sm-7 text-right text-success">
+        <strong>
+            @(Model.PaymentSum.HasValue ? Model.PaymentSum.Value.ToString("N2") : "")
+        </strong>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5 text-right">
+        Остаток:
+    </div>
+    <div class="col-sm-7 text-right text-primary">
+        <strong>
+            @(Model.BalanceSum.HasValue ? Model.BalanceSum.Value.ToString("N2") : "")
+        </strong>
+        <div class="text-sm text-muted">@(Model.ChangeDate.HasValue ? Model.ChangeDate.Value.ToString("dd.MM.yyyy HH:mm") : "")</div>
+    </div>
+</div>

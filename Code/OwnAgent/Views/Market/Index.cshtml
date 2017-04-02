@@ -1,12 +1,22 @@
-﻿
+﻿@using Helpers
+
 @{
     ViewBag.Title = "Список услуг";
-    var queryString = Request.Url.Query;
+    string url4Modify = Url.Action("Index") + "?" + Request.QueryString;
 }
 <div id="marketModal" class="modal fade" tabindex="-1" role="dialog"></div>
-<div class="pad-t-sm">
-    <h4>@ViewBag.Title</h4>
-    <div id="serviceListContainer" data-query="@queryString"></div>
+<div class="pad-t-md">
+    <div class="btn-toolbar">
+        <div class="btn-group"><h4 class="no-margin">@ViewBag.Title</h4>
+        </div>
+        <div class="btn-group">
+            <a href="@Url.ModifyQueryString(url4Modify, new Dictionary<string, object> {{"state", "active"}, {"page", 1}})" class="btn btn-default btn-xs @(Request.QueryString["state"] == "active" ? "active" : "")">Активные</a>
+            <a href="@Url.ModifyQueryString(url4Modify, new Dictionary<string, object> {{"state", "disabled"}, {"page", 1}})" class="btn btn-default btn-xs @(Request.QueryString["state"] == "disabled" ? "active" : "")">Неактивные</a>
+            <a href="@Url.ModifyQueryString(url4Modify, new Dictionary<string, object> {{"state", "all"}, {"page", 1}})" class="btn btn-default btn-xs @(Request.QueryString["state"] == "all" ? "active" : "")">Все</a>
+        </div>
+    </div>
+    
+    <div id="serviceListContainer" class="pad-t-md"></div>
 </div>
 
 
@@ -21,7 +31,7 @@
 
             $cont.addClass('disabledContent');
             $.ajax({
-                url: '@Url.Action("List")?' + $cont.attr('data-query'),
+                url: '@Url.Action("List")?@Request.QueryString',
                 method: 'GET',
                 success: function (data) {
                     $cont.html(data);

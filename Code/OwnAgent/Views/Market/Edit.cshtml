@@ -64,19 +64,19 @@
             <div class="form-group">
                 <label for="ContractSum" class="col-sm-2 control-label">Сумма контракта</label>
                 <div class="col-sm-4">
-                    @Html.TextBoxFor(m => m.ContractSum, "{0:N2}", new {@class = "form-control"})
+                    @Html.TextBoxFor(m => m.ContractSum, new {@class = "form-control"})
                 </div>
             </div>
             <div class="form-group">
                 <label for="BudgetSum" class="col-sm-2 control-label">Бюджет закупки</label>
                 <div class="col-sm-4">
-                    @Html.TextBoxFor(m => m.BudgetSum, "{0:N2}", new { @class = "form-control" })
+                    @Html.TextBoxFor(m => m.BudgetSum, new { @class = "form-control" })
                 </div>
             </div>
             <div class="form-group">
                 <label for="ServiceSum" class="col-sm-2 control-label">Сумма услуги</label>
                 <div class="col-sm-4">
-                    @Html.TextBoxFor(m => m.ServiceSum, "{0:N2}", new {@class = "form-control"})
+                    @Html.TextBoxFor(m => m.ServiceSum, new {@class = "form-control"})
                 </div>
             </div>
             <div class="form-group">
@@ -116,6 +116,9 @@
                 todayHighlight: true,
                 autoclose: true
             });
+            $('#ServiceSum').mask("##############0", { reverse: true });
+            $('#BudgetSum').mask("##############0", { reverse: true });
+            $('#ContractSum').mask("##############0", { reverse: true });
         })
     </script>
 }

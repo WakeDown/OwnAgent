@@ -208,6 +208,7 @@
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="ViewModels\MarketServiceBalanceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datepicker3.css" />
@@ -295,6 +296,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-dateformat.js" />
+    <Content Include="Scripts\jquery-mask.min.js" />
     <Content Include="Scripts\jquery.canvasjs.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
@@ -369,6 +371,7 @@
     <Content Include="Views\Market\Edit.cshtml" />
     <Content Include="Views\Market\PaymentList.cshtml" />
     <Content Include="Views\Market\PaymentNew.cshtml" />
+    <Content Include="Views\Market\Balance.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

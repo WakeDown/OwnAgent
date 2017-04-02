@@ -9,5 +9,6 @@
 /// <reference path="jquery-2.1.1.js" />
 /// <reference path="jquery-2.1.1.min.js" />
 /// <reference path="jquery-dateformat.js" />
+/// <reference path="jquery-mask.min.js" />
 /// <reference path="materialize/materialize.min.js" />
 /// <reference path="site.js" />

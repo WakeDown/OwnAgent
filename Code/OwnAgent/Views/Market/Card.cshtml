@@ -9,7 +9,7 @@
 @Html.HiddenFor(m => m.Id, new { id = "ServiceId" })
 
 <div class="row pad-t-md">
-    
+
     <div class="col-md-8">
         <div class="row">
             <div class="col-sm-3">
@@ -90,13 +90,13 @@
                 @if (Model.ServicePayFormId.HasValue)
                 {
                     if (Model.MarketServicePayForms.SysName == "CASH")
-                     {
-                         <i class="fa fa-money text-success"></i>
-                     }
-                     else if (Model.MarketServicePayForms.SysName == "CASHLESS")
-                     {
-                         <i class="fa fa-credit-card text-primary"></i>
-                     }
+                    {
+                        <i class="fa fa-money text-success"></i>
+                    }
+                    else if (Model.MarketServicePayForms.SysName == "CASHLESS")
+                    {
+                        <i class="fa fa-credit-card text-primary"></i>
+                    }
                     @Model.MarketServicePayForms.Name
                 }
             </div>
@@ -116,7 +116,7 @@
                 <li class="list-group-item">
                     <div class="btn-toolbar">
                         <div class="btn-group">
-                            <span class="text-muted text-sm">Состояние</span>
+                            <strong class="text-muted text-sm">Состояние</strong>
                         </div>
                         <div class="btn-group">
                             @if (editable)
@@ -127,7 +127,21 @@
                     </div>
                     <div id="conditionContainer">
                     </div>
-
+                </li>
+                <li class="list-group-item">
+                    <div class="btn-toolbar">
+                        <div class="btn-group">
+                            <strong class="text-muted text-sm">Баланс</strong>
+                        </div>
+                        @*<div class="btn-group">
+                    @if (editable)
+                    {
+                        <a id="conditionChange" class="btn btn-xxs btn-warning">изменить</a>
+                    }
+                </div>*@
+                    </div>
+                    <div id="balanceContainer">
+                    </div>
                 </li>
             </ul>
             <div class="panel-heading">История</div>
@@ -144,10 +158,31 @@
             loadHistory();
             loadCondition();
             loadPaymentList();
+            loadBalance();
             $('#conditionChange').click(conditionChange);
             $('#serviceDelete').click(serviceDelete);
             $('#createPayment').click(createPayment);
         });
+
+        function loadBalance() {
+            var $cont = $('#balanceContainer');
+            var id = $('#ServiceId').val();
+
+            $cont.addClass('disabledContent');
+            $.ajax({
+                url: '@Url.Action("Balance")',
+                method: 'POST',
+                data: { id },
+                success: function (data) {
+                    $cont.html(data);
+                    $cont.removeClass('disabledContent');
+                },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                }
+            });
+        }
 
         function createPayment() {
             var $cont = $('#marketCardModal');
@@ -155,16 +190,48 @@
             $cont.modal();
             var id = $('#ServiceId').val();
             $.ajax({
-                url: '@Url.Action("ConditionChange")',
+                url: '@Url.Action("PaymentNew")',
                 data: { id },
                 success: function (data) {
                     $cont.html(data);
                     $cont.removeClass('disabledContent');
-                    $('#conditionChangeSave', $cont).click(conditionChangeSave);
+                    $('#paymentNewSave', $cont).click(paymentNewSave);
                 },
                 error: function (data) {
                     console.log(data);
                     $cont.removeClass('disabledContent');
+                }
+            });
+        }
+
+        function paymentNewSave() {
+            var $this = $(this);
+            var $cont = $('#marketCardModal');
+            var sid = $('#ServiceId').val();
+            var date = $('#PaymentNewDate', $cont).val();
+            var sum = $('#PaymentNewSum', $cont).cleanVal();
+            var comment = $('#PaymentNewComment', $cont).val();
+            $cont.addClass('disabledContent');
+            showSpinnerAfterAndDisable($this);
+
+            $.ajax({
+                url: '@Url.Action("PaymentNewSave")',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ model: { ServiceId: sid, Date: date, Sum: sum, Comment: comment } }),
+                success: function (data) {
+                    loadHistory();
+                    loadCondition();
+                    loadPaymentList();
+                    loadBalance();
+                    $cont.modal('hide');
+                    $cont.removeClass('disabledContent');
+                    hideSpinnerAndEnable($this);
+                },
+                error: function (data) {
+                    console.log(data);
+                    $cont.removeClass('disabledContent');
+                    hideSpinnerAndEnable($this);
                 }
             });
         }
@@ -181,10 +248,29 @@
                 success: function (data) {
                     $cont.html(data);
                     $cont.removeClass('disabledContent');
+                    $('.payment-delete-js').click(paymentDelete);
                 },
                 error: function (data) {
                     console.log(data);
                     $cont.removeClass('disabledContent');
+                }
+            });
+        }
+
+        function paymentDelete() {
+            if (!confirm('Подтвердите удаление записи платежа!')) return;
+            var $item = $($(this).closest('.payment-item-js'));
+            var id = $item.attr('data-item-id');
+            $.ajax({
+                url: '@Url.Action("PaymentDelete")',
+                method: 'POST',
+                data: { id },
+                success: function (data) {
+                    $item.remove();
+                    loadBalance();
+                },
+                error: function (data) {
+                    console.log(data);
                 }
             });
         }
@@ -197,9 +283,9 @@
                 url: '@Url.Action("Delete")',
                 method: 'POST',
                 data: { id },
-                success: function (data) {
-                    location.reload();
-                },
+                        success: function(data) {
+                            location.reload();
+                        },
                 error: function (data) {
                     console.log(data);
                 }
@@ -214,7 +300,7 @@
             $.ajax({
                 url: '@Url.Action("ConditionChange")',
                 data: { id },
-                        success: function (data) {
+                        success: function(data) {
                             $cont.html(data);
                             $cont.removeClass('disabledContent');
                             $('#conditionChangeSave', $cont).click(conditionChangeSave);
@@ -239,7 +325,7 @@
                 url: '@Url.Action("ConditionChangeSave")',
                 method: 'POST',
                 data: { sid, cid, comment },
-                        success: function (data) {
+                        success: function(data) {
                             loadHistory();
                             loadCondition();
                             $cont.modal('hide');
@@ -263,7 +349,7 @@
                 url: '@Url.Action("Condition")',
                 method: 'POST',
                 data: { id },
-                        success: function (data) {
+                        success: function(data) {
                             $cont.html(data);
                             $cont.removeClass('disabledContent');
                         },
@@ -283,7 +369,7 @@
                 url: '@Url.Action("History")',
                 method: 'GET',
                 data: { id },
-                        success: function (data) {
+                        success: function(data) {
                             $cont.html(data);
                             $cont.removeClass('disabledContent');
                         },

@@ -11,6 +11,7 @@
             <th class="min-width">Дата</th>
             <th>Комментарий</th>
             <th class="min-width">Создано</th>
+            <th class="min-width"></th>
         </tr>
     </thead>
     <tbody>
@@ -18,12 +19,15 @@
         {
             foreach (var item in Model)
             {
-                <tr>
+                <tr class="payment-item-js" data-item-id="@item.Id">
                     <th>@item.Id</th>
                     <td>@(item.Sum.HasValue ? item.Sum.Value.ToString("N2") : "")</td>
                     <td>@(item.Date.HasValue ? item.Date.Value.ToString("dd.MM.yyyy") : "")</td>
                     <td>@item.Comment</td>
                     <td class="text-nowrap">@item.CreateDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        <a class="payment-delete-js cursor-pointer text-danger"><i class="fa fa-trash text-danger" title="удалить"></i></a>
+                    </td>
                 </tr>
             }
         }

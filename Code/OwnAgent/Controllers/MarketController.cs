@@ -6,20 +6,45 @@ using System.Web.Mvc;
 using Data.Models;
 using Data.Services;
 using OwnAgent.Objects;
+using OwnAgent.ViewModels;
 
 namespace OwnAgent.Controllers
 {
     public class MarketController : BaseController
     {
         // GET: Market
-        public ActionResult Index()
+        public ActionResult Index(string state)
         {
+            bool needRedirect = false;
+            if (String.IsNullOrEmpty(state))
+            {
+                state = "active";
+                needRedirect = true;
+            }
+
+            if (needRedirect)
+                return RedirectToAction("Index", new {state});
+
             return View();
         }
 
-        public ActionResult List()
+        public ActionResult List(string state)
         {
-            var list = MarketService.Instance(UserSid).ServiceGetList();
+            bool? stateIsActive = null;
+            if (state == "active")
+            {
+                stateIsActive = true;
+            }
+            else if (state == "disabled")
+            {
+                stateIsActive = false;
+            }
+            else
+            {
+                stateIsActive = null;
+            }
+
+            var list = MarketService.Instance(UserSid).ServiceGetList(stateIsActive);
 
             return View(list);
         }
@@ -105,12 +130,50 @@ namespace OwnAgent.Controllers
             return View("Condition", model: model);
         }
 
+        [HttpPost]
+        public ActionResult Balance(int? id)
+        {
+            if (!id.HasValue) return HttpNotFound();
+            var service = MarketService.Instance(UserSid).ServiceGet(id.Value);
+            //var model = new KeyValuePair<decimal?, DateTimeOffset?>(service.BalanceSum, service.BalanceSumChangeDate);
+
+            var model = new MarketServiceBalanceViewModel();
+            model.ChangeDate = service.BalanceSumChangeDate;
+            model.ServiceSum = service.ServiceSum;
+            model.PaymentSum = service.MarketServicePayments.Where(x => x.Enabled).Sum(x => x.Sum);
+            model.BalanceSum = service.BalanceSum;
+
+            return View("Balance", model: model);
+        }
+
         public ActionResult PaymentList(int? id)
         {
             if (!id.HasValue) return HttpNotFound();
             var list = MarketService.Instance(UserSid).ServicePaymentsGetList(id.Value);
 
             return View(list);
+        }
+
+        public ActionResult PaymentNew()
+        {
+            
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PaymentNewSave(MarketServicePayments model)
+        {
+            MarketService.Instance(UserSid).ServicePaymentCreate(model);
+
+            return Json(new { });
+        }
+
+        [HttpPost]
+        public ActionResult PaymentDelete(int? id)
+        {
+            if (!id.HasValue) return HttpNotFound();
+            MarketService.Instance(UserSid).ServicePaymentDelete(id.Value);
+            return Json(new {});
         }
     }
 }
