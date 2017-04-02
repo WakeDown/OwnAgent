@@ -32,6 +32,20 @@
         <AssociationConnector Association="OwnAgentModel.FK_SpendTransfer_SpendBills" />
         <AssociationConnector Association="OwnAgentModel.FK_SpendTransfer_SpendBills1" />
         <AssociationConnector Association="OwnAgentModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServicePayForms" Width="1.5" PointX="8" PointY="6" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServicePayments" Width="1.5" PointX="12.5" PointY="9.75" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServices" Width="1.5" PointX="10.25" PointY="9.125" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceStates" Width="1.5" PointX="8" PointY="2.5" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceTypes" Width="1.5" PointX="8" PointY="20" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServicePayments_AspNetUsers" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServices_AspNetUsers" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServices_MarketServicePayForms" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServicePayments_MarketServices" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServices_MarketServiceStates" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServices_MarketServiceTypes" />
+        <EntityTypeShape EntityType="OwnAgentModel.MarketServiceStateHistory" Width="1.5" PointX="12.5" PointY="5.5" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" />
+        <AssociationConnector Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

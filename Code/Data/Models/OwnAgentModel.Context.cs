@@ -37,5 +37,11 @@ namespace Data.Models
         public virtual DbSet<SpendTransfer> SpendTransfer { get; set; }
         public virtual DbSet<SpendVector> SpendVector { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<MarketServicePayForms> MarketServicePayForms { get; set; }
+        public virtual DbSet<MarketServicePayments> MarketServicePayments { get; set; }
+        public virtual DbSet<MarketServices> MarketServices { get; set; }
+        public virtual DbSet<MarketServiceStates> MarketServiceStates { get; set; }
+        public virtual DbSet<MarketServiceTypes> MarketServiceTypes { get; set; }
+        public virtual DbSet<MarketServiceStateHistory> MarketServiceStateHistory { get; set; }
     }
 }

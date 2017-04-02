@@ -1,0 +1,89 @@
+﻿@model Data.Models.MarketServices
+
+@{
+    ViewBag.Title = "Карточка услуги №" + Model.Id;
+}
+
+<div class="row pad-t-md">
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-sm-push-3 col-sm-9">
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <h4 class="no-margin">@ViewBag.Title</h4>
+                    </div>
+                    <a class="btn btn-xs btn-warning"><i class="fa fa-edit" title="изменить"></i></a>
+                    <a class="btn btn-xs btn-danger"><i class="fa fa-trash" title="удалить"></i></a>
+                </div>
+                @*<h4 class="no-margin">@ViewBag.Title</h4>*@
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Вектор</label>
+            <div class="col-sm-9">@Model.MarketServiceTypes.Name</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Клиент</label>
+            <div class="col-sm-9">@Model.ClientName</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">ФИО получателя</label>
+            <div class="col-sm-9">@Model.RecipientName</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Менеджер</label>
+            <div class="col-sm-9">@Model.ManagerName</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">№ заявки СР</label>
+            <div class="col-sm-9">@Model.ClaimNumber</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">№ конкурса</label>
+            <div class="col-sm-9">@Model.TenderNumber</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Дата конкурса</label>
+            <div class="col-sm-9">@Model.TenderDate</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Сумма контракта</label>
+            <div class="col-sm-9">@Model.ContractSum</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Бюджет закупки</label>
+            <div class="col-sm-9">@Model.BudgetSum</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Сумма услуги</label>
+            <div class="col-sm-9">@Model.ServiceSum</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Принцип начисления</label>
+            <div class="col-sm-9">@Model.ServiceComment</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Форма выплаты</label>
+            <div class="col-sm-9">@Model.MarketServicePayForms.Name</div>
+        </div>
+        <div class="row">
+            <label class="col-sm-3 text-right">Комментарий</label>
+            <div class="col-sm-9">@Model.Comment</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="btn-toolbar">
+                        
+                    </div>
+                </li>
+            </ul>
+            <div class="panel-heading">История</div>
+            <div class="panel-body">
+                Panel content
+            </div>
+        </div>
+    </div>
+</div>

@@ -359,6 +359,9 @@
     <Content Include="Views\Balance\CategoryStat.cshtml" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
     <Content Include="Views\Market\Index.cshtml" />
+    <Content Include="Views\Market\New.cshtml" />
+    <Content Include="Views\Market\Card.cshtml" />
+    <Content Include="Views\Market\List.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

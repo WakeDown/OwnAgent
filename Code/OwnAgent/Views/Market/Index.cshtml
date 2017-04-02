@@ -2,5 +2,27 @@
 @{
     
 }
+<div id="marketModal" class="modal fade" tabindex="-1" role="dialog"></div>
+<div class="pad-t-sm">
+    @*<div>
+        <a id="newModal" class="btn btn-primary">Новая запись</a>
+    </div>*@
+</div>
 
-test
+@section scripts{
+    <script>
+        $(function() {
+            @*$('#newModal').click(function() {
+                $.ajax({
+                    url: '@Url.Action("New")',
+                    success: function(data) {
+                        var $cont = $('#marketModal');
+                        $cont.html(data);
+                        $cont.modal();
+                    }
+                });
+            });*@
+        });
+    </script>
+    
+}

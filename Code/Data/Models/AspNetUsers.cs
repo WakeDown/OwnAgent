@@ -24,6 +24,8 @@ namespace Data.Models
             this.SpendCategory = new HashSet<SpendCategory>();
             this.SpendTransfer = new HashSet<SpendTransfer>();
             this.AspNetRoles = new HashSet<AspNetRoles>();
+            this.MarketServicePayments = new HashSet<MarketServicePayments>();
+            this.MarketServices = new HashSet<MarketServices>();
         }
     
         public string Id { get; set; }
@@ -53,5 +55,9 @@ namespace Data.Models
         public virtual ICollection<SpendTransfer> SpendTransfer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MarketServicePayments> MarketServicePayments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MarketServices> MarketServices { get; set; }
     }
 }

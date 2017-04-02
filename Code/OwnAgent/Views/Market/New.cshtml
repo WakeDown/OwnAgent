@@ -1,0 +1,137 @@
+﻿@using Data.Services
+@model Data.Models.MarketServices
+
+@{
+    ViewBag.Title = "Новая запись";
+    var typesList = ViewBag.TypesList;
+    var payFormsList = ViewBag.PayFormsList;
+}
+
+<div class="pad-t-md">
+    
+    @using (Html.BeginForm("New", "Market", FormMethod.Post, new {@class = "", role = "form"}))
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-push-2 col-sm-10">
+                    <h4 class="no-margin">@ViewBag.Title</h4>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="TypeId" class="col-sm-2 control-label">Вектор</label>
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(m => m.TypeId, new SelectList(typesList, "Id", "Name", "-"), new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ClientName" class="col-sm-2 control-label">Клиент</label>
+                <div class="col-sm-6">
+                    @Html.TextAreaFor(m => m.ClientName, new {@class = "form-control", rows = "2", required = "required" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="RecipientName" class="col-sm-2 control-label">ФИО получателя</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.RecipientName, new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ManagerName" class="col-sm-2 control-label">Менеджер</label>
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(m => m.ManagerName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ClaimNumber" class="col-sm-2 control-label">№ заявки СР</label>
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(m => m.ClaimNumber, new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="TenderNumber" class="col-sm-2 control-label">№ конкурса</label>
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(m => m.TenderNumber, new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="TenderDate" class="col-sm-2 control-label">Дата конкурса</label>
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(m => m.TenderDate, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ContractSum" class="col-sm-2 control-label">Сумма контракта</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.ContractSum, new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="BudgetSum" class="col-sm-2 control-label">Бюджет закупки</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.BudgetSum, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ServiceSum" class="col-sm-2 control-label">Сумма услуги</label>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(m => m.ServiceSum, new {@class = "form-control"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ServiceComment" class="col-sm-2 control-label">Принцип начисления</label>
+                <div class="col-sm-6">
+                    @Html.TextAreaFor(m => m.ServiceComment, new {@class = "form-control", rows = "2"})
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ServicePayFormId" class="col-sm-2 control-label">Форма выплаты</label>
+                <div class="col-sm-2">
+                    @Html.DropDownListFor(m => m.ServicePayFormId, new SelectList(payFormsList, "Id", "Name", "-"), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Comment" class="col-sm-2 control-label">Комментарий</label>
+                <div class="col-sm-6">
+                    @Html.TextAreaFor(m => m.Comment, new { @class = "form-control", rows = "2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-push-2 col-sm-10">
+                    <button id="create" type="submit" class="btn btn-success">Сохранить</button>
+                    <a class="btn btn-default" data-dismiss="modal">Отмена</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@*<div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @using (Html.BeginForm("New", "Market", FormMethod.Post, new {@class = "", role = "form"}))
+            {
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a>
+                    <h4 class="modal-title">Новая запись</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="TypeId" class="col-sm-2 control-label">Тип</label>
+                            <div class="col-sm-10">
+                                @Html.DropDownListFor(m=>m.TypeId, new SelectList(typesList, "Id", "Name", "-"), new { @class="form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="create" class="btn btn-success">Сохранить</button>
+                    <a class="btn btn-default" data-dismiss="modal">Отмена</a>
+                </div>
+            }
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->*@

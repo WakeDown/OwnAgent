@@ -91,6 +91,14 @@ textarea.no-border-top {
     padding-left: 3px;
 }
 
+.pad-t-sm {
+    padding-top: 3px;
+}
+
+.pad-t-md {
+    padding-top: 10px;
+}
+
 .shortKey {
     cursor: pointer;
 }

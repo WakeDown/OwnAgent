@@ -66,6 +66,81 @@
           <Property Name="DaysCount" Type="int" Nullable="false" />
           <Property Name="OrderNum" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="MarketServicePayForms">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="SysName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MarketServicePayments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ServiceId" Type="int" Nullable="false" />
+          <Property Name="Sum" Type="money" />
+          <Property Name="Date" Type="date" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetimeoffset" Precision="0" Nullable="false" />
+          <Property Name="CreatorId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+          <Property Name="DeleteDate" Type="datetimeoffset" Precision="0" />
+          <Property Name="DeleterId" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="MarketServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeId" Type="int" Nullable="false" />
+          <Property Name="ClientName" Type="nvarchar" MaxLength="1500" Nullable="false" />
+          <Property Name="RecipientName" Type="nvarchar" MaxLength="1500" />
+          <Property Name="ClaimNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="TenderNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="TenderDate" Type="date" />
+          <Property Name="BudgetSum" Type="money" />
+          <Property Name="ServiceSum" Type="money" />
+          <Property Name="ContractSum" Type="money" />
+          <Property Name="ServiceComment" Type="nvarchar(max)" />
+          <Property Name="ServicePayFormId" Type="int" />
+          <Property Name="ManagerName" Type="nvarchar" MaxLength="500" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="StateId" Type="int" />
+          <Property Name="CreateDate" Type="datetimeoffset" Precision="0" Nullable="false" />
+          <Property Name="CreatorId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+          <Property Name="DeleteDate" Type="datetimeoffset" Precision="0" />
+          <Property Name="DeleterId" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="MarketServiceStateHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ServiceId" Type="int" Nullable="false" />
+          <Property Name="StateId" Type="int" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetimeoffset" Precision="0" Nullable="false" />
+          <Property Name="CreatorId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MarketServiceStates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="SysName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MarketServiceTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="SysName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Spend">
           <Key>
             <PropertyRef Name="Id" />
@@ -244,6 +319,102 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MarketServicePayments_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="MarketServicePayments" Type="Self.MarketServicePayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServicePayments">
+              <PropertyRef Name="CreatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServicePayments_MarketServices">
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="1" />
+          <End Role="MarketServicePayments" Type="Self.MarketServicePayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServicePayments">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="CreatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServicePayForms">
+          <End Role="MarketServicePayForms" Type="Self.MarketServicePayForms" Multiplicity="0..1" />
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServicePayForms">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="ServicePayFormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServiceStates">
+          <End Role="MarketServiceStates" Type="Self.MarketServiceStates" Multiplicity="0..1" />
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceStates">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="StateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServiceTypes">
+          <End Role="MarketServiceTypes" Type="Self.MarketServiceTypes" Multiplicity="1" />
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServiceStateHistory_MarketServices">
+          <End Role="MarketServices" Type="Self.MarketServices" Multiplicity="1" />
+          <End Role="MarketServiceStateHistory" Type="Self.MarketServiceStateHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServiceStateHistory">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServiceStateHistory_MarketServiceStates">
+          <End Role="MarketServiceStates" Type="Self.MarketServiceStates" Multiplicity="1" />
+          <End Role="MarketServiceStateHistory" Type="Self.MarketServiceStateHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceStates">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServiceStateHistory">
+              <PropertyRef Name="StateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Spend_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="Spend" Type="Self.Spend" Multiplicity="*" />
@@ -371,6 +542,12 @@
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BillCapitalizationTypes" EntityType="Self.BillCapitalizationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServicePayForms" EntityType="Self.MarketServicePayForms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServicePayments" EntityType="Self.MarketServicePayments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServices" EntityType="Self.MarketServices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServiceStateHistory" EntityType="Self.MarketServiceStateHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServiceStates" EntityType="Self.MarketServiceStates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MarketServiceTypes" EntityType="Self.MarketServiceTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Spend" EntityType="Self.Spend" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpendBills" EntityType="Self.SpendBills" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpendBillTypes" EntityType="Self.SpendBillTypes" Schema="dbo" store:Type="Tables" />
@@ -401,6 +578,38 @@
           <AssociationSet Name="FK_dbo_Spend_dbo_SpendVector_VectorId" Association="Self.FK_dbo_Spend_dbo_SpendVector_VectorId">
             <End Role="SpendVector" EntitySet="SpendVector" />
             <End Role="Spend" EntitySet="Spend" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServicePayments_AspNetUsers" Association="Self.FK_MarketServicePayments_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="MarketServicePayments" EntitySet="MarketServicePayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServicePayments_MarketServices" Association="Self.FK_MarketServicePayments_MarketServices">
+            <End Role="MarketServices" EntitySet="MarketServices" />
+            <End Role="MarketServicePayments" EntitySet="MarketServicePayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_AspNetUsers" Association="Self.FK_MarketServices_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServicePayForms" Association="Self.FK_MarketServices_MarketServicePayForms">
+            <End Role="MarketServicePayForms" EntitySet="MarketServicePayForms" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServiceStates" Association="Self.FK_MarketServices_MarketServiceStates">
+            <End Role="MarketServiceStates" EntitySet="MarketServiceStates" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServiceTypes" Association="Self.FK_MarketServices_MarketServiceTypes">
+            <End Role="MarketServiceTypes" EntitySet="MarketServiceTypes" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServiceStateHistory_MarketServices" Association="Self.FK_MarketServiceStateHistory_MarketServices">
+            <End Role="MarketServices" EntitySet="MarketServices" />
+            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServiceStateHistory_MarketServiceStates" Association="Self.FK_MarketServiceStateHistory_MarketServiceStates">
+            <End Role="MarketServiceStates" EntitySet="MarketServiceStates" />
+            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
           </AssociationSet>
           <AssociationSet Name="FK_Spend_AspNetUsers" Association="Self.FK_Spend_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -520,6 +729,44 @@
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <EntitySet Name="MarketServicePayForms" EntityType="OwnAgentModel.MarketServicePayForms" />
+          <EntitySet Name="MarketServicePayments" EntityType="OwnAgentModel.MarketServicePayments" />
+          <EntitySet Name="MarketServices" EntityType="OwnAgentModel.MarketServices" />
+          <EntitySet Name="MarketServiceStates" EntityType="OwnAgentModel.MarketServiceStates" />
+          <EntitySet Name="MarketServiceTypes" EntityType="OwnAgentModel.MarketServiceTypes" />
+          <AssociationSet Name="FK_MarketServicePayments_AspNetUsers" Association="OwnAgentModel.FK_MarketServicePayments_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="MarketServicePayments" EntitySet="MarketServicePayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_AspNetUsers" Association="OwnAgentModel.FK_MarketServices_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServicePayForms" Association="OwnAgentModel.FK_MarketServices_MarketServicePayForms">
+            <End Role="MarketServicePayForms" EntitySet="MarketServicePayForms" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServicePayments_MarketServices" Association="OwnAgentModel.FK_MarketServicePayments_MarketServices">
+            <End Role="MarketServices" EntitySet="MarketServices" />
+            <End Role="MarketServicePayments" EntitySet="MarketServicePayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServiceStates" Association="OwnAgentModel.FK_MarketServices_MarketServiceStates">
+            <End Role="MarketServiceStates" EntitySet="MarketServiceStates" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServices_MarketServiceTypes" Association="OwnAgentModel.FK_MarketServices_MarketServiceTypes">
+            <End Role="MarketServiceTypes" EntitySet="MarketServiceTypes" />
+            <End Role="MarketServices" EntitySet="MarketServices" />
+          </AssociationSet>
+          <EntitySet Name="MarketServiceStateHistory" EntityType="OwnAgentModel.MarketServiceStateHistory" />
+          <AssociationSet Name="FK_MarketServiceStateHistory_MarketServices" Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices">
+            <End Role="MarketServices" EntitySet="MarketServices" />
+            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MarketServiceStateHistory_MarketServiceStates" Association="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates">
+            <End Role="MarketServiceStates" EntitySet="MarketServiceStates" />
+            <End Role="MarketServiceStateHistory" EntitySet="MarketServiceStateHistory" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AspNetRoles">
           <Key>
@@ -573,6 +820,8 @@
           <NavigationProperty Name="SpendCategory" Relationship="OwnAgentModel.FK_SpendCategory_AspNetUsers" FromRole="AspNetUsers" ToRole="SpendCategory" />
           <NavigationProperty Name="SpendTransfer" Relationship="OwnAgentModel.FK_SpendTransfer_AspNetUsers" FromRole="AspNetUsers" ToRole="SpendTransfer" />
           <NavigationProperty Name="AspNetRoles" Relationship="OwnAgentModel.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+          <NavigationProperty Name="MarketServicePayments" Relationship="OwnAgentModel.FK_MarketServicePayments_AspNetUsers" FromRole="AspNetUsers" ToRole="MarketServicePayments" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServices_AspNetUsers" FromRole="AspNetUsers" ToRole="MarketServices" />
         </EntityType>
         <EntityType Name="BillCapitalizationTypes">
           <Key>
@@ -878,6 +1127,191 @@
           <End Type="OwnAgentModel.AspNetRoles" Role="AspNetRoles" Multiplicity="*" />
           <End Type="OwnAgentModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
         </Association>
+        <EntityType Name="MarketServicePayForms">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SysName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServices_MarketServicePayForms" FromRole="MarketServicePayForms" ToRole="MarketServices" />
+        </EntityType>
+        <EntityType Name="MarketServicePayments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ServiceId" Type="Int32" Nullable="false" />
+          <Property Name="Sum" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTimeOffset" Nullable="false" Precision="0" />
+          <Property Name="CreatorId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <Property Name="DeleteDate" Type="DateTimeOffset" Precision="0" />
+          <Property Name="DeleterId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="OwnAgentModel.FK_MarketServicePayments_AspNetUsers" FromRole="MarketServicePayments" ToRole="AspNetUsers" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServicePayments_MarketServices" FromRole="MarketServicePayments" ToRole="MarketServices" />
+        </EntityType>
+        <EntityType Name="MarketServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="ClientName" Type="String" Nullable="false" MaxLength="1500" FixedLength="false" Unicode="true" />
+          <Property Name="ServiceSum" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ContractSum" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ServiceComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ServicePayFormId" Type="Int32" />
+          <Property Name="ManagerName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StateId" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTimeOffset" Nullable="false" Precision="0" />
+          <Property Name="CreatorId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <Property Name="DeleteDate" Type="DateTimeOffset" Precision="0" />
+          <Property Name="DeleterId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="OwnAgentModel.FK_MarketServices_AspNetUsers" FromRole="MarketServices" ToRole="AspNetUsers" />
+          <NavigationProperty Name="MarketServicePayForms" Relationship="OwnAgentModel.FK_MarketServices_MarketServicePayForms" FromRole="MarketServices" ToRole="MarketServicePayForms" />
+          <NavigationProperty Name="MarketServicePayments" Relationship="OwnAgentModel.FK_MarketServicePayments_MarketServices" FromRole="MarketServices" ToRole="MarketServicePayments" />
+          <NavigationProperty Name="MarketServiceStates" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceStates" FromRole="MarketServices" ToRole="MarketServiceStates" />
+          <NavigationProperty Name="MarketServiceTypes" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceTypes" FromRole="MarketServices" ToRole="MarketServiceTypes" />
+          <Property Name="RecipientName" Type="String" MaxLength="1500" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TenderNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TenderDate" Type="DateTime" Precision="0" />
+          <Property Name="BudgetSum" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServiceStateHistory" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" FromRole="MarketServices" ToRole="MarketServiceStateHistory" />
+        </EntityType>
+        <EntityType Name="MarketServiceStates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SysName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceStates" FromRole="MarketServiceStates" ToRole="MarketServices" />
+          <NavigationProperty Name="MarketServiceStateHistory" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates" FromRole="MarketServiceStates" ToRole="MarketServiceStateHistory" />
+        </EntityType>
+        <EntityType Name="MarketServiceTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SysName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServices_MarketServiceTypes" FromRole="MarketServiceTypes" ToRole="MarketServices" />
+        </EntityType>
+        <Association Name="FK_MarketServicePayments_AspNetUsers">
+          <End Type="OwnAgentModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServicePayments" Role="MarketServicePayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServicePayments">
+              <PropertyRef Name="CreatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_AspNetUsers">
+          <End Type="OwnAgentModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="CreatorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServicePayForms">
+          <End Type="OwnAgentModel.MarketServicePayForms" Role="MarketServicePayForms" Multiplicity="0..1" />
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServicePayForms">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="ServicePayFormId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServicePayments_MarketServices">
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServicePayments" Role="MarketServicePayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServicePayments">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServiceStates">
+          <End Type="OwnAgentModel.MarketServiceStates" Role="MarketServiceStates" Multiplicity="0..1" />
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceStates">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="StateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServices_MarketServiceTypes">
+          <End Type="OwnAgentModel.MarketServiceTypes" Role="MarketServiceTypes" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServices">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="MarketServiceStateHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ServiceId" Type="Int32" Nullable="false" />
+          <Property Name="StateId" Type="Int32" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTimeOffset" Nullable="false" Precision="0" />
+          <Property Name="CreatorId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MarketServices" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServices" FromRole="MarketServiceStateHistory" ToRole="MarketServices" />
+          <NavigationProperty Name="MarketServiceStates" Relationship="OwnAgentModel.FK_MarketServiceStateHistory_MarketServiceStates" FromRole="MarketServiceStateHistory" ToRole="MarketServiceStates" />
+        </EntityType>
+        <Association Name="FK_MarketServiceStateHistory_MarketServices">
+          <End Type="OwnAgentModel.MarketServices" Role="MarketServices" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServiceStateHistory" Role="MarketServiceStateHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServiceStateHistory">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MarketServiceStateHistory_MarketServiceStates">
+          <End Type="OwnAgentModel.MarketServiceStates" Role="MarketServiceStates" Multiplicity="1" />
+          <End Type="OwnAgentModel.MarketServiceStateHistory" Role="MarketServiceStateHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MarketServiceStates">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MarketServiceStateHistory">
+              <PropertyRef Name="StateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1049,6 +1483,87 @@
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="MarketServicePayForms">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServicePayForms">
+              <MappingFragment StoreEntitySet="MarketServicePayForms">
+                <ScalarProperty Name="SysName" ColumnName="SysName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServicePayments">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServicePayments">
+              <MappingFragment StoreEntitySet="MarketServicePayments">
+                <ScalarProperty Name="DeleterId" ColumnName="DeleterId" />
+                <ScalarProperty Name="DeleteDate" ColumnName="DeleteDate" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="CreatorId" ColumnName="CreatorId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Sum" ColumnName="Sum" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServices">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServices">
+              <MappingFragment StoreEntitySet="MarketServices">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="BudgetSum" ColumnName="BudgetSum" />
+                <ScalarProperty Name="TenderDate" ColumnName="TenderDate" />
+                <ScalarProperty Name="TenderNumber" ColumnName="TenderNumber" />
+                <ScalarProperty Name="ClaimNumber" ColumnName="ClaimNumber" />
+                <ScalarProperty Name="RecipientName" ColumnName="RecipientName" />
+                <ScalarProperty Name="DeleterId" ColumnName="DeleterId" />
+                <ScalarProperty Name="DeleteDate" ColumnName="DeleteDate" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="CreatorId" ColumnName="CreatorId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="ManagerName" ColumnName="ManagerName" />
+                <ScalarProperty Name="ServicePayFormId" ColumnName="ServicePayFormId" />
+                <ScalarProperty Name="ServiceComment" ColumnName="ServiceComment" />
+                <ScalarProperty Name="ContractSum" ColumnName="ContractSum" />
+                <ScalarProperty Name="ServiceSum" ColumnName="ServiceSum" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServiceStates">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceStates">
+              <MappingFragment StoreEntitySet="MarketServiceStates">
+                <ScalarProperty Name="SysName" ColumnName="SysName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServiceTypes">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceTypes">
+              <MappingFragment StoreEntitySet="MarketServiceTypes">
+                <ScalarProperty Name="SysName" ColumnName="SysName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MarketServiceStateHistory">
+            <EntityTypeMapping TypeName="OwnAgentModel.MarketServiceStateHistory">
+              <MappingFragment StoreEntitySet="MarketServiceStateHistory">
+                <ScalarProperty Name="CreatorId" ColumnName="CreatorId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
