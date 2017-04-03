@@ -434,7 +434,7 @@ namespace OwnAgent.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Stat", "Balance");
+            return RedirectToAction("Index", "Market");
         }
 
         //
@@ -491,7 +491,7 @@ namespace OwnAgent.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Stat", "Balance");
+            return RedirectToAction("Index", "Market");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

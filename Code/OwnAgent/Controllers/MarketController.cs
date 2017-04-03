@@ -10,6 +10,7 @@ using OwnAgent.ViewModels;
 
 namespace OwnAgent.Controllers
 {
+    [Authorize]
     public class MarketController : BaseController
     {
         // GET: Market
